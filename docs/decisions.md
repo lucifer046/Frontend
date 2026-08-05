@@ -26,3 +26,9 @@
 
 ## 2026-08-05 — Delivery URL transforms + incoming upload compression
 **Why:** Raw CDN masters still lag (multi‑MB eager loads). Delivery URLs use `f_auto,q_auto:good,w_1000,c_limit` for bandwidth. Future `media:sync` uploads apply incoming max-1600 + `quality:auto:good` so free-tier **storage** is not filled with phone originals. URL-only transforms do not shrink stored bytes; both layers are intentional.
+
+## 2026-08-05 — Drop Spec 001 T-11 (`docs/ownership.md`)
+**Why:** Owner stays with the team long-term and will communicate where configs live when needed. No council-backup / handover / break-glass ownership doc.
+
+## 2026-08-05 — Close Spec 001; cancel remaining tickets
+**Why:** Product-visible + HEAD-quality goals are done (membership, Drive certs, Cloudinary, tooling/CI/refactors). Leftovers (history purge, screenshot baseline, size guard, modal cert UI, Apps Script source in repo, fork previews, re-audit, etc.) are optional hygiene — cancelled so the board matches reality and does not invent busywork.
