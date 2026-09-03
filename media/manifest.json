@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-08-05T06:30:04.147Z",
+  "updatedAt": "2026-09-03T17:14:17.151Z",
   "assets": [
     {
       "order": 1,
@@ -851,6 +851,160 @@
       "bytes": 16171,
       "format": "jpg",
       "uploadedAt": "2026-08-05T06:30:03.970Z"
+    },
+    {
+      "order": 86,
+      "filename": "Abhisekh Chowdhury.jpeg",
+      "source": "media/teams/Abhisekh Chowdhury.jpeg",
+      "publicId": "sundarbans/teams/Abhisekh_Chowdhury",
+      "url": "https://res.cloudinary.com/l59gy0g2/image/upload/f_auto,q_auto:good,w_1000,c_limit/v1788444109/sundarbans/teams/Abhisekh_Chowdhury.jpg",
+      "masterUrl": "https://res.cloudinary.com/l59gy0g2/image/upload/v1788444109/sundarbans/teams/Abhisekh_Chowdhury.jpg",
+      "bytes": 145242,
+      "format": "jpg",
+      "uploadedAt": "2026-09-03T14:01:50.489Z"
+    },
+    {
+      "order": 87,
+      "filename": "aditri.webp",
+      "source": "media/teams/aditri.webp",
+      "publicId": "sundarbans/teams/aditri",
+      "url": "https://res.cloudinary.com/l59gy0g2/image/upload/f_auto,q_auto:good,w_1000,c_limit/v1788444111/sundarbans/teams/aditri.webp",
+      "masterUrl": "https://res.cloudinary.com/l59gy0g2/image/upload/v1788444111/sundarbans/teams/aditri.webp",
+      "bytes": 127380,
+      "format": "webp",
+      "uploadedAt": "2026-09-03T14:01:52.235Z"
+    },
+    {
+      "order": 88,
+      "filename": "ansh_kumar.jpeg",
+      "source": "media/teams/ansh_kumar.jpeg",
+      "publicId": "sundarbans/teams/ansh_kumar",
+      "url": "https://res.cloudinary.com/l59gy0g2/image/upload/f_auto,q_auto:good,w_1000,c_limit/v1788444112/sundarbans/teams/ansh_kumar.jpg",
+      "masterUrl": "https://res.cloudinary.com/l59gy0g2/image/upload/v1788444112/sundarbans/teams/ansh_kumar.jpg",
+      "bytes": 175797,
+      "format": "jpg",
+      "uploadedAt": "2026-09-03T14:01:54.090Z"
+    },
+    {
+      "order": 89,
+      "filename": "anuraj.jpeg",
+      "source": "media/teams/anuraj.jpeg",
+      "publicId": "sundarbans/teams/anuraj",
+      "url": "https://res.cloudinary.com/l59gy0g2/image/upload/f_auto,q_auto:good,w_1000,c_limit/v1788455652/sundarbans/teams/anuraj.jpg",
+      "masterUrl": "https://res.cloudinary.com/l59gy0g2/image/upload/v1788455652/sundarbans/teams/anuraj.jpg",
+      "bytes": 156992,
+      "format": "jpg",
+      "uploadedAt": "2026-09-03T17:14:14.672Z"
+    },
+    {
+      "order": 90,
+      "filename": "Dhanashree kulkarni.jpg",
+      "source": "media/teams/Dhanashree kulkarni.jpg",
+      "publicId": "sundarbans/teams/Dhanashree_kulkarni",
+      "url": "https://res.cloudinary.com/l59gy0g2/image/upload/f_auto,q_auto:good,w_1000,c_limit/v1788455655/sundarbans/teams/Dhanashree_kulkarni.jpg",
+      "masterUrl": "https://res.cloudinary.com/l59gy0g2/image/upload/v1788455655/sundarbans/teams/Dhanashree_kulkarni.jpg",
+      "bytes": 152902,
+      "format": "jpg",
+      "uploadedAt": "2026-09-03T17:14:17.151Z"
+    },
+    {
+      "order": 91,
+      "filename": "Dhanya R..jpeg",
+      "source": "media/teams/Dhanya R..jpeg",
+      "publicId": "sundarbans/teams/Dhanya_R.",
+      "url": "https://res.cloudinary.com/l59gy0g2/image/upload/f_auto,q_auto:good,w_1000,c_limit/v1788444118/sundarbans/teams/Dhanya_R..jpg",
+      "masterUrl": "https://res.cloudinary.com/l59gy0g2/image/upload/v1788444118/sundarbans/teams/Dhanya_R..jpg",
+      "bytes": 126186,
+      "format": "jpg",
+      "uploadedAt": "2026-09-03T14:01:59.570Z"
+    },
+    {
+      "order": 92,
+      "filename": "Divya Prakash.jpeg",
+      "source": "media/teams/Divya Prakash.jpeg",
+      "publicId": "sundarbans/teams/Divya_Prakash",
+      "url": "https://res.cloudinary.com/l59gy0g2/image/upload/f_auto,q_auto:good,w_1000,c_limit/v1788444120/sundarbans/teams/Divya_Prakash.jpg",
+      "masterUrl": "https://res.cloudinary.com/l59gy0g2/image/upload/v1788444120/sundarbans/teams/Divya_Prakash.jpg",
+      "bytes": 166564,
+      "format": "jpg",
+      "uploadedAt": "2026-09-03T14:02:01.715Z"
+    },
+    {
+      "order": 93,
+      "filename": "Lavanya.jpeg",
+      "source": "media/teams/Lavanya.jpeg",
+      "publicId": "sundarbans/teams/Lavanya",
+      "url": "https://res.cloudinary.com/l59gy0g2/image/upload/f_auto,q_auto:good,w_1000,c_limit/v1788444122/sundarbans/teams/Lavanya.jpg",
+      "masterUrl": "https://res.cloudinary.com/l59gy0g2/image/upload/v1788444122/sundarbans/teams/Lavanya.jpg",
+      "bytes": 142797,
+      "format": "jpg",
+      "uploadedAt": "2026-09-03T14:02:03.682Z"
+    },
+    {
+      "order": 94,
+      "filename": "Mohammad Faizan Khan.jpeg",
+      "source": "media/teams/Mohammad Faizan Khan.jpeg",
+      "publicId": "sundarbans/teams/Mohammad_Faizan_Khan",
+      "url": "https://res.cloudinary.com/l59gy0g2/image/upload/f_auto,q_auto:good,w_1000,c_limit/v1788444124/sundarbans/teams/Mohammad_Faizan_Khan.jpg",
+      "masterUrl": "https://res.cloudinary.com/l59gy0g2/image/upload/v1788444124/sundarbans/teams/Mohammad_Faizan_Khan.jpg",
+      "bytes": 132769,
+      "format": "jpg",
+      "uploadedAt": "2026-09-03T14:02:05.471Z"
+    },
+    {
+      "order": 95,
+      "filename": "Niva Murabia.jpeg",
+      "source": "media/teams/Niva Murabia.jpeg",
+      "publicId": "sundarbans/teams/Niva_Murabia",
+      "url": "https://res.cloudinary.com/l59gy0g2/image/upload/f_auto,q_auto:good,w_1000,c_limit/v1788444126/sundarbans/teams/Niva_Murabia.jpg",
+      "masterUrl": "https://res.cloudinary.com/l59gy0g2/image/upload/v1788444126/sundarbans/teams/Niva_Murabia.jpg",
+      "bytes": 186323,
+      "format": "jpg",
+      "uploadedAt": "2026-09-03T14:02:08.069Z"
+    },
+    {
+      "order": 96,
+      "filename": "Prashansha Uniyal.jpeg",
+      "source": "media/teams/Prashansha Uniyal.jpeg",
+      "publicId": "sundarbans/teams/Prashansha_Uniyal",
+      "url": "https://res.cloudinary.com/l59gy0g2/image/upload/f_auto,q_auto:good,w_1000,c_limit/v1788444129/sundarbans/teams/Prashansha_Uniyal.jpg",
+      "masterUrl": "https://res.cloudinary.com/l59gy0g2/image/upload/v1788444129/sundarbans/teams/Prashansha_Uniyal.jpg",
+      "bytes": 194192,
+      "format": "jpg",
+      "uploadedAt": "2026-09-03T14:02:10.119Z"
+    },
+    {
+      "order": 97,
+      "filename": "sai nikhil vukka.jpeg",
+      "source": "media/teams/sai nikhil vukka.jpeg",
+      "publicId": "sundarbans/teams/sai_nikhil_vukka",
+      "url": "https://res.cloudinary.com/l59gy0g2/image/upload/f_auto,q_auto:good,w_1000,c_limit/v1788444130/sundarbans/teams/sai_nikhil_vukka.jpg",
+      "masterUrl": "https://res.cloudinary.com/l59gy0g2/image/upload/v1788444130/sundarbans/teams/sai_nikhil_vukka.jpg",
+      "bytes": 129887,
+      "format": "jpg",
+      "uploadedAt": "2026-09-03T14:02:11.978Z"
+    },
+    {
+      "order": 98,
+      "filename": "anuraj.jpeg",
+      "source": "media/sundarbans/teams/anuraj.jpeg",
+      "publicId": "sundarbans/sundarbans/teams/anuraj",
+      "url": "https://res.cloudinary.com/l59gy0g2/image/upload/f_auto,q_auto:good,w_1000,c_limit/v1788455625/sundarbans/sundarbans/teams/anuraj.jpg",
+      "masterUrl": "https://res.cloudinary.com/l59gy0g2/image/upload/v1788455625/sundarbans/sundarbans/teams/anuraj.jpg",
+      "bytes": 156992,
+      "format": "jpg",
+      "uploadedAt": "2026-09-03T17:13:46.773Z"
+    },
+    {
+      "order": 99,
+      "filename": "Dhanashree kulkarni.jpg",
+      "source": "media/sundarbans/teams/Dhanashree kulkarni.jpg",
+      "publicId": "sundarbans/sundarbans/teams/Dhanashree_kulkarni",
+      "url": "https://res.cloudinary.com/l59gy0g2/image/upload/f_auto,q_auto:good,w_1000,c_limit/v1788455627/sundarbans/sundarbans/teams/Dhanashree_kulkarni.jpg",
+      "masterUrl": "https://res.cloudinary.com/l59gy0g2/image/upload/v1788455627/sundarbans/sundarbans/teams/Dhanashree_kulkarni.jpg",
+      "bytes": 152902,
+      "format": "jpg",
+      "uploadedAt": "2026-09-03T17:13:48.777Z"
     }
   ]
 }
