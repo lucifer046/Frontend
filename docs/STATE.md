@@ -1,53 +1,42 @@
-# Sundarbans House — State
-> Centralized web platform for the Sundarbans House council (IITM BS degree) — events, resources, team collaboration, meetups, and certificate verification. · Last checkpoint: 2026-08-05
+# Sundarbans House - State
+> IITM BS Sundarbans House frontend and related product work · Last checkpoint: 2026-09-03
 
-## 🚧 In progress / next
-- **Spec 001 closed.** Ticket board: `docs/specs/001-tickets.md` (all leftover tickets **cancelled** 2026-08-05). Parent: `docs/specs/001-codebase-overhaul.md`.
-- **Shipped highlights:** membership (T-13), certs Drive (T-16), Cloudinary (T-18 / [#21](https://github.com/Anuraj-dev/Frontend/pull/21)), CI/lazy routes/refactors/a11y.
-- **Maintain only:** no heavy binaries in git; new photos via `media/` + `npm run media:sync`; keep CI green. Optional later (not Spec 001): data-drive Teams; re-compress old Cloudinary masters if storage is tight.
-- **Out of scope forever for frames:** hero 240 stay under `public/assets/frames/`.
+## In progress / next
+- Live Teams view now carries the 2026–27 roster in the approved card format: photo and text as separate blocks, plain role/name/region text (no pills, no pin, no m-dash), gold border-only hover with photo-only zoom, only UHC + LHC sections. Owner approved; next step is a final pass on any remaining crop/text tweaks.
+- Continue testing the live RAG chatbot after the first audit; start with the P0 taxonomy and answerability failures in `docs/reports/sundarbans-rag-chatbot-audit-2026-09-03.md`.
 
 ## Status
-- Live Vue 3 SPA (`Anuraj-dev/Frontend`), static host (Vercel). No app backend.
-- **Auth (T-13):** Google OAuth → Apps Script membership (`VITE_MEMBERSHIP_CHECK_URL`). No `members.json`.
-- **Certs (T-16):** PDFs on Google Drive; no `public/certificates/` in repo.
-- **Media (T-18 — shipped, PR #21 merged):**
-  - **85** non-frame images on Cloudinary (folder prefix `sundarbans/…`).
-  - Vue/HTML delivery URLs: `…/upload/f_auto,q_auto:good,w_1000,c_limit/…` (bandwidth).
-  - Locals for those 85 **deleted** from git; only frames remain as heavy local images (~9.5M under `public/assets/frames/`).
-  - Teams: `loading="lazy"` + `decoding="async"` on card images.
-  - Pipeline for the team: dump into `media/` → `npm run media:sync` → URLs in `media/manifest.json` → paste into views.
-  - Future uploads: **incoming** compress on store (max 1600px long edge, `quality: auto:good`) + delivery URL in manifest.
-- **Routes:** lazy-loaded. CI: lint, Prettier, build, Playwright smoke.
+- Repository frontend is a Vue 3 SPA with hash routing and lazy-loaded routes.
+- 12 team portraits (abstract-background edits, 3:4) are synced to Cloudinary under `sundarbans/teams/`; delivery URLs live in `media/manifest.json`. Anuraj and Dhanashree were re-cropped from the uncropped originals (arms visible / subject fills frame) and re-uploaded under the same public IDs.
+- The old local scratch dirs (`Teams/`, `prototypes/`, `tmp/`) were deleted by the owner after the council design was chosen and ported into `src/views/TeamsView.vue`; they are gitignored in case they return.
+- Live chatbot audit report: `docs/reports/sundarbans-rag-chatbot-audit-2026-09-03.md`; found retrieval wins but critical taxonomy/grounding failures.
 
 ## Architecture map
-- App bootstrap → `src/main.js`, `src/App.vue`
-- Routes (lazy) → `src/router/index.js`
-- Views → `src/views/*` · Meetups → `src/views/meetups/*`
-- Components → `src/components/*` · dashboard widgets → `src/components/dashboard/*`
-- Static data → `src/data/` (no members roster), `public/data/`
-- **Media pipeline** → `media/` (drop + `manifest.json` + README), `scripts/media-sync.mjs`, `scripts/media-migrate-repo.mjs`, `scripts/lib/cloudinary-media.mjs`
-- **CDN images** → Cloudinary (`res.cloudinary.com/<cloud>/image/upload/…`)
-- **Local images left** → `public/assets/frames/` (240 hero JPEGs only)
-- Env (scripts): `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` (local `.env`, never commit)
-- Env (app build): `VITE_GOOGLE_CLIENT_ID`, `VITE_MEMBERSHIP_CHECK_URL`
+- App bootstrap and global navigation -> `src/main.js`, `src/App.vue`
+- Routes -> `src/router/index.js`
+- Public views -> `src/views/*`
+- Community taxonomy and event records -> `src/views/CommunityView.vue`, `src/views/TechnicalView.vue`, `src/views/CulturalView.vue`, `src/views/ESportsView.vue`
+- Teams and community heads -> `src/views/TeamsView.vue`
+- Cloudinary image history -> `media/manifest.json` · workflow -> `media/README.md`, `scripts/media-sync.mjs`
+- Study resource browser -> `src/components/study/ResourceBrowser.vue`, `src/data/scData_generated.js`
+- Meetup data/template -> `src/views/meetups/*`, `src/components/RegionMeetups.vue`
+- Audit artifacts -> `docs/reports/*`
 
 ## Stack & run
-- Stack: Vue 3 (SFC), vue-router 4 (hash history), Vite 6. No backend.
-- Run: `npm run dev` · Build: `npm run build` · Preview: `npm run preview`
-- Gates: `npm run format:check` · `npm run lint` · `npm run build` · `npm run test:smoke`
-- Media: `npm run media:sync` · `npm run media:migrate-repo` (one-time; `--keep-local` / `--dry-run` flags)
+- Stack: Vue 3, vue-router 4, Vite 6, static hosting
+- Run: `npm run dev` · Build: `npm run build`
+- Gates: `npm run format:check`, `npm run lint`, `npm run build`, `npm run test:smoke`
 
-## Key decisions (top)
-- No backend; client localStorage token after Google + Sheet check.
-- Hash routing for static hosting.
-- Certs on Drive; membership via Apps Script (no members.json).
-- **Site display images on Cloudinary**; hero frames stay in-repo (scroll performance / same-origin).
-- **Delivery transforms** for existing assets (bandwidth); **incoming upload transforms** for future dumps (storage).
+## Key decisions
+- Keep the first chatbot deliverable as an evidence report; defer implementation until the RAG backend and source of truth are known.
+- Treat the three public community names as Technical, Cultural, and E-Sports, based on `src/views/CommunityView.vue`.
+- Council redesign landed in the live Teams view (owner-approved 2026-09-03): split photo/text cards, plain text labels (never pill/"peeled"), icon-only brand-logo social links, UHC + LHC only (no WebOps/technical block).
+- Hover feedback is border-only on the card; only the photo zooms (subtle 1.035), never the whole card.
+- Use exact 3:4 portrait frames so processed portraits are never re-cropped by the container; show public social links in the card body.
+- Local scratch assets (`Teams/`, `prototypes/`, `tmp/`) stay out of git; Cloudinary + `media/manifest.json` are the image source of truth.
 
 ## Gotchas
-- Cloudinary keys live in `.env` only — share among the team privately; rotate if someone leaves.
-- Free Cloudinary storage still holds **full masters** from the first migrate (some multi‑MB). Pages do not download those; reclaim storage later by re-uploading compressed overwrites if needed.
-- Do **not** re-commit large binaries under `src/assets/teams`, pastevent, etc. Use `media/` + sync.
-- Do **not** put hero frames on Cloudinary without a deliberate design change.
-- Auth is not server-verified after login; lounge needs both Vite env vars at **build** time on Vercel.
+- The live chatbot loaded a React entry point at `/src/main.jsx`, while this repository's frontend uses Vue. The audit compares live behavior with public repository content; it does not prove the backend implementation.
+- Captured chatbot waits often reached roughly 30 seconds; this is a client-side lower bound, not a precise backend benchmark.
+- The supplied HTML is a roster export, not a UI specification; verify any future role/name changes against the current source document before implementation.
+- Do not commit Cloudinary keys, OAuth secrets, app secrets, or a member roster.

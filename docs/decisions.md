@@ -32,3 +32,12 @@
 
 ## 2026-08-05 — Close Spec 001; cancel remaining tickets
 **Why:** Product-visible + HEAD-quality goals are done (membership, Drive certs, Cloudinary, tooling/CI/refactors). Leftovers (history purge, screenshot baseline, size guard, modal cert UI, Apps Script source in repo, fork previews, re-audit, etc.) are optional hygiene — cancelled so the board matches reality and does not invent busywork.
+
+## 2026-09-03 — Review council layouts before live Teams replacement
+**Why:** The supplied 2026–27 portraits and roster differ from the current Teams page. A standalone review board lets the visual direction be selected before changing live content; the supplied UHC/LHC structure reference stays local and the portraits use the existing Cloudinary pipeline.
+
+## 2026-09-03 — Match council portraits at native 3:4 ratio
+**Why:** The processed portrait sources are 1200×1600. The separate command-deck demo uses 3:4 frames and visible card metadata so portraits are not treated as cropped landscape thumbnails; the technical team block remains deferred until requested.
+
+## 2026-09-03 — Curate command deck: logo socials, no badges/pills, UHC+LHC only
+**Why:** Owner feedback after reviewing the command-deck demo: text social links become icon-only brand logos, the 01–09 order badges are noise, the "Leadership"/"Regional" tags must not look pill/peeled, section subtitles are removed, and the demo carries only Upper and Lower House Council (no WebOps/technical block) until a later product decision. Rejected keeping demo scaffolding (roster panel, flow strip, rationale notes) so the review shows the actual design.
