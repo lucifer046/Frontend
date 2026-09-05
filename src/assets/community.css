@@ -33,6 +33,7 @@
   --cx: var(--color-gold);
   --cx-soft: rgba(213, 166, 58, 0.5);
   --cx-tint: rgba(213, 166, 58, 0.08);
+  --cx-bright: var(--color-gold-light);
 }
 
 /* Cool and precise. A steel blue, not a cyan — anything brighter reads as a
@@ -41,6 +42,7 @@
   --cx: #7ba7d9;
   --cx-soft: rgba(123, 167, 217, 0.42);
   --cx-tint: rgba(123, 167, 217, 0.08);
+  --cx-bright: #a3c4e8;
 }
 
 /* Warm and expressive. Close enough to the house gold to feel related,
@@ -49,6 +51,7 @@
   --cx: #dda15e;
   --cx-soft: rgba(221, 161, 94, 0.42);
   --cx-tint: rgba(221, 161, 94, 0.09);
+  --cx-bright: #eec089;
 }
 
 /* Energetic and competitive. A muted crimson — restrained on purpose, since
@@ -58,6 +61,7 @@
   --cx: #c96f6f;
   --cx-soft: rgba(201, 111, 111, 0.42);
   --cx-tint: rgba(201, 111, 111, 0.09);
+  --cx-bright: #dd9494;
 }
 
 /* ── Section shell ─────────────────────────────────────────────────────── */

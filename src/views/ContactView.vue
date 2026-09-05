@@ -1,364 +1,436 @@
 <template>
   <div>
     <PageHero
+      compact
       bg-image="https://images.unsplash.com/photo-1423666639041-f56000c27a9a?w=1920&q=80&auto=format&fit=crop"
       breadcrumb-title="Contact"
       title="Get in"
       accent-title="Touch"
-      subtitle="Have questions? We'd love to hear from you — reach out any time."
+      subtitle="Have a question about Sundarbans House? Reach out directly to the team responsible for your query."
     />
 
-    <section class="section rs">
-      <div class="container">
-        <div class="contact-grid">
-          <div>
-            <div class="section-tag">Contact Us</div>
-            <h2 class="section-title-xl">We're Here to <span class="tg">Help</span></h2>
-            <p class="desc">
-              Feel free to reach out through any of these channels. We usually respond within 24 to
-              48 hours.
-            </p>
-            <div style="display: flex; flex-direction: column; gap: 1.5rem; margin-top: 2rem">
-              <a
-                class="card-base"
-                href="https://www.linkedin.com/company/sundarbans-iitm/"
-                target="_blank"
-                rel="noopener noreferrer"
-                style="
-                  display: flex;
-                  align-items: center;
-                  gap: 1.25rem;
-                  padding: 1.25rem;
-                  text-decoration: none;
-                  color: inherit;
-                  cursor: pointer;
-                  width: 100%;
-                  transition:
-                    transform 0.2s ease,
-                    border-color 0.2s ease;
-                "
-              >
-                <div
-                  style="
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    width: 42px;
-                    height: 42px;
-                    background: rgba(213, 166, 58, 0.1);
-                    border-radius: 50%;
-                    color: var(--accent);
-                  "
-                >
-                  <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
-                    <path
-                      d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"
-                    />
-                  </svg>
-                </div>
-                <div>
-                  <h4
-                    style="
-                      font-family: var(--font-display);
-                      font-size: 0.95rem;
-                      font-weight: 700;
-                      margin-bottom: 0.25rem;
-                    "
-                  >
-                    LinkedIn
-                  </h4>
-                  <p style="font-size: 0.85rem; color: var(--text2); margin: 0">
-                    linkedin.com/company/sundarbans-iitm
-                  </p>
-                </div>
-              </a>
-              <a
-                class="card-base"
-                href="https://www.instagram.com/sundarbansiitm/"
-                target="_blank"
-                rel="noopener noreferrer"
-                style="
-                  display: flex;
-                  align-items: center;
-                  gap: 1.25rem;
-                  padding: 1.25rem;
-                  text-decoration: none;
-                  color: inherit;
-                  cursor: pointer;
-                  width: 100%;
-                  transition:
-                    transform 0.2s ease,
-                    border-color 0.2s ease;
-                "
-              >
-                <div
-                  style="
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    width: 42px;
-                    height: 42px;
-                    background: rgba(213, 166, 58, 0.1);
-                    border-radius: 50%;
-                    color: var(--accent);
-                  "
-                >
-                  <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
-                    <path
-                      d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z"
-                    />
-                  </svg>
-                </div>
-                <div>
-                  <h4
-                    style="
-                      font-family: var(--font-display);
-                      font-size: 0.95rem;
-                      font-weight: 700;
-                      margin-bottom: 0.25rem;
-                    "
-                  >
-                    Instagram
-                  </h4>
-                  <p style="font-size: 0.85rem; color: var(--text2); margin: 0">@sundarbansiitm</p>
-                </div>
-              </a>
-              <a
-                class="card-base"
-                href="https://www.youtube.com/@sundarbansiitm"
-                target="_blank"
-                rel="noopener noreferrer"
-                style="
-                  display: flex;
-                  align-items: center;
-                  gap: 1.25rem;
-                  padding: 1.25rem;
-                  text-decoration: none;
-                  color: inherit;
-                  cursor: pointer;
-                  width: 100%;
-                  transition:
-                    transform 0.2s ease,
-                    border-color 0.2s ease;
-                "
-              >
-                <div
-                  style="
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    width: 42px;
-                    height: 42px;
-                    background: rgba(213, 166, 58, 0.1);
-                    border-radius: 50%;
-                    color: var(--accent);
-                  "
-                >
-                  <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
-                    <path
-                      d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"
-                    />
-                  </svg>
-                </div>
-                <div>
-                  <h4
-                    style="
-                      font-family: var(--font-display);
-                      font-size: 0.95rem;
-                      font-weight: 700;
-                      margin-bottom: 0.25rem;
-                    "
-                  >
-                    YouTube
-                  </h4>
-                  <p style="font-size: 0.85rem; color: var(--text2); margin: 0">sundarbansiitm</p>
-                </div>
-              </a>
-            </div>
-          </div>
+    <!-- ══ UHC CONTACT DESK ══════════════════════════════════════════
+         Three offices, as a short list of rows rather than three profile
+         cards — this is a directory entry, not a introduction. -->
+    <section class="ct-section tone-b rs" aria-labelledby="uhc-desk-heading">
+      <div class="container container--measure">
+        <header class="ct-hdr">
+          <p class="section-tag">House leadership</p>
+          <h2 id="uhc-desk-heading" class="section-title-xl">
+            UHC <span class="tg">contact desk</span>
+          </h2>
+          <p class="ct-sub">
+            Questions about the House as a whole — events, partnerships, the site — go to the office
+            that owns them.
+          </p>
+        </header>
 
-          <div class="card-base rs">
-            <h3
-              style="
-                font-family: var(--font-display);
-                font-weight: 700;
-                margin-bottom: 1.5rem;
-                font-size: 1.1rem;
-              "
+        <ul class="ct-desk">
+          <li v-for="office in leadership" :key="office.id">
+            <a
+              class="ct-row"
+              :class="{ 'ct-row--lead': office.lead }"
+              :href="`mailto:${office.email}`"
             >
-              Send a Message
-            </h3>
-            <div v-if="sent" style="text-align: center; padding: 2rem">
-              <div
-                style="
-                  color: var(--accent);
-                  margin-bottom: 1rem;
-                  display: flex;
-                  justify-content: center;
-                "
+              <span class="ct-row-mark" aria-hidden="true">
+                <Mail :size="18" :stroke-width="1.7" />
+              </span>
+
+              <span class="ct-row-main">
+                <span class="ct-row-post">{{ office.role }}</span>
+                <span class="ct-row-name">{{ office.name }}</span>
+                <span class="ct-row-mail">{{ office.email }}</span>
+              </span>
+
+              <span class="ct-row-cta">
+                Email
+                <ArrowRight :size="15" :stroke-width="2" aria-hidden="true" />
+              </span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ══ REGIONAL CONTACTS ═════════════════════════════════════════
+         The coordinators, by region. Ordered by region name, so a reader
+         scans down the left edge to find their own city. -->
+    <section class="ct-section tone-a rs" aria-labelledby="regional-heading">
+      <div class="container container--measure">
+        <header class="ct-hdr">
+          <p class="section-tag">Regional contacts</p>
+          <h2 id="regional-heading" class="section-title-xl">
+            Your <span class="tg">coordinator</span>
+          </h2>
+          <p class="ct-sub">
+            Anything local — meetups, your chapter, getting involved where you are — reaches your
+            region faster than it reaches the House.
+          </p>
+        </header>
+
+        <ul class="ct-directory">
+          <li v-for="rc in coordinators" :key="rc.id">
+            <a class="ct-row ct-row--compact" :href="`mailto:${rc.email}`">
+              <span class="ct-row-region">{{ rc.region }}</span>
+
+              <span class="ct-row-main">
+                <span class="ct-row-name">{{ rc.name }}</span>
+                <span class="ct-row-post ct-row-post--after">{{ rc.role }}</span>
+                <span class="ct-row-mail">{{ rc.email }}</span>
+              </span>
+
+              <span class="ct-row-cta">
+                Email
+                <ArrowRight :size="15" :stroke-width="2" aria-hidden="true" />
+              </span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ══ COMMUNITY CHANNELS ════════════════════════════════════════ -->
+    <section class="ct-section ct-section--social tone-b rs" aria-labelledby="social-heading">
+      <div class="container container--measure">
+        <header class="ct-hdr">
+          <p class="section-tag">Elsewhere</p>
+          <h2 id="social-heading" class="ct-social-title">Follow the House</h2>
+        </header>
+
+        <ul class="ct-social">
+          <li v-for="channel in socials" :key="channel.label">
+            <a :href="channel.href" target="_blank" rel="noopener noreferrer">
+              <svg
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                width="16"
+                height="16"
+                aria-hidden="true"
               >
-                <CircleCheck :size="44" :stroke-width="1.5" />
-              </div>
-              <h4 style="font-family: var(--font-display); font-weight: 700; margin-bottom: 0.5rem">
-                Message Sent!
-              </h4>
-              <p class="desc">We'll get back to you within 24 hours.</p>
-              <button @click="sent = false" class="submit-btn" style="margin-top: 1rem">
-                Send Another
-              </button>
-            </div>
-            <template v-else>
-              <div class="grid-2" style="gap: 1rem">
-                <div class="form-field">
-                  <label>Your Name</label>
-                  <input
-                    v-model="form.name"
-                    type="text"
-                    class="form-input"
-                    placeholder="John Doe"
-                  />
-                </div>
-                <div class="form-field">
-                  <label>Student Email Address</label>
-                  <input
-                    v-model="form.email"
-                    type="email"
-                    class="form-input"
-                    placeholder="you@ds.study.iitm.ac.in"
-                  />
-                </div>
-              </div>
-              <div class="grid-2" style="gap: 1rem">
-                <div class="form-field">
-                  <label>Your House</label>
-                  <select v-model="form.house" class="form-select">
-                    <option value="">Choose</option>
-                    <option>Sundarbans</option>
-                    <option>Bandipur</option>
-                    <option>Corbett</option>
-                    <option>Gir</option>
-                    <option>Kanha</option>
-                    <option>Kaziranga</option>
-                    <option>Nallamala</option>
-                    <option>Saranda</option>
-                    <option>Wayanad</option>
-                  </select>
-                </div>
-                <div class="form-field">
-                  <label>Your Region</label>
-                  <select v-model="form.region" class="form-select">
-                    <option value="">Choose</option>
-                    <option>Delhi Region</option>
-                    <option>Chandigarh Region</option>
-                    <option>Patna Region</option>
-                    <option>Lucknow Region</option>
-                    <option>Kolkata Region</option>
-                    <option>Mumbai Region</option>
-                    <option>Hyderabad Region</option>
-                    <option>Chennai Region</option>
-                    <option>Bengaluru Region</option>
-                    <option>Other</option>
-                  </select>
-                </div>
-              </div>
-              <div class="form-field">
-                <label>Subject</label>
-                <select v-model="form.subject" class="form-select">
-                  <option value="">Select a topic</option>
-                  <option>General Inquiry</option>
-                  <option>Academic Help</option>
-                  <option>Event Proposal</option>
-                  <option>Team Application</option>
-                  <option>Technical Issue</option>
-                  <option>Other</option>
-                </select>
-              </div>
-              <div class="form-field">
-                <label>Message</label>
-                <textarea
-                  v-model="form.message"
-                  class="form-textarea"
-                  placeholder="Tell us how we can help..."
-                ></textarea>
-              </div>
-              <p v-if="error" style="color: #e74c3c; font-size: 0.85rem; margin-bottom: 0.75rem">
-                {{ error }}
-              </p>
-              <button @click="submitForm" class="submit-btn" :disabled="submitting">
-                {{ submitting ? 'Sending...' : 'Send Message →' }}
-              </button>
-            </template>
-          </div>
-        </div>
+                <path :d="channel.path" />
+              </svg>
+              <span class="ct-social-label">{{ channel.label }}</span>
+              <span class="ct-social-handle">{{ channel.handle }}</span>
+            </a>
+          </li>
+        </ul>
       </div>
     </section>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { CircleCheck } from 'lucide-vue-next';
+import { computed } from 'vue';
+import { Mail, ArrowRight } from 'lucide-vue-next';
 import PageHero from '../components/PageHero.vue';
 import { useScrollReveal } from '../composables/useAnimations.js';
+import { upperHouse, lowerHouse, sortByRegion, SOCIAL_ICONS } from '../data/council.js';
+
 useScrollReveal();
 
-const form = ref({ name: '', email: '', house: '', region: '', subject: '', message: '' });
-const submitting = ref(false);
-const sent = ref(false);
-const error = ref('');
+/**
+ * Both lists come from the council roster the Teams page renders, so an
+ * address is corrected in one file and both pages follow. The desk keeps the
+ * roster's authored order — Secretary first — because that is the order a
+ * reader should try the offices in.
+ */
+const leadership = upperHouse;
 
-async function submitForm() {
-  if (!form.value.name || !form.value.email || !form.value.message) {
-    alert('Please fill in all required fields.');
-    return;
-  }
+/** Ordered by region, never by name; Mumbai's two coordinators both appear. */
+const coordinators = computed(() => sortByRegion(lowerHouse));
 
-  submitting.value = true;
-  error.value = '';
-
-  try {
-    const response = await fetch('https://formspree.io/f/mgorwpak', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-      body: JSON.stringify({
-        name: form.value.name,
-        email: form.value.email,
-        house: form.value.house,
-        region: form.value.region,
-        subject: form.value.subject,
-        message: form.value.message,
-      }),
-    });
-
-    if (response.ok) {
-      sent.value = true;
-      form.value = { name: '', email: '', house: '', region: '', subject: '', message: '' };
-    } else {
-      const data = await response.json();
-      error.value = data?.errors?.[0]?.message || 'Something went wrong. Try again.';
-    }
-  } catch (e) {
-    error.value = 'Network error. Please check your connection.';
-  } finally {
-    submitting.value = false;
-  }
-}
+/* The same three channels and marks the footer carries. */
+const socials = [
+  {
+    label: 'LinkedIn',
+    handle: 'sundarbans-iitm',
+    href: 'https://www.linkedin.com/company/sundarbans-iitm/',
+    path: SOCIAL_ICONS.LinkedIn,
+  },
+  {
+    label: 'Instagram',
+    handle: '@sundarbansiitm',
+    href: 'https://www.instagram.com/sundarbansiitm/',
+    path: SOCIAL_ICONS.Instagram,
+  },
+  {
+    label: 'YouTube',
+    handle: '@sundarbansiitm',
+    href: 'https://www.youtube.com/@sundarbansiitm',
+    path: 'M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z',
+  },
+];
 </script>
 
 <style scoped>
-.contact-grid {
-  display: grid;
-  grid-template-columns: 1fr 1.4fr;
-  gap: 4rem;
-  align-items: start;
+/* ═══ SECTIONS ══════════════════════════════════════════════════════ */
+.ct-section {
+  padding: clamp(3.5rem, 6vw, 5.5rem) 0;
 }
-@media (max-width: 768px) {
-  .contact-grid {
-    grid-template-columns: 1fr;
-    gap: 2rem;
+
+.ct-section--social {
+  padding-bottom: clamp(4.5rem, 7vw, 6.5rem);
+}
+
+.ct-hdr {
+  margin-bottom: clamp(2rem, 3.5vw, 2.75rem);
+}
+
+.ct-hdr .section-tag {
+  margin-bottom: 0.9rem;
+}
+
+.ct-hdr .section-title-xl {
+  margin-bottom: 0;
+}
+
+.ct-sub {
+  margin-top: 1rem;
+  font-size: 0.94rem;
+  line-height: 1.75;
+  color: var(--color-cream-muted);
+  max-width: 52ch;
+}
+
+.ct-desk,
+.ct-directory,
+.ct-social {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* ═══ CONTACT ROW ═══════════════════════════════════════════════════
+   One rule for both lists. A row, not a card: a hairline between entries,
+   the whole row is the mailto target, and the only decoration is the mark
+   on the left and the action on the right. */
+.ct-row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: clamp(0.9rem, 2vw, 1.5rem);
+  padding: clamp(1rem, 2vw, 1.35rem) clamp(0.75rem, 1.5vw, 1.15rem);
+  border: 1px solid transparent;
+  border-bottom-color: var(--border-subtle);
+  border-radius: var(--rad);
+  text-decoration: none;
+  transition:
+    background-color var(--duration-card) var(--ease-editorial),
+    border-color var(--duration-card) var(--ease-editorial),
+    transform var(--duration-card) var(--ease-editorial);
+}
+
+.ct-desk li:last-child .ct-row,
+.ct-directory li:last-child .ct-row {
+  border-bottom-color: transparent;
+}
+
+.ct-row:hover,
+.ct-row:focus-visible {
+  background: var(--color-card);
+  border-color: var(--border-card);
+  transform: translateX(3px);
+}
+
+.ct-row:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 2px;
+}
+
+/* The Secretary's row is the one to try first: a gold edge on the leading
+   side, and nothing else — the three rows stay the same shape. */
+.ct-row--lead {
+  border-left-color: var(--color-gold-muted);
+  border-left-width: 2px;
+}
+
+.ct-row-mark {
+  display: inline-flex;
+  flex: none;
+  color: var(--color-gold-muted);
+  transition: color var(--duration-card) var(--ease-editorial);
+}
+
+.ct-row:hover .ct-row-mark {
+  color: var(--color-gold);
+}
+
+.ct-row-main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.ct-row-post {
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-gold-muted);
+}
+
+.ct-row--lead .ct-row-post {
+  color: var(--color-gold);
+}
+
+/* On a coordinator row the office is the same for everyone, so it reads
+   under the name as a quiet qualifier rather than over it as a heading. */
+.ct-row-post--after {
+  order: 2;
+  color: var(--color-cream-faint);
+  letter-spacing: 0.14em;
+}
+
+.ct-row-name {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--color-cream);
+}
+
+.ct-row--lead .ct-row-name {
+  font-size: 1.3rem;
+}
+
+.ct-row-mail {
+  order: 3;
+  margin-top: 0.15rem;
+  font-size: 0.82rem;
+  color: var(--color-cream-muted);
+  overflow-wrap: anywhere;
+}
+
+/* The region is the scanning column of the directory — fixed width so the
+   names line up down the page. */
+.ct-row-region {
+  flex: none;
+  width: 7.5rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-gold-muted);
+}
+
+.ct-row-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex: none;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--color-cream-muted);
+  transition:
+    color var(--duration-link) var(--ease-editorial),
+    transform var(--duration-link) var(--ease-editorial);
+}
+
+.ct-row:hover .ct-row-cta {
+  color: var(--color-gold);
+}
+
+.ct-row:hover .ct-row-cta svg {
+  transform: translateX(3px);
+}
+
+.ct-row-cta svg {
+  transition: transform var(--duration-link) var(--ease-editorial);
+}
+
+/* ═══ SOCIAL ════════════════════════════════════════════════════════
+   The footer's Connect treatment: the mark is the bullet on a text link,
+   no card and no fill. */
+.ct-social-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.35rem, 2.4vw, 1.75rem);
+  font-weight: 700;
+  color: var(--color-cream);
+}
+
+.ct-social {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem clamp(2rem, 5vw, 3.5rem);
+}
+
+.ct-social a {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.55rem;
+  color: var(--color-cream-muted);
+  text-decoration: none;
+  transition:
+    color var(--duration-link) var(--ease-editorial),
+    transform var(--duration-link) var(--ease-editorial);
+}
+
+.ct-social svg {
+  align-self: center;
+  flex: none;
+  opacity: 0.75;
+  transition: opacity var(--duration-link) var(--ease-editorial);
+}
+
+.ct-social a:hover {
+  color: var(--color-gold);
+  transform: translateX(3px);
+}
+
+.ct-social a:hover svg {
+  opacity: 1;
+}
+
+.ct-social a:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+
+.ct-social-label {
+  font-weight: 500;
+  color: var(--color-cream);
+}
+
+.ct-social-handle {
+  font-size: 0.82rem;
+  color: var(--color-cream-faint);
+}
+
+/* ═══ NARROW ════════════════════════════════════════════════════════
+   The row folds rather than shrinks: the action drops under the details,
+   and the region becomes a label above the name instead of a column. */
+@media (max-width: 640px) {
+  .ct-row {
+    grid-template-columns: auto minmax(0, 1fr);
+    row-gap: 0.75rem;
+  }
+
+  .ct-row-cta {
+    grid-column: 2;
+  }
+
+  .ct-row-region {
+    width: auto;
+    grid-column: 1 / -1;
+  }
+
+  .ct-row--compact {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .ct-row--compact .ct-row-cta {
+    grid-column: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ct-row:hover,
+  .ct-row:focus-visible,
+  .ct-row:hover .ct-row-cta svg,
+  .ct-social a:hover {
+    transform: none;
   }
 }
 </style>

@@ -1095,19 +1095,23 @@ const waRegions = [
   }
 }
 
-/* LAYOUT */
+/* LAYOUT
+   The lounge keeps its own, wider gutter and taller bands — it is a members
+   area, not an editorial page. Both are now floors rather than fixed values,
+   so the desktop figures below 1600px are unchanged to the pixel while a
+   large display opens them along with the rest of the site. */
 .container {
   max-width: var(--content-max-width);
   margin: 0 auto;
-  padding: 0 60px;
+  padding-inline: max(var(--content-gutter), 3.75rem);
 }
 section {
-  padding: 110px 0;
+  padding: max(var(--section-pad), 6.875rem) 0;
 }
 .divider {
   height: 1px;
   background: linear-gradient(to right, transparent, var(--border), transparent);
-  margin: 0 60px;
+  margin-inline: max(var(--content-gutter), 3.75rem);
 }
 .section-label {
   font-size: 10px;

@@ -1,592 +1,153 @@
 <template>
   <div>
-    <!-- HERO -->
-    <section class="page-hero">
-      <div class="page-hero-bg">
-        <img
-          src="https://media.licdn.com/dms/image/v2/D4D12AQGOJzss-fon-Q/article-cover_image-shrink_720_1280/article-cover_image-shrink_720_1280/0/1709102339863?e=2147483647&v=beta&t=6kQv2j3jMNyrmUzZEG4uokdgkDC_tpWg7ZALaCcw0BM"
-          alt="Teams"
-        />
-        <div class="page-hero-overlay"></div>
-      </div>
-      <div class="container page-hero-content">
-        <div class="breadcrumb-nav">
-          <a href="index.html">Home</a><span>/</span><span>Teams</span>
-        </div>
-        <h1>Our <span class="tg">Teams</span></h1>
-        <p>Meet the passionate people who drive Sundarbans House forward</p>
-      </div>
-    </section>
+    <PageHero
+      bg-image="https://media.licdn.com/dms/image/v2/D4D12AQGOJzss-fon-Q/article-cover_image-shrink_720_1280/article-cover_image-shrink_720_1280/0/1709102339863?e=2147483647&v=beta&t=6kQv2j3jMNyrmUzZEG4uokdgkDC_tpWg7ZALaCcw0BM"
+      breadcrumb-title="Teams"
+      title="Our"
+      accent-title="Teams"
+      subtitle="Meet the passionate people who drive Sundarbans House forward"
+    />
 
-    <!-- ══ UPPER HOUSE COUNCIL ══ -->
-    <section class="section rs">
+    <!-- ══ UPPER HOUSE COUNCIL ══════════════════════════════════════
+         Three offices, not three equals: the Secretary holds the centre
+         column and the wider track, with the Deputy Secretary and the Web
+         Admin set symmetrically either side. -->
+    <section class="tm-section tm-section--uhc tone-b rs" aria-labelledby="uhc-heading">
       <div class="container">
-        <div class="sec-hdr">
-          <div class="section-tag">Leadership</div>
-          <h2 class="section-title-xl">Upper House <span class="tg">Council</span></h2>
-        </div>
-        <div class="tm-lead-grid">
-          <!-- ══ DIVYA PRAKASH ══ -->
-          <div class="tm-card" style="--card-delay: 0.1s">
-            <div class="tm-photo-wrap">
-              <img
-                loading="lazy"
-                decoding="async"
-                src="https://res.cloudinary.com/l59gy0g2/image/upload/f_auto,q_auto:good,w_1000,c_limit/v1788444120/sundarbans/teams/Divya_Prakash.jpg"
-                alt="Divya Prakash"
-                @error="
-                  $event.target.style.display = 'none';
-                  $event.target.nextElementSibling.style.display = 'flex';
-                "
-              />
-              <div class="tm-no-photo" style="display: none">DP</div>
-            </div>
-            <div class="tm-info">
-              <div class="tm-role">Secretary</div>
-              <div class="tm-name">Divya Prakash</div>
-              <div class="tm-region">Delhi region · UHC</div>
-              <div class="tm-socials">
-                <a
-                  href="https://in.linkedin.com/in/divya-prakash-5b564b273"
-                  target="_blank"
-                  rel="noopener"
-                  class="tm-soc li"
-                  aria-label="LinkedIn"
-                  title="LinkedIn"
-                  ><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                      d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"
-                    /></svg
-                ></a>
-                <span
-                  class="tm-soc tm-soc-disabled"
-                  aria-hidden="true"
-                  title="Instagram not available"
-                  ><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                      d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z"
-                    /></svg
-                  ><span class="tm-tip">Instagram</span></span
-                >
-              </div>
-            </div>
-          </div>
+        <header class="tm-hdr">
+          <p class="section-tag">Leadership</p>
+          <h2 id="uhc-heading" class="section-title-xl">
+            Upper House <span class="tg">Council</span>
+          </h2>
+        </header>
 
-          <!-- ══ ADITRI BORDOLOI ══ -->
-          <div class="tm-card" style="--card-delay: 0.1s">
-            <div class="tm-photo-wrap">
+        <div class="tm-council">
+          <article
+            v-for="(m, i) in upperHouse"
+            :key="m.id"
+            class="tm-card"
+            :class="{ 'tm-card--lead': m.lead }"
+            :style="{ '--card-delay': i * 0.09 + 's' }"
+          >
+            <div class="tm-photo">
               <img
+                v-if="!failed.has(m.id)"
+                :src="m.photo"
+                :alt="m.name"
                 loading="lazy"
                 decoding="async"
-                src="https://res.cloudinary.com/l59gy0g2/image/upload/f_auto,q_auto:good,w_1000,c_limit/v1788444111/sundarbans/teams/aditri.webp"
-                alt="Aditri Bordoloi"
-                @error="
-                  $event.target.style.display = 'none';
-                  $event.target.nextElementSibling.style.display = 'flex';
-                "
+                @error="onImageError(m.id)"
               />
-              <div class="tm-no-photo" style="display: none">AB</div>
+              <span v-else class="tm-photo-fallback" aria-hidden="true">{{
+                initials(m.name)
+              }}</span>
             </div>
-            <div class="tm-info">
-              <div class="tm-role">Deputy Secretary</div>
-              <div class="tm-name">Aditri Bordoloi</div>
-              <div class="tm-region">Bengaluru region · UHC</div>
-              <div class="tm-socials">
-                <span
-                  class="tm-soc tm-soc-disabled"
-                  aria-hidden="true"
-                  title="LinkedIn not available"
-                  ><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                      d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"
-                    /></svg
-                  ><span class="tm-tip">LinkedIn</span></span
-                >
-                <span
-                  class="tm-soc tm-soc-disabled"
-                  aria-hidden="true"
-                  title="Instagram not available"
-                  ><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                      d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z"
-                    /></svg
-                  ><span class="tm-tip">Instagram</span></span
-                >
-              </div>
-            </div>
-          </div>
 
-          <!-- ══ ANURAJ JIT SAIKIA ══ -->
-          <div class="tm-card" style="--card-delay: 0.1s">
-            <div class="tm-photo-wrap">
-              <img
-                loading="lazy"
-                decoding="async"
-                src="https://res.cloudinary.com/l59gy0g2/image/upload/f_auto,q_auto:good,w_1000,c_limit/v1788455652/sundarbans/teams/anuraj.jpg"
-                alt="Anuraj Jit Saikia"
-                @error="
-                  $event.target.style.display = 'none';
-                  $event.target.nextElementSibling.style.display = 'flex';
-                "
-              />
-              <div class="tm-no-photo" style="display: none">AS</div>
+            <div class="tm-body">
+              <p class="tm-role">{{ m.role }}</p>
+              <h3 class="tm-name">{{ m.name }}</h3>
+              <p class="tm-region">
+                <span class="tm-region-name">{{ m.region }} Region</span>
+                <span class="tm-region-sep" aria-hidden="true">·</span>
+                <span class="tm-council-code">{{ m.council }}</span>
+              </p>
+              <ul class="tm-socials">
+                <li v-if="m.email">
+                  <a :href="`mailto:${m.email}`">
+                    <Mail :size="15" :stroke-width="1.9" aria-hidden="true" />
+                    <span>Email</span>
+                    <span class="sr-only"> {{ m.name }} at {{ m.email }}</span>
+                  </a>
+                </li>
+                <li v-for="s in m.socials" :key="s.label">
+                  <a :href="s.href" target="_blank" rel="noopener noreferrer">
+                    <svg
+                      viewBox="0 0 24 24"
+                      width="15"
+                      height="15"
+                      fill="currentColor"
+                      aria-hidden="true"
+                    >
+                      <path :d="ICONS[s.label]" />
+                    </svg>
+                    <span>{{ s.label }}</span>
+                    <span class="sr-only"> — {{ m.name }}</span>
+                  </a>
+                </li>
+              </ul>
             </div>
-            <div class="tm-info">
-              <div class="tm-role">Web Admin</div>
-              <div class="tm-name">Anuraj Jit Saikia</div>
-              <div class="tm-region">Kolkata region · UHC</div>
-              <div class="tm-socials">
-                <a
-                  href="https://www.linkedin.com/in/anurajjitsaikia/"
-                  target="_blank"
-                  rel="noopener"
-                  class="tm-soc li"
-                  aria-label="LinkedIn"
-                  title="LinkedIn"
-                  ><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                      d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"
-                    /></svg
-                ></a>
-                <a
-                  href="https://x.com/raja_saikia_"
-                  target="_blank"
-                  rel="noopener"
-                  class="tm-soc x"
-                  aria-label="X"
-                  title="X"
-                  ><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                      d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"
-                    /></svg
-                ></a>
-                <span
-                  class="tm-soc tm-soc-disabled"
-                  aria-hidden="true"
-                  title="Instagram not available"
-                  ><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                      d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z"
-                    /></svg
-                  ><span class="tm-tip">Instagram</span></span
-                >
-              </div>
-            </div>
-          </div>
+          </article>
         </div>
       </div>
     </section>
 
-    <!-- ══ LOWER HOUSE COUNCIL ══ -->
-    <section class="section rs" style="background: var(--bg2)">
+    <!-- ══ LOWER HOUSE COUNCIL ══════════════════════════════════════
+         A regional directory: tighter grid, region-led, ordered by region
+         name so the list stays alphabetical as the roster changes. -->
+    <section class="tm-section tm-section--lhc tone-a rs" aria-labelledby="lhc-heading">
       <div class="container">
-        <div class="sec-hdr">
-          <div class="section-tag">Regional</div>
-          <h2 class="section-title-xl">Lower House <span class="tg">Council</span></h2>
-        </div>
-        <div class="tm-lower-grid">
-          <div class="tm-card" style="--card-delay: 0.1s">
-            <div class="tm-photo-wrap">
-              <img
-                loading="lazy"
-                decoding="async"
-                src="https://res.cloudinary.com/l59gy0g2/image/upload/f_auto,q_auto:good,w_1000,c_limit/v1788444129/sundarbans/teams/Prashansha_Uniyal.jpg"
-                alt="Prashansha Uniyal"
-                @error="
-                  $event.target.style.display = 'none';
-                  $event.target.nextElementSibling.style.display = 'flex';
-                "
-              />
-              <div class="tm-no-photo" style="display: none">PU</div>
-            </div>
-            <div class="tm-info">
-              <div class="tm-role">Regional Coordinator</div>
-              <div class="tm-name">Prashansha Uniyal</div>
-              <div class="tm-region">Chandigarh region · LHC</div>
-              <div class="tm-socials">
-                <a
-                  href="http://www.linkedin.com/in/prashansauniyal"
-                  target="_blank"
-                  rel="noopener"
-                  class="tm-soc li"
-                  aria-label="LinkedIn"
-                  title="LinkedIn"
-                  ><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                      d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"
-                    /></svg
-                ></a>
-                <span
-                  class="tm-soc tm-soc-disabled"
-                  aria-hidden="true"
-                  title="Instagram not available"
-                  ><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                      d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z"
-                    /></svg
-                  ><span class="tm-tip">Instagram</span></span
-                >
-              </div>
-            </div>
-          </div>
+        <header class="tm-hdr">
+          <p class="section-tag">Regional</p>
+          <h2 id="lhc-heading" class="section-title-xl">
+            Lower House <span class="tg">Council</span>
+          </h2>
+        </header>
 
-          <div class="tm-card" style="--card-delay: 0.1s">
-            <div class="tm-photo-wrap">
+        <div class="tm-directory">
+          <article
+            v-for="(m, i) in lowerHouseSorted"
+            :key="m.id"
+            class="tm-card tm-card--compact"
+            :style="{ '--card-delay': Math.min(i, 7) * 0.07 + 's' }"
+          >
+            <div class="tm-photo">
               <img
+                v-if="!failed.has(m.id)"
+                :src="m.photo"
+                :alt="m.name"
                 loading="lazy"
                 decoding="async"
-                src="https://res.cloudinary.com/l59gy0g2/image/upload/f_auto,q_auto:good,w_1000,c_limit/v1788444126/sundarbans/teams/Niva_Murabia.jpg"
-                alt="Niva Murabia"
-                @error="
-                  $event.target.style.display = 'none';
-                  $event.target.nextElementSibling.style.display = 'flex';
-                "
+                @error="onImageError(m.id)"
               />
-              <div class="tm-no-photo" style="display: none">NM</div>
+              <span v-else class="tm-photo-fallback" aria-hidden="true">{{
+                initials(m.name)
+              }}</span>
             </div>
-            <div class="tm-info">
-              <div class="tm-role">Regional Coordinator</div>
-              <div class="tm-name">Niva Murabia</div>
-              <div class="tm-region">Mumbai region · LHC</div>
-              <div class="tm-socials">
-                <span
-                  class="tm-soc tm-soc-disabled"
-                  aria-hidden="true"
-                  title="LinkedIn not available"
-                  ><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                      d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"
-                    /></svg
-                  ><span class="tm-tip">LinkedIn</span></span
-                >
-                <a
-                  href="https://www.instagram.com/niva.murabia?igsi=MWY5OGF5aGF5MGowaQ=="
-                  target="_blank"
-                  rel="noopener"
-                  class="tm-soc ig"
-                  aria-label="Instagram"
-                  title="Instagram"
-                  ><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                      d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z"
-                    /></svg
-                ></a>
-              </div>
-            </div>
-          </div>
 
-          <div class="tm-card" style="--card-delay: 0.1s">
-            <div class="tm-photo-wrap">
-              <img
-                loading="lazy"
-                decoding="async"
-                src="https://res.cloudinary.com/l59gy0g2/image/upload/f_auto,q_auto:good,w_1000,c_limit/v1788455655/sundarbans/teams/Dhanashree_kulkarni.jpg"
-                alt="Dhanashree Kulkarni"
-                @error="
-                  $event.target.style.display = 'none';
-                  $event.target.nextElementSibling.style.display = 'flex';
-                "
-              />
-              <div class="tm-no-photo" style="display: none">DK</div>
+            <div class="tm-body">
+              <p class="tm-role">{{ m.role }}</p>
+              <h3 class="tm-name">{{ m.name }}</h3>
+              <p class="tm-region">
+                <span class="tm-region-name">{{ m.region }} Region</span>
+                <span class="tm-region-sep" aria-hidden="true">·</span>
+                <span class="tm-council-code">{{ m.council }}</span>
+              </p>
+              <ul class="tm-socials">
+                <li v-if="m.email">
+                  <a :href="`mailto:${m.email}`">
+                    <Mail :size="15" :stroke-width="1.9" aria-hidden="true" />
+                    <span>Email</span>
+                    <span class="sr-only"> {{ m.name }} at {{ m.email }}</span>
+                  </a>
+                </li>
+                <li v-for="s in m.socials" :key="s.label">
+                  <a :href="s.href" target="_blank" rel="noopener noreferrer">
+                    <svg
+                      viewBox="0 0 24 24"
+                      width="14"
+                      height="14"
+                      fill="currentColor"
+                      aria-hidden="true"
+                    >
+                      <path :d="ICONS[s.label]" />
+                    </svg>
+                    <span>{{ s.label }}</span>
+                    <span class="sr-only"> — {{ m.name }}</span>
+                  </a>
+                </li>
+              </ul>
             </div>
-            <div class="tm-info">
-              <div class="tm-role">Regional Coordinator</div>
-              <div class="tm-name">Dhanashree Kulkarni</div>
-              <div class="tm-region">Mumbai region · LHC</div>
-              <div class="tm-socials">
-                <a
-                  href="https://www.linkedin.com/in/dhanashree-kulkarni-638779392?utm_source=share_via&utm_content=profile&utm_medium=member_android"
-                  target="_blank"
-                  rel="noopener"
-                  class="tm-soc li"
-                  aria-label="LinkedIn"
-                  title="LinkedIn"
-                  ><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                      d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"
-                    /></svg
-                ></a>
-                <span
-                  class="tm-soc tm-soc-disabled"
-                  aria-hidden="true"
-                  title="Instagram not available"
-                  ><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                      d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z"
-                    /></svg
-                  ><span class="tm-tip">Instagram</span></span
-                >
-              </div>
-            </div>
-          </div>
-
-          <div class="tm-card" style="--card-delay: 0.1s">
-            <div class="tm-photo-wrap">
-              <img
-                loading="lazy"
-                decoding="async"
-                src="https://res.cloudinary.com/l59gy0g2/image/upload/f_auto,q_auto:good,w_1000,c_limit/v1788444130/sundarbans/teams/sai_nikhil_vukka.jpg"
-                alt="Sai Nikhil Vukka"
-                @error="
-                  $event.target.style.display = 'none';
-                  $event.target.nextElementSibling.style.display = 'flex';
-                "
-              />
-              <div class="tm-no-photo" style="display: none">SV</div>
-            </div>
-            <div class="tm-info">
-              <div class="tm-role">Regional Coordinator</div>
-              <div class="tm-name">Sai Nikhil Vukka</div>
-              <div class="tm-region">Hyderabad region · LHC</div>
-              <div class="tm-socials">
-                <a
-                  href="https://www.linkedin.com/in/sai-nikhil-vukka-iitm/"
-                  target="_blank"
-                  rel="noopener"
-                  class="tm-soc li"
-                  aria-label="LinkedIn"
-                  title="LinkedIn"
-                  ><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                      d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"
-                    /></svg
-                ></a>
-                <span
-                  class="tm-soc tm-soc-disabled"
-                  aria-hidden="true"
-                  title="Instagram not available"
-                  ><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                      d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z"
-                    /></svg
-                  ><span class="tm-tip">Instagram</span></span
-                >
-              </div>
-            </div>
-          </div>
-
-          <div class="tm-card" style="--card-delay: 0.1s">
-            <div class="tm-photo-wrap">
-              <img
-                loading="lazy"
-                decoding="async"
-                src="https://res.cloudinary.com/l59gy0g2/image/upload/f_auto,q_auto:good,w_1000,c_limit/v1788444118/sundarbans/teams/Dhanya_R..jpg"
-                alt="Dhanya R"
-                @error="
-                  $event.target.style.display = 'none';
-                  $event.target.nextElementSibling.style.display = 'flex';
-                "
-              />
-              <div class="tm-no-photo" style="display: none">DR</div>
-            </div>
-            <div class="tm-info">
-              <div class="tm-role">Regional Coordinator</div>
-              <div class="tm-name">Dhanya R</div>
-              <div class="tm-region">Chennai region · LHC</div>
-              <div class="tm-socials">
-                <span
-                  class="tm-soc tm-soc-disabled"
-                  aria-hidden="true"
-                  title="LinkedIn not available"
-                  ><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                      d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"
-                    /></svg
-                  ><span class="tm-tip">LinkedIn</span></span
-                >
-                <span
-                  class="tm-soc tm-soc-disabled"
-                  aria-hidden="true"
-                  title="Instagram not available"
-                  ><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                      d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z"
-                    /></svg
-                  ><span class="tm-tip">Instagram</span></span
-                >
-              </div>
-            </div>
-          </div>
-
-          <div class="tm-card" style="--card-delay: 0.1s">
-            <div class="tm-photo-wrap">
-              <img
-                loading="lazy"
-                decoding="async"
-                src="https://res.cloudinary.com/l59gy0g2/image/upload/f_auto,q_auto:good,w_1000,c_limit/v1788444109/sundarbans/teams/Abhisekh_Chowdhury.jpg"
-                alt="Abhisekh Chowdhury"
-                @error="
-                  $event.target.style.display = 'none';
-                  $event.target.nextElementSibling.style.display = 'flex';
-                "
-              />
-              <div class="tm-no-photo" style="display: none">AC</div>
-            </div>
-            <div class="tm-info">
-              <div class="tm-role">Regional Coordinator</div>
-              <div class="tm-name">Abhisekh Chowdhury</div>
-              <div class="tm-region">Kolkata region · LHC</div>
-              <div class="tm-socials">
-                <span
-                  class="tm-soc tm-soc-disabled"
-                  aria-hidden="true"
-                  title="LinkedIn not available"
-                  ><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                      d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"
-                    /></svg
-                  ><span class="tm-tip">LinkedIn</span></span
-                >
-                <a
-                  href="https://www.instagram.com/abhisekh._.901?igsi=MXBxc3d3NWFvNGg5bg=="
-                  target="_blank"
-                  rel="noopener"
-                  class="tm-soc ig"
-                  aria-label="Instagram"
-                  title="Instagram"
-                  ><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                      d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z"
-                    /></svg
-                ></a>
-              </div>
-            </div>
-          </div>
-
-          <div class="tm-card" style="--card-delay: 0.1s">
-            <div class="tm-photo-wrap">
-              <img
-                loading="lazy"
-                decoding="async"
-                src="https://res.cloudinary.com/l59gy0g2/image/upload/f_auto,q_auto:good,w_1000,c_limit/v1788444124/sundarbans/teams/Mohammad_Faizan_Khan.jpg"
-                alt="Mohammad Faizan Khan"
-                @error="
-                  $event.target.style.display = 'none';
-                  $event.target.nextElementSibling.style.display = 'flex';
-                "
-              />
-              <div class="tm-no-photo" style="display: none">MF</div>
-            </div>
-            <div class="tm-info">
-              <div class="tm-role">Regional Coordinator</div>
-              <div class="tm-name">Mohammad Faizan Khan</div>
-              <div class="tm-region">Delhi region · LHC</div>
-              <div class="tm-socials">
-                <a
-                  href="https://www.linkedin.com/in/faizan7457/"
-                  target="_blank"
-                  rel="noopener"
-                  class="tm-soc li"
-                  aria-label="LinkedIn"
-                  title="LinkedIn"
-                  ><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                      d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"
-                    /></svg
-                ></a>
-                <span
-                  class="tm-soc tm-soc-disabled"
-                  aria-hidden="true"
-                  title="Instagram not available"
-                  ><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                      d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z"
-                    /></svg
-                  ><span class="tm-tip">Instagram</span></span
-                >
-              </div>
-            </div>
-          </div>
-
-          <div class="tm-card" style="--card-delay: 0.1s">
-            <div class="tm-photo-wrap">
-              <img
-                loading="lazy"
-                decoding="async"
-                src="https://res.cloudinary.com/l59gy0g2/image/upload/f_auto,q_auto:good,w_1000,c_limit/v1788444112/sundarbans/teams/ansh_kumar.jpg"
-                alt="Ansh Kumar"
-                @error="
-                  $event.target.style.display = 'none';
-                  $event.target.nextElementSibling.style.display = 'flex';
-                "
-              />
-              <div class="tm-no-photo" style="display: none">AK</div>
-            </div>
-            <div class="tm-info">
-              <div class="tm-role">Regional Coordinator</div>
-              <div class="tm-name">Ansh Kumar</div>
-              <div class="tm-region">Lucknow region · LHC</div>
-              <div class="tm-socials">
-                <a
-                  href="https://www.linkedin.com/in/ansh-kumar-60113037b/"
-                  target="_blank"
-                  rel="noopener"
-                  class="tm-soc li"
-                  aria-label="LinkedIn"
-                  title="LinkedIn"
-                  ><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                      d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"
-                    /></svg
-                ></a>
-                <span
-                  class="tm-soc tm-soc-disabled"
-                  aria-hidden="true"
-                  title="Instagram not available"
-                  ><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                      d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z"
-                    /></svg
-                  ><span class="tm-tip">Instagram</span></span
-                >
-              </div>
-            </div>
-          </div>
-
-          <div class="tm-card" style="--card-delay: 0.1s">
-            <div class="tm-photo-wrap">
-              <img
-                loading="lazy"
-                decoding="async"
-                src="https://res.cloudinary.com/l59gy0g2/image/upload/f_auto,q_auto:good,w_1000,c_limit/v1788444122/sundarbans/teams/Lavanya.jpg"
-                alt="Lavanya"
-                @error="
-                  $event.target.style.display = 'none';
-                  $event.target.nextElementSibling.style.display = 'flex';
-                "
-              />
-              <div class="tm-no-photo" style="display: none">LA</div>
-            </div>
-            <div class="tm-info">
-              <div class="tm-role">Regional Coordinator</div>
-              <div class="tm-name">Lavanya</div>
-              <div class="tm-region">Patna region · LHC</div>
-              <div class="tm-socials">
-                <a
-                  href="https://www.linkedin.com/in/lavanya-90258b41b/"
-                  target="_blank"
-                  rel="noopener"
-                  class="tm-soc li"
-                  aria-label="LinkedIn"
-                  title="LinkedIn"
-                  ><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                      d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"
-                    /></svg
-                ></a>
-                <span
-                  class="tm-soc tm-soc-disabled"
-                  aria-hidden="true"
-                  title="Instagram not available"
-                  ><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                      d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z"
-                    /></svg
-                  ><span class="tm-tip">Instagram</span></span
-                >
-              </div>
-            </div>
-          </div>
+          </article>
         </div>
       </div>
     </section>
@@ -594,21 +155,49 @@
 </template>
 
 <script setup>
-import { onMounted, onUnmounted } from 'vue';
+import { computed, ref, onMounted, onUnmounted } from 'vue';
+import { Mail } from 'lucide-vue-next';
+import PageHero from '../components/PageHero.vue';
 import { useScrollReveal } from '../composables/useAnimations.js';
+import {
+  upperHouse,
+  lowerHouse,
+  sortByRegion,
+  initials,
+  SOCIAL_ICONS as ICONS,
+} from '../data/council.js';
 
 useScrollReveal();
 
+/* Ordered by region only — never by the coordinator's name — so adding or
+   replacing a coordinator keeps the directory alphabetical for free. */
+const lowerHouseSorted = computed(() => sortByRegion(lowerHouse));
+
+/* ── Portrait fallback ───────────────────────────────────────────────
+   A missing file swaps the <img> for a monogram plate in the card's own
+   tones; the browser's broken-image glyph is never shown. */
+const failed = ref(new Set());
+
+function onImageError(id) {
+  const next = new Set(failed.value);
+  next.add(id);
+  failed.value = next;
+}
+
+/* Cards settle in on first sight, staggered, then the observer lets go. */
 let cardObserver = null;
 
 onMounted(() => {
+  if (typeof IntersectionObserver !== 'function') {
+    document.querySelectorAll('.tm-card').forEach((el) => el.classList.add('tm-in'));
+    return;
+  }
   cardObserver = new IntersectionObserver(
     (entries) =>
       entries.forEach((e) => {
-        if (e.isIntersecting) {
-          e.target.classList.add('tm-in');
-          cardObserver.unobserve(e.target);
-        }
+        if (!e.isIntersecting) return;
+        e.target.classList.add('tm-in');
+        cardObserver.unobserve(e.target);
       }),
     { threshold: 0.07, rootMargin: '0px 0px -40px 0px' }
   );
@@ -619,37 +208,64 @@ onUnmounted(() => cardObserver?.disconnect());
 </script>
 
 <style scoped>
-/* ── SECTION TAG (un-pilled: the bare word, no dash, no pill) ── */
-.section-tag {
-  display: inline-flex;
-  padding: 0;
-  background: none;
-  border: none;
+/* ═══ SECTIONS ══════════════════════════════════════════════════════
+   Two tones and nothing else, alternating: the hero settles into Tone A,
+   the Upper House sits on Tone B, the directory returns to Tone A, and the
+   global footer closes on black. No rules between them — the tone change
+   and the whitespace do the separating. */
+.tm-section {
+  padding: clamp(3.75rem, 6.5vw, 5.75rem) 0;
 }
 
-/* ── MEMBER CARD ─────────────────────────────────────── */
+/* The senior council gets the extra air. */
+.tm-section--uhc {
+  padding-block: clamp(4.5rem, 8vw, 7rem) clamp(4rem, 7vw, 6.25rem);
+}
+
+.tm-section--lhc {
+  padding-block: clamp(4rem, 6.5vw, 5.75rem) clamp(4.5rem, 7vw, 6.5rem);
+}
+
+.tm-hdr {
+  text-align: center;
+  max-width: 46rem;
+  margin: 0 auto clamp(2.5rem, 4.5vw, 3.75rem);
+}
+
+/* The tag is centred here, so its leading rule would hang off-axis. */
+.tm-hdr .section-tag {
+  margin-bottom: 1rem;
+}
+
+.tm-hdr .section-title-xl {
+  margin-bottom: 0;
+}
+
+/* ═══ CARD ══════════════════════════════════════════════════════════ */
 .tm-card {
-  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-card);
+  border: 1px solid var(--border-card);
   border-radius: var(--rad2);
   overflow: hidden;
-  background: var(--surface);
-  border: 1px solid var(--border);
   opacity: 0;
   transition:
-    border-color 220ms cubic-bezier(0.22, 1, 0.36, 1),
-    background-color 220ms cubic-bezier(0.22, 1, 0.36, 1);
+    border-color var(--duration-card) var(--ease-editorial),
+    transform var(--duration-card) var(--ease-editorial),
+    box-shadow var(--duration-card) var(--ease-editorial);
 }
 
 .tm-card.tm-in {
   opacity: 1;
-  animation: tm-reveal 620ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  animation: tm-settle var(--duration-card-enter) var(--ease-reveal) backwards;
   animation-delay: var(--card-delay, 0s);
 }
 
-@keyframes tm-reveal {
+@keyframes tm-settle {
   from {
     opacity: 0;
-    transform: translateY(16px);
+    transform: translateY(18px);
   }
   to {
     opacity: 1;
@@ -657,202 +273,322 @@ onUnmounted(() => cardObserver?.disconnect());
   }
 }
 
-.tm-card:hover {
+.tm-card:hover,
+.tm-card:focus-within {
   border-color: var(--border-card-hover);
-  background: rgba(213, 166, 58, 0.08);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
 }
 
-.tm-photo-wrap {
+/* ── Portrait ──────────────────────────────────────────────────────
+   One ratio for every portrait on the page. The processed files are cut to
+   3:4, so `cover` is a no-op on them and nothing is re-cropped; the
+   object-position only matters for a file that arrives off-ratio, where it
+   keeps the head in frame instead of the chest. */
+.tm-photo {
   position: relative;
-  width: 100%;
-  aspect-ratio: 3/4;
+  aspect-ratio: 3 / 4;
   overflow: hidden;
-  background: var(--color-card);
+  background: var(--color-card-raised);
 }
 
-.tm-photo-wrap img {
+.tm-photo img {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center;
-  transition:
-    transform 520ms cubic-bezier(0.22, 1, 0.36, 1),
-    filter 520ms cubic-bezier(0.22, 1, 0.36, 1);
+  object-position: center 28%;
+  transition: transform var(--duration-card) var(--ease-editorial);
 }
 
-.tm-card:hover .tm-photo-wrap img {
-  filter: saturate(1.08) contrast(1.04);
-  transform: scale(1.035);
+.tm-card:hover .tm-photo img,
+.tm-card:focus-within .tm-photo img {
+  transform: scale(1.03);
+}
+
+.tm-photo-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: rgba(213, 166, 58, 0.28);
+  background: linear-gradient(160deg, rgba(213, 166, 58, 0.05), rgba(213, 166, 58, 0.01));
+}
+
+/* ── Card text ─────────────────────────────────────────────────────
+   Three weights, read top to bottom: an understated gold office label, the
+   name as the loudest thing on the card, then the region. */
+.tm-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 1.15rem 1.25rem 1.3rem;
+  transition: transform var(--duration-card) var(--ease-editorial);
+}
+
+.tm-card:hover .tm-body,
+.tm-card:focus-within .tm-body {
+  transform: translateY(-2px);
+}
+
+.tm-role {
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-gold-muted);
+  margin-bottom: 0.5rem;
 }
 
 .tm-name {
   font-family: var(--font-display);
-  font-weight: 600;
-  font-size: 1.25rem;
-  letter-spacing: -0.02em;
-  color: var(--text);
-  margin-bottom: 0.32rem;
-  line-height: 1.2;
-}
-
-.tm-role {
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--accent);
-  margin-bottom: 0.42rem;
+  font-size: 1.3rem;
+  font-weight: 700;
+  line-height: 1.22;
+  letter-spacing: 0.005em;
+  color: var(--color-cream);
+  margin: 0 0 0.5rem;
 }
 
 .tm-region {
-  font-size: 0.68rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  line-height: 1.4;
+  color: var(--color-cream-muted);
+}
+
+.tm-region-name {
+  font-weight: 500;
+}
+
+.tm-region-sep,
+.tm-council-code {
+  color: var(--color-cream-faint);
+}
+
+.tm-council-code {
+  font-size: 0.7rem;
   font-weight: 600;
-  letter-spacing: 0.11em;
-  text-transform: uppercase;
-  color: var(--text3);
+  letter-spacing: 0.14em;
 }
 
-.tm-info {
-  padding: 1.05rem 1.25rem 1.15rem;
-}
-
+/* ── Social links ──────────────────────────────────────────────────
+   The footer's Connect column, verbatim in spirit: a mark used as the
+   bullet on a text link. No box, no fill, no glow. */
+/* `margin-top: auto` pins the links to the foot of the card, so a name that
+   wraps to a second line does not push one card's links out of line with the
+   rest of its row. */
 .tm-socials {
   display: flex;
-  gap: 0.45rem;
-  margin-top: 0.9rem;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.05rem;
+  margin: auto 0 0;
+  padding: 0.95rem 0 0;
+  list-style: none;
 }
 
-.tm-soc {
+.tm-socials a {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  width: 30px;
-  height: 30px;
-  border-radius: 8px;
-  border: 1px solid var(--border);
-  background: none;
-  color: var(--text3);
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  color: var(--color-cream-muted);
   text-decoration: none;
-  transition: all 0.2s;
+  padding: 0.15rem 0;
+  transition:
+    color var(--duration-link) var(--ease-editorial),
+    transform var(--duration-link) var(--ease-editorial);
 }
 
-.tm-soc:hover {
-  background: rgba(213, 166, 58, 0.1);
-  border-color: var(--border-card);
-  color: var(--accent);
-  transform: translateY(-2px);
+.tm-socials svg {
+  flex-shrink: 0;
+  opacity: 0.7;
+  transition: opacity var(--duration-link) var(--ease-editorial);
 }
 
-.tm-soc.li:hover {
-  background: rgba(10, 102, 194, 0.15);
-  border-color: rgba(10, 102, 194, 0.4);
-  color: #0a66c2;
+.tm-socials a:hover {
+  color: var(--color-gold);
+  transform: translateX(3px);
 }
 
-.tm-soc.ig:hover {
-  background: rgba(220, 39, 67, 0.12);
-  border-color: rgba(220, 39, 67, 0.35);
-  color: #e6683c;
-}
-
-.tm-soc.x:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.3);
-  color: #ffffff;
-}
-
-/* ── GRIDS ─────────────────────────────────────────── */
-.tm-lead-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.5rem;
-}
-
-.tm-lower-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1.25rem;
-}
-
-.tm-lower-grid .tm-name {
-  font-size: 1.05rem;
-}
-
-/* ── DISABLED SOCIAL BUTTONS ───────────────────────── */
-.tm-soc-disabled {
-  opacity: 0.25;
-  cursor: default;
-  position: relative;
-}
-
-.tm-soc-disabled:hover {
-  background: none !important;
-  border-color: var(--border) !important;
-  color: var(--text3) !important;
-  transform: none !important;
-}
-
-.tm-tip {
-  position: absolute;
-  bottom: calc(100% + 5px);
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--color-card-raised);
-  border: 1px solid var(--border-card);
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 0.6rem;
-  white-space: nowrap;
-  padding: 0.15rem 0.4rem;
-  border-radius: 4px;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.15s;
-}
-
-.tm-soc-disabled:hover .tm-tip {
+.tm-socials a:hover svg {
   opacity: 1;
 }
 
-/* ── NO PHOTO FALLBACK ─────────────────────────────── */
-.tm-no-photo {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-display);
-  font-size: 2.5rem;
-  font-weight: 800;
-  color: rgba(213, 166, 58, 0.25);
-  background: linear-gradient(135deg, rgba(213, 166, 58, 0.04), rgba(213, 166, 58, 0.08));
+.tm-socials a:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 3px;
+  border-radius: 3px;
 }
 
-/* ── RESPONSIVE ────────────────────────────────────── */
-@media (max-width: 1024px) {
-  .tm-lower-grid {
-    grid-template-columns: repeat(3, 1fr);
+/* ═══ UPPER HOUSE — CENTRED HIERARCHY ═══════════════════════════════
+   Authored order is Secretary, Deputy Secretary, Web Admin. Below the
+   desktop breakpoint that is exactly the stack we want; at desktop the
+   grid re-seats them so the Secretary holds the centre. */
+.tm-council {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(1.25rem, 2.5vw, 2rem);
+  max-width: 24rem;
+  margin-inline: auto;
+}
+
+.tm-card--lead {
+  border-color: var(--border-gold);
+}
+
+.tm-card--lead .tm-name {
+  font-size: 1.5rem;
+}
+
+.tm-card--lead .tm-role {
+  color: var(--color-gold);
+}
+
+/* Two-up: the Secretary takes the full first row, the other two share the
+   second — the pyramid holds even before there is room for three columns. */
+@media (min-width: 620px) {
+  .tm-council {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: 46rem;
+  }
+
+  .tm-council > :first-child {
+    grid-column: 1 / -1;
+    max-width: 22rem;
+    margin-inline: auto;
   }
 }
 
-@media (max-width: 768px) {
-  .tm-lead-grid {
-    grid-template-columns: repeat(2, 1fr);
+/* Deputy Secretary | Secretary | Web Admin — three equal tracks, one height.
+   The tracks are equal because the portraits are locked to a 3:4 frame: a
+   wider centre column would make a taller photograph, and levelling the row
+   after that could only be done by padding the shorter cards with dead space
+   under their text. The Secretary is marked instead by the gold edge, the gold
+   role label and the larger name, which cost no geometry.
+
+   The row stretches (the grid default), so all three cards take the height of
+   the tallest and their tops and feet line up. Each card is a column flexbox
+   whose body is `flex: 1` and whose links are pinned with `margin-top: auto`,
+   so the extra height lands in the body and the social row still sits on the
+   same line across all three. */
+@media (min-width: 940px) {
+  .tm-council {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(1.5rem, 2.6vw, 2.25rem);
+    max-width: 68rem;
   }
 
-  .tm-lower-grid {
-    grid-template-columns: repeat(2, 1fr);
+  .tm-council > :first-child {
+    grid-area: 1 / 2;
+    max-width: none;
+    margin-inline: 0;
+  }
+
+  .tm-council > :nth-child(2) {
+    grid-area: 1 / 1;
+  }
+
+  .tm-council > :nth-child(3) {
+    grid-area: 1 / 3;
+  }
+
+  .tm-card--lead .tm-name {
+    font-size: 1.6rem;
   }
 }
 
-@media (max-width: 480px) {
-  .tm-lead-grid,
-  .tm-lower-grid {
-    grid-template-columns: 1fr 1fr;
+/* ═══ LOWER HOUSE — REGIONAL DIRECTORY ══════════════════════════════ */
+.tm-directory {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(1rem, 2vw, 1.5rem);
+  max-width: 22rem;
+  margin-inline: auto;
+}
+
+.tm-card--compact .tm-body {
+  padding: 1rem 1.1rem 1.15rem;
+}
+
+.tm-card--compact .tm-name {
+  font-size: 1.18rem;
+}
+
+@media (min-width: 620px) {
+  .tm-directory {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: none;
   }
 }
 
+@media (min-width: 900px) {
+  .tm-directory {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* Four across, expressed as eight half-tracks so a short final row can be
+   centred instead of being left hanging against the left edge. The three
+   rules below catch a trailing row of one, two or three cards and start it
+   at the track that centres it — no hard-coded roster length. */
+@media (min-width: 1200px) {
+  .tm-directory {
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+  }
+
+  .tm-directory > * {
+    grid-column: span 2;
+  }
+
+  .tm-directory > :last-child:nth-child(4n + 1) {
+    grid-column: 4 / span 2;
+  }
+
+  .tm-directory > :nth-last-child(2):nth-child(4n + 1) {
+    grid-column: 3 / span 2;
+  }
+
+  .tm-directory > :nth-last-child(3):nth-child(4n + 1) {
+    grid-column: 2 / span 2;
+  }
+}
+
+/* ═══ REDUCED MOTION ════════════════════════════════════════════════
+   The duration tokens already collapse to 1ms; the entrance keyframe is
+   its own animation, so it is stopped here and the cards simply are where
+   they belong. */
+@media (prefers-reduced-motion: reduce) {
+  .tm-card.tm-in {
+    animation: none;
+  }
+
+  .tm-card:hover,
+  .tm-card:focus-within,
+  .tm-card:hover .tm-body,
+  .tm-card:focus-within .tm-body,
+  .tm-card:hover .tm-photo img,
+  .tm-card:focus-within .tm-photo img,
+  .tm-socials a:hover {
+    transform: none;
+  }
+}
+
+/* ═══ LIGHT THEME ═══════════════════════════════════════════════════ */
 [data-theme='light'] .tm-card {
   background: #fff;
   border-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme='light'] .tm-card--lead {
+  border-color: rgba(169, 124, 34, 0.45);
 }
 </style>

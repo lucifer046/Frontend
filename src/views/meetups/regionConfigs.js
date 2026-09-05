@@ -144,22 +144,31 @@ function splitCollaboration(value) {
 }
 
 function normalizeRecords(records, mapper) {
-  return records
-    .map(mapper)
-    .filter(
-      (record) =>
-        record && (record.about || record.instaUrl || record.attended || record.numberDisplay)
-    )
-    .sort((a, b) => {
-      const aDate = a.sortDate ? a.sortDate.getTime() : -Infinity;
-      const bDate = b.sortDate ? b.sortDate.getTime() : -Infinity;
-      if (aDate !== bDate) return bDate - aDate;
+  return (
+    records
+      .map(mapper)
+      .filter(
+        (record) =>
+          record && (record.about || record.instaUrl || record.attended || record.numberDisplay)
+      )
+      .sort((a, b) => {
+        const aDate = a.sortDate ? a.sortDate.getTime() : -Infinity;
+        const bDate = b.sortDate ? b.sortDate.getTime() : -Infinity;
+        if (aDate !== bDate) return bDate - aDate;
 
-      const aNum = a.sortNo ?? -Infinity;
-      const bNum = b.sortNo ?? -Infinity;
-      return bNum - aNum;
-    })
-    .map(({ sortDate, sortNo, ...record }) => record);
+        const aNum = a.sortNo ?? -Infinity;
+        const bNum = b.sortNo ?? -Infinity;
+        return bNum - aNum;
+      })
+      // The sort keys stay on the record: the region page renders this array as
+      // it stands, but the all-India archive re-sorts nine of them together and
+      // needs the real date, not the formatted display string.
+      .map(({ sortDate, sortNo, ...record }) => ({
+        ...record,
+        sortDate: sortDate ? sortDate.toISOString() : null,
+        sortNo: sortNo ?? null,
+      }))
+  );
 }
 
 /**
@@ -205,6 +214,8 @@ function mergeExpiredUpcoming(upcoming, pastMeetups) {
     attended: upcoming.spots ? null : null, // spots ≠ attendees
     photos: [],
     tags: upcoming.tags || [],
+    sortDate: parsed.toISOString(),
+    sortNo: null,
   };
   return [promoted, ...pastMeetups];
 }

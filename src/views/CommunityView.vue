@@ -184,18 +184,21 @@ const pillars = [
   --cx: #7ba7d9;
   --cx-soft: rgba(123, 167, 217, 0.42);
   --cx-tint: rgba(123, 167, 217, 0.08);
+  --cx-bright: #a3c4e8;
 }
 
 .pillar--cultural {
   --cx: #dda15e;
   --cx-soft: rgba(221, 161, 94, 0.42);
   --cx-tint: rgba(221, 161, 94, 0.09);
+  --cx-bright: #eec089;
 }
 
 .pillar--esports {
   --cx: #c96f6f;
   --cx-soft: rgba(201, 111, 111, 0.42);
   --cx-tint: rgba(201, 111, 111, 0.09);
+  --cx-bright: #dd9494;
 }
 
 .pillar :deep(.section-tag) {
@@ -255,20 +258,31 @@ const pillars = [
 .pillar-tracks li {
   display: flex;
   align-items: flex-start;
-  gap: 0.9rem;
+  /* Tighter than it was: without the 38px plate the icon needs less room
+     beside the text, not the same gap around a smaller mark. */
+  gap: 0.7rem;
 }
 
+/* The mark alone, carrying the community's accent — no plate, no tint. It is
+   set on the first line's optical centre so it reads as a bullet against the
+   track name rather than as a button beside it. */
 .pillar-track-icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   flex: none;
-  width: 38px;
-  height: 38px;
-  border-radius: var(--rad);
-  border: 1px solid var(--cx-soft);
-  background: var(--cx-tint);
+  width: 20px;
+  height: 20px;
+  margin-top: 0.1rem;
   color: var(--cx);
+  transition:
+    color var(--duration-card) var(--ease-editorial),
+    transform var(--duration-card) var(--ease-editorial);
+}
+
+.pillar-tracks li:hover .pillar-track-icon {
+  color: var(--cx-bright, var(--cx));
+  transform: translateX(3px);
 }
 
 .pillar-track-text {

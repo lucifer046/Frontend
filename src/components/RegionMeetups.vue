@@ -1,264 +1,102 @@
 <template>
-  <div class="region-meetups">
-    <!-- HERO -->
-    <section class="hero">
-      <div class="container">
-        <div class="hero-pill">
-          <span class="hero-pill-dot"></span>
+  <div class="rm">
+    <!-- ══ HERO ══════════════════════════════════════════════════════
+         The chapter's identity page: its own city behind the name, the
+         chapter line above it, and the chapter's own numbers underneath. -->
+    <section class="rm-hero">
+      <div v-if="cityImage" class="rm-hero-bg" aria-hidden="true">
+        <img :src="cityImage" alt="" loading="eager" decoding="async" />
+        <span class="rm-hero-scrim"></span>
+      </div>
+
+      <div class="container rm-hero-inner">
+        <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+          <router-link to="/">Home</router-link><span aria-hidden="true">/</span>
+          <router-link to="/meetups">Meetups</router-link><span aria-hidden="true">/</span>
+          <span>{{ config.heroTitle }}</span>
+        </nav>
+
+        <p class="rm-chapter">
+          <span class="rm-chapter-dot" aria-hidden="true"></span>
           IIT Madras BS · {{ config.chapterLabel }}
-        </div>
-        <h1 class="hero-title">{{ config.heroTitle }}<br /><span class="accent">Meetups</span></h1>
-        <p class="hero-desc">{{ config.heroDesc }}</p>
+        </p>
 
-        <!-- GLOBAL STATS (From Meetups Hub) -->
-        <div class="hero-stats">
-          <div class="hstat">
-            <span class="hstat-num">7</span>
-            <span class="hstat-lbl">Cities</span>
+        <h1 class="rm-title">{{ config.heroTitle }}<br /><span class="tg">Meetups</span></h1>
+
+        <p class="rm-desc">{{ config.heroDesc }}</p>
+
+        <!-- An editorial strip: figure, label, hairline. Not a bordered panel. -->
+        <dl class="rm-stats">
+          <div v-for="stat in stats" :key="stat.label" class="rm-stat">
+            <dt class="rm-stat-label">{{ stat.label }}</dt>
+            <dd class="rm-stat-value">
+              {{ stat.value }}<span v-if="stat.plus" class="rm-stat-plus">+</span>
+            </dd>
           </div>
-          <div class="hstat-div"></div>
-          <div class="hstat">
-            <span class="hstat-num">2410<span class="hstat-plus">+</span></span>
-            <span class="hstat-lbl">Members</span>
-          </div>
-          <div class="hstat-div"></div>
-          <div class="hstat">
-            <span class="hstat-num">48<span class="hstat-plus">+</span></span>
-            <span class="hstat-lbl">Meetups Held</span>
-          </div>
-        </div>
+        </dl>
       </div>
     </section>
 
-    <!-- STATS -->
-    <section class="section" style="padding-top: 0">
-      <div class="container">
-        <div class="stats-row reveal" ref="statsRow">
-          <div class="stat-cell">
-            <span class="stat-num">{{ animStats.total }}</span>
-            <span class="stat-lbl">Total Meetups Hosted</span>
-          </div>
-          <div class="stat-cell">
-            <span class="stat-num">{{ animStats.cities }}</span>
-            <span class="stat-lbl">Cities &amp; Locations</span>
-          </div>
-          <div class="stat-cell">
-            <span class="stat-num"
-              >{{ animStats.members
-              }}<span style="font-size: 0.55em; font-weight: 700">+</span></span
-            >
-            <span class="stat-lbl">Members Connected</span>
-          </div>
-        </div>
+    <!-- ══ UPCOMING ══════════════════════════════════════════════════ -->
+    <section class="rm-section tone-b" id="upcoming" aria-labelledby="rm-upcoming-heading">
+      <div class="container container--measure">
+        <header class="rm-hdr">
+          <p class="section-tag">Next event</p>
+          <h2 id="rm-upcoming-heading" class="section-title-xl">
+            Upcoming <span class="tg">Meetup</span>
+          </h2>
+        </header>
+
+        <FeaturedMeetup
+          :meetup="config.upcoming"
+          :empty-message="`The ${config.heroTitle} chapter is planning its next one — join the community to hear about it first.`"
+        />
       </div>
     </section>
 
-    <!-- UPCOMING -->
-    <section class="section" id="upcoming">
-      <div class="container">
-        <span class="sec-eyebrow reveal">Next Event</span>
-        <h2 class="sec-title reveal rd1">Upcoming Meetup</h2>
-        <div class="sec-rule reveal rd2"></div>
+    <!-- ══ ARCHIVE ═══════════════════════════════════════════════════ -->
+    <section class="rm-section tone-a" aria-labelledby="rm-archive-heading">
+      <div class="container container--measure">
+        <header class="rm-hdr">
+          <p class="section-tag">Archive</p>
+          <h2 id="rm-archive-heading" class="section-title-xl">
+            Past <span class="tg">Meetups</span>
+          </h2>
+        </header>
 
-        <!-- NO UPCOMING STATE -->
-        <div v-if="!config.upcoming" class="no-upcoming reveal">
-          <div class="no-upcoming-icon"><Calendar :size="32" :stroke-width="1.6" /></div>
-          <h3>No upcoming meetup scheduled</h3>
-          <p>
-            Check back soon — we're planning the next one. Join our community to get notified first.
+        <MeetupArchive
+          :meetups="config.pastMeetups"
+          :empty-message="`No ${config.heroTitle} meetups are on record yet — this chapter is just getting started.`"
+        />
+      </div>
+    </section>
+
+    <!-- ══ CTA ═══════════════════════════════════════════════════════ -->
+    <section class="rm-section rm-section--cta tone-b" aria-labelledby="rm-cta-heading">
+      <div class="container">
+        <div class="rm-cta">
+          <p class="section-tag">Get involved</p>
+          <h2 id="rm-cta-heading" class="rm-cta-title">
+            Bring the community to your corner of {{ config.heroTitle }}
+          </h2>
+          <p class="rm-cta-copy">
+            Suggest a venue, pitch an activity, or volunteer to host the next one — chapters grow
+            because members put their hand up.
           </p>
-          <router-link
-            to="/community"
-            class="btn-primary"
-            style="margin-top: 20px; display: inline-flex"
-          >
-            Join Community
-          </router-link>
-        </div>
-
-        <!-- UPCOMING CARD -->
-        <div v-else class="upcoming-card reveal">
-          <div class="upcoming-inner">
-            <div class="upcoming-info">
-              <div class="upcoming-badge">
-                <span class="upcoming-badge-dot"></span>
-                Upcoming
-              </div>
-              <h3 class="event-name">{{ config.upcoming.name }}</h3>
-              <div class="event-chips">
-                <div class="chip">
-                  <Calendar :size="13" :stroke-width="2" /> {{ config.upcoming.date }}
-                </div>
-                <div class="chip">
-                  <Clock :size="13" :stroke-width="2" /> {{ config.upcoming.time }}
-                </div>
-                <div class="chip"><Ticket :size="13" :stroke-width="2" /> Free Entry</div>
-              </div>
-              <div class="info-block">
-                <span class="info-lbl">About this Meetup</span>
-                <p>{{ config.upcoming.about }}</p>
-              </div>
-              <div class="info-block">
-                <span class="info-lbl">Venue &amp; Address</span>
-                <div class="address-box">
-                  <div class="address-pin"><MapPin :size="16" :stroke-width="1.8" /></div>
-                  <div class="address-lines">
-                    <strong>{{ config.upcoming.venue }}</strong>
-                    <span>{{ config.upcoming.address1 }}</span>
-                    <span>{{ config.upcoming.address2 }}</span>
-                    <a :href="config.upcoming.mapsUrl" target="_blank" class="address-map"
-                      >Open in Google Maps →</a
-                    >
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="upcoming-register">
-              <div class="spots-display">
-                <span class="spots-big">{{ config.upcoming.spots }}</span>
-                <span class="spots-sub">Spots Remaining</span>
-              </div>
-              <div class="reg-rule"></div>
-              <p class="reg-desc">
-                Free &amp; open to all IITM BS students and Sundarbans members. No prior
-                registration required but helps us plan better!
-              </p>
-              <a href="#" class="register-cta">
-                Register Now
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <path d="M5 12h14M12 5l7 7-7 7" />
-                </svg>
-              </a>
-              <p class="reg-closing">Registration closes 2 days before · No fee required</p>
-              <div class="reg-rule"></div>
-              <div class="reg-tags">
-                <span v-for="tag in config.upcoming.tags" :key="tag" class="rtag">{{ tag }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- PAST MEETUPS -->
-    <section class="section" style="padding-top: 20px">
-      <div class="container">
-        <span class="sec-eyebrow reveal">Archive</span>
-        <h2 class="sec-title reveal rd1">Past Meetups</h2>
-        <div class="sec-rule reveal rd2"></div>
-
-        <div
-          v-if="!config.pastMeetups || config.pastMeetups.length === 0"
-          class="no-upcoming reveal"
-          style="margin-top: 40px"
-        >
-          <div class="no-upcoming-icon"><Archive :size="32" :stroke-width="1.6" /></div>
-          <h3>No past meetups yet</h3>
-          <p>This chapter is just getting started. The first meetup will be the one to remember.</p>
-        </div>
-
-        <div v-else class="timeline">
-          <div v-for="meetup in config.pastMeetups" :key="meetup.id" class="tl-item">
-            <div class="tl-dot"></div>
-            <div class="past-card">
-              <div class="past-card-head">
-                <div class="past-card-top">
-                  <span class="tl-badge">{{ meetup.badge }}</span>
-                  <a
-                    v-if="meetup.instaUrl"
-                    :href="meetup.instaUrl"
-                    target="_blank"
-                    class="past-insta"
-                  >
-                    <svg
-                      width="13"
-                      height="13"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                    >
-                      <rect x="2" y="2" width="20" height="20" rx="5" />
-                      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-                      <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
-                    </svg>
-                    View Post
-                  </a>
-                </div>
-                <h3 class="tl-title">{{ meetup.title }}</h3>
-                <div class="past-meta-row">
-                  <div v-if="meetup.date" class="past-chip">
-                    <Calendar :size="12" :stroke-width="2" /> {{ meetup.date }}
-                  </div>
-                  <div v-if="meetup.location" class="past-chip">
-                    <MapPin :size="12" :stroke-width="2" /> {{ meetup.location }}
-                  </div>
-                  <div v-if="meetup.duration" class="past-chip">
-                    <Timer :size="12" :stroke-width="2" /> {{ meetup.duration }}
-                  </div>
-                  <div v-if="meetup.meetupNumber" class="past-chip">
-                    <Hash :size="12" :stroke-width="2" /> {{ meetup.meetupNumber }}
-                  </div>
-                  <span v-if="meetup.special" class="past-chip green">
-                    <Trophy :size="12" :stroke-width="2" /> {{ meetup.special }}
-                  </span>
-                </div>
-              </div>
-              <div class="past-about">
-                <span class="past-about-label">About this Meetup</span>
-                <p>{{ meetup.about }}</p>
-              </div>
-              <div class="past-stats">
-                <div v-if="meetup.attended" class="past-stat">
-                  <span class="past-stat-num">{{ meetup.attended }}</span>
-                  <span class="past-stat-lbl">Attended</span>
-                </div>
-                <div v-if="meetup.organizer" class="past-stat">
-                  <span class="past-stat-num"><User :size="16" :stroke-width="1.8" /></span>
-                  <span class="past-stat-lbl">{{ meetup.organizer }}</span>
-                </div>
-                <div v-else-if="meetup.numberDisplay" class="past-stat">
-                  <span class="past-stat-num">{{ meetup.numberDisplay }}</span>
-                  <span class="past-stat-lbl">Meetup No.</span>
-                </div>
-                <div class="past-stat">
-                  <span class="past-stat-num"><Star :size="16" :stroke-width="1.8" /></span>
-                  <span class="past-stat-lbl">Community Event</span>
-                </div>
-              </div>
-              <div class="past-photos" v-if="meetup.photos && meetup.photos.length > 0">
-                <div v-for="(photo, index) in meetup.photos" :key="index" class="ph">
-                  <img
-                    :src="photo"
-                    :alt="`Photo from ${meetup.title || 'meetup'}`"
-                    loading="lazy"
-                    referrerpolicy="no-referrer"
-                  />
-                  <div class="ph-ov"></div>
-                </div>
-              </div>
-              <div class="past-card-footer">
-                <div class="past-footer-tags">
-                  <span v-for="tag in meetup.tags" :key="tag" class="past-ftag">{{ tag }}</span>
-                </div>
-                <a
-                  v-if="meetup.instaUrl"
-                  :href="meetup.instaUrl"
-                  target="_blank"
-                  class="past-view-more"
-                  >View on Instagram →</a
-                >
-              </div>
-            </div>
+          <div class="rm-cta-actions">
+            <a
+              href="https://forms.gle/iHeYQsAbsUTBHJJC6"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="btn btn--primary"
+            >
+              Suggest a location or volunteer
+              <ArrowRight :size="16" :stroke-width="2.2" aria-hidden="true" />
+            </a>
+            <router-link to="/meetups" class="btn btn--outline">
+              All city chapters
+              <ArrowRight :size="16" :stroke-width="2.2" aria-hidden="true" />
+            </router-link>
           </div>
         </div>
       </div>
@@ -266,977 +104,237 @@
   </div>
 </template>
 
-<script>
-import {
-  Calendar,
-  Clock,
-  Ticket,
-  MapPin,
-  Archive,
-  Trophy,
-  User,
-  Star,
-  Timer,
-  Hash,
-} from 'lucide-vue-next';
+<script setup>
+import { computed } from 'vue';
+import { ArrowRight } from 'lucide-vue-next';
+import FeaturedMeetup from './meetups/FeaturedMeetup.vue';
+import MeetupArchive from './meetups/MeetupArchive.vue';
+import { regionBySlug } from '../data/regions.js';
 
-const logoSrc =
-  'https://res.cloudinary.com/l59gy0g2/image/upload/f_auto,q_auto:good,w_1000,c_limit/v1785911356/sundarbans/src/assets/LOGO.jpg';
-const houseSrc =
-  'https://res.cloudinary.com/l59gy0g2/image/upload/f_auto,q_auto:good,w_1000,c_limit/v1785911370/sundarbans/src/assets/Sundarbans-House_Vue.jpg';
+const props = defineProps({
+  /**
+   * One region's entry from `regionConfigs` — chapterLabel, heroTitle,
+   * heroDesc, stats {total, cities, members}, upcoming, pastMeetups[].
+   */
+  config: { type: Object, required: true },
+  /** URL slug, used to find the chapter's own city photograph. */
+  slug: { type: String, default: '' },
+});
 
-export default {
-  name: 'RegionMeetups',
+/** The same city asset the /meetups grid uses — no new artwork per region. */
+const cityImage = computed(() => regionBySlug(props.slug)?.image ?? null);
 
-  components: { Calendar, Clock, Ticket, MapPin, Archive, Trophy, User, Star, Timer, Hash },
-
-  props: {
-    // Each region page passes its own config object
-    config: {
-      type: Object,
-      required: true,
-      /*
-        config shape:
-        {
-          chapterLabel: 'Delhi NCR Chapter',
-          heroTitle:    'Delhi',
-          heroDesc:     '...',
-          stats: { total: 9, cities: 3, members: 200 },
-          upcoming: null | {
-            name, date, time, about, venue, address1, address2, mapsUrl, spots, tags[]
-          },
-          pastMeetups: [
-            { id, badge, instaUrl, title, date, location, duration, special, about, attended, photos, tags[] }
-          ]
-        }
-      */
-    },
-  },
-
-  data() {
-    return {
-      logoSrc,
-      houseSrc,
-      logoError: false,
-      statsAnimated: false,
-      animStats: { total: 0, cities: 0, members: 0 },
-    };
-  },
-
-  mounted() {
-    this.$nextTick(() => {
-      this.initReveal();
-      this.initStatsObserver();
-    });
-  },
-
-  beforeUnmount() {},
-
-  methods: {
-    initReveal() {
-      const obs = new IntersectionObserver(
-        (es) =>
-          es.forEach((e) => {
-            if (e.isIntersecting) e.target.classList.add('visible');
-          }),
-        { threshold: 0.08, rootMargin: '0px 0px -30px 0px' }
-      );
-      this.$el.querySelectorAll('.reveal, .tl-item').forEach((el) => obs.observe(el));
-    },
-
-    initStatsObserver() {
-      const sr = this.$refs.statsRow;
-      if (!sr) return;
-      const obs = new IntersectionObserver(
-        (es) => {
-          es.forEach((e) => {
-            if (e.isIntersecting && !this.statsAnimated) {
-              this.statsAnimated = true;
-              const s = this.config.stats || {};
-              this.countUp('total', s.total || 0);
-              this.countUp('cities', s.cities || 0);
-              this.countUp('members', s.members || 0);
-              obs.disconnect();
-            }
-          });
-        },
-        { threshold: 0.4 }
-      );
-      obs.observe(sr);
-    },
-
-    countUp(key, target, dur = 1100) {
-      let start = 0;
-      const step = (ts) => {
-        if (!start) start = ts;
-        const p = Math.min((ts - start) / dur, 1);
-        this.animStats[key] = Math.floor((1 - Math.pow(1 - p, 3)) * target);
-        if (p < 1) requestAnimationFrame(step);
-      };
-      requestAnimationFrame(step);
-    },
-  },
-};
+/**
+ * The chapter's own figures, derived in `regionConfigs` from its export. The
+ * hero used to print the national totals here, which read as this chapter's
+ * numbers on every one of the nine pages.
+ */
+const stats = computed(() => {
+  const { total = 0, cities = 0, members = 0 } = props.config.stats ?? {};
+  return [
+    { label: 'Meetups held', value: total, plus: false },
+    { label: 'Venues & locations', value: cities, plus: false },
+    { label: 'Members connected', value: members, plus: members > 0 },
+  ];
+});
 </script>
 
 <style scoped>
-/* This page predates the global palette and used to carry its own copy of it.
-   The local names stay (hundreds of rules below read them) but every value now
-   comes from the global tokens, so the region pages cannot drift again. */
-.region-meetups {
-  --border2: var(--border-card);
-  --gold-l: var(--color-gold-light);
-  --gold-d: var(--color-gold-muted);
-  --gold-dim: rgba(213, 166, 58, 0.12);
-  --white: var(--color-cream);
-  --white-dim: rgba(245, 237, 208, 0.55);
-  --white-faint: rgba(245, 237, 208, 0.08);
-
-  font-family: var(--font-body);
-  background: var(--bg);
-  color: var(--white);
-  overflow-x: hidden;
-  min-height: 100vh;
-}
-
-/* HERO */
-.hero {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 100px 0 80px;
+/* ═══ HERO ══════════════════════════════════════════════════════════
+   Compact by design — the chapter's archive is what the visitor came for,
+   so the hero states who this is and gets out of the way. */
+.rm-hero {
   position: relative;
-  z-index: 2;
-}
-/* Same grid as every other page — the region pages used to run 120px
-   narrower than the rest of the site. */
-.container {
-  max-width: var(--content-max-width);
-  margin: 0 auto;
-  width: 100%;
-  padding-inline: var(--content-gutter);
-}
-.hero-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: rgba(213, 166, 58, 0.1);
-  border: 1px solid var(--border-card);
-  padding: 7px 16px;
-  border-radius: 100px;
-  width: fit-content;
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--gold-l);
-  margin-bottom: 28px;
-  opacity: 0;
-  animation: fadeUp 0.7s ease 0.2s forwards;
-}
-.hero-pill-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--gold);
-  animation: pulse-dot 1.8s ease-in-out infinite;
-}
-.hero-title {
-  font-family: var(--font-display);
-  font-size: clamp(50px, 8.5vw, 112px);
-  font-weight: 900;
-  line-height: 0.95;
-  color: var(--white);
-  opacity: 0;
-  animation: fadeUp 0.9s ease 0.4s forwards;
-}
-.hero-title .accent {
-  background: linear-gradient(135deg, var(--gold-l), var(--gold), var(--gold-d));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-.hero-desc {
-  margin-top: 28px;
-  max-width: 520px;
-  font-size: 16px;
-  font-weight: 300;
-  line-height: 1.75;
-  color: var(--white-dim);
-  opacity: 0;
-  animation: fadeUp 0.7s ease 0.7s forwards;
-}
-
-.hero-stats {
-  margin-top: 40px;
-  display: flex;
-  align-items: center;
-  gap: 32px;
-  opacity: 0;
-  animation: fadeUp 0.7s ease 0.8s forwards;
-}
-.hstat {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-.hstat-num {
-  font-family: var(--font-display);
-  font-size: 36px;
-  font-weight: 700;
-  color: var(--gold-l);
-  line-height: 1;
-  letter-spacing: -0.02em;
-}
-.hstat-plus {
-  font-size: 0.6em;
-}
-.hstat-lbl {
-  font-size: 11px;
-  font-weight: 400;
-  color: var(--white-dim);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-.hstat-div {
-  width: 1px;
-  height: 40px;
-  background: var(--border2);
-}
-
-.hero-actions {
-  margin-top: 40px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  flex-wrap: wrap;
-  opacity: 0;
-  animation: fadeUp 0.7s ease 0.9s forwards;
-}
-.btn-primary {
-  background: var(--gold);
-  color: #000;
-  font-size: 14px;
-  font-weight: 700;
-  padding: 13px 28px;
-  border-radius: 10px;
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition:
-    background 0.25s,
-    transform 0.2s,
-    box-shadow 0.3s;
-  box-shadow: var(--shadow-md);
-  letter-spacing: 0.04em;
-}
-.btn-primary:hover {
-  background: var(--gold-l);
-  transform: translateY(-2px);
-}
-.btn-ghost {
-  background: transparent;
-  color: var(--white-dim);
-  font-size: 14px;
-  padding: 13px 24px;
-  border-radius: 10px;
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  border: 1px solid var(--border2);
-  transition:
-    color 0.25s,
-    border-color 0.25s;
-}
-.btn-ghost:hover {
-  color: var(--gold-l);
-  border-color: var(--border-gold);
-}
-
-/* STATS */
-.stats-row {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1px;
-  background: var(--border);
-  border: 1px solid var(--border);
-  border-radius: var(--rad2);
   overflow: hidden;
-}
-.stat-cell {
-  background: var(--surface);
-  padding: 36px 32px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  transition: background 0.3s;
-}
-.stat-cell:hover {
-  background: var(--surface2);
-}
-.stat-num {
-  font-family: var(--font-display);
-  font-size: 48px;
-  font-weight: 700;
-  color: var(--gold-l);
-  line-height: 1;
-  letter-spacing: -0.02em;
-}
-.stat-lbl {
-  font-size: 12px;
-  color: var(--white-dim);
-  letter-spacing: 0.05em;
+  padding: clamp(6.5rem, 12vw, 9rem) 0 clamp(3rem, 6vw, 4.5rem);
+  background: var(--color-bg-black);
 }
 
-/* SECTION */
-.section {
-  padding: 80px 0;
-  position: relative;
-  z-index: 2;
-}
-.sec-eyebrow {
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--gold);
-  display: block;
-  margin-bottom: 12px;
-}
-.sec-title {
-  font-family: var(--font-display);
-  font-size: clamp(28px, 4vw, 48px);
-  font-weight: 700;
-  line-height: 1.1;
-}
-.sec-rule {
-  width: 40px;
-  height: 2px;
-  background: var(--gold);
-  border-radius: 2px;
-  margin: 20px 0 0;
-}
-
-/* NO UPCOMING */
-.no-upcoming {
-  margin-top: 48px;
-  text-align: center;
-  padding: 64px 32px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--rad2);
-}
-.no-upcoming-icon {
-  display: flex;
-  justify-content: center;
-  color: var(--gold);
-  margin-bottom: 16px;
-}
-.no-upcoming h3 {
-  font-family: var(--font-display);
-  font-size: 22px;
-  font-weight: 700;
-  margin-bottom: 10px;
-}
-.no-upcoming p {
-  font-size: 14px;
-  font-weight: 300;
-  color: var(--white-dim);
-  line-height: 1.75;
-  max-width: 400px;
-  margin: 0 auto;
-}
-
-/* UPCOMING CARD */
-.upcoming-card {
-  margin-top: 48px;
-  border-radius: var(--rad2);
-  background: var(--surface);
-  border: 1px solid var(--border-subtle);
-  overflow: hidden;
-  position: relative;
-}
-.upcoming-card::before {
-  content: '';
+.rm-hero-bg {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, var(--gold), var(--gold-l), transparent);
-}
-.upcoming-inner {
-  display: grid;
-  grid-template-columns: 1fr 320px;
-}
-.upcoming-info {
-  padding: 48px;
-  border-right: 1px solid var(--border);
-}
-.upcoming-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  background: rgba(213, 166, 58, 0.1);
-  border: 1px solid var(--border-card);
-  color: var(--gold-l);
-  padding: 5px 14px;
-  border-radius: 100px;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  margin-bottom: 24px;
-}
-.upcoming-badge-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--gold);
-  animation: pulse-dot 1.5s ease-in-out infinite;
-}
-.event-name {
-  font-family: var(--font-display);
-  font-size: clamp(26px, 3.2vw, 42px);
-  font-weight: 700;
-  line-height: 1.1;
-  margin-bottom: 24px;
-}
-.event-chips {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin-bottom: 36px;
-}
-.chip {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  background: var(--surface2);
-  border: 1px solid var(--border2);
-  padding: 8px 16px;
-  border-radius: 8px;
-  font-size: 13px;
-  color: var(--white-dim);
-}
-.info-block {
-  margin-bottom: 32px;
-}
-.info-lbl {
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--gold);
-  margin-bottom: 10px;
-  display: block;
-}
-.info-block p {
-  font-size: 14.5px;
-  font-weight: 300;
-  line-height: 1.8;
-  color: var(--white-dim);
-}
-.address-box {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 20px;
-  display: flex;
-  gap: 14px;
-}
-.address-pin {
-  width: 36px;
-  height: 36px;
-  flex-shrink: 0;
-  border-radius: 8px;
-  background: var(--gold-dim);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--gold);
-}
-.address-lines {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-.address-lines strong {
-  font-size: 13.5px;
-  font-weight: 600;
-  color: var(--white);
-}
-.address-lines span {
-  font-size: 12px;
-  font-weight: 300;
-  color: var(--white-dim);
-  line-height: 1.6;
-}
-.address-map {
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--gold);
-  text-decoration: none;
-  margin-top: 8px;
-  display: inline-flex;
-}
-.upcoming-register {
-  padding: 48px 36px;
-  display: flex;
-  flex-direction: column;
-}
-.spots-display {
-  text-align: center;
-  margin-bottom: 20px;
-}
-.spots-big {
-  font-family: var(--font-display);
-  font-size: 72px;
-  font-weight: 700;
-  color: var(--gold-l);
-  letter-spacing: -0.03em;
-  display: block;
-}
-.spots-sub {
-  font-size: 11px;
-  color: var(--white-dim);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  margin-top: 4px;
-  display: block;
-}
-.reg-rule {
-  height: 1px;
-  background: var(--border);
-  margin: 20px 0;
-}
-.reg-desc {
-  font-size: 13px;
-  font-weight: 300;
-  color: var(--white-dim);
-  line-height: 1.7;
-  text-align: center;
-  margin-bottom: 24px;
-}
-.register-cta {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  background: var(--gold);
-  color: #000;
-  width: 100%;
-  padding: 15px;
-  border-radius: 10px;
-  font-size: 14px;
-  font-weight: 700;
-  text-decoration: none;
-  transition:
-    background 0.25s,
-    transform 0.2s;
-  overflow: hidden;
-  position: relative;
-}
-.register-cta:hover {
-  background: var(--gold-l);
-  transform: translateY(-2px);
-}
-.reg-closing {
-  font-size: 11px;
-  color: rgba(245, 237, 208, 0.25);
-  text-align: center;
-  margin-top: 12px;
-  letter-spacing: 0.05em;
-}
-.reg-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 4px;
-}
-.rtag {
-  font-size: 11px;
-  padding: 5px 12px;
-  border-radius: 6px;
-  background: var(--white-faint);
-  color: var(--white-dim);
-  border: 1px solid var(--border);
+  inset: 0;
 }
 
-/* TIMELINE */
-.timeline {
-  position: relative;
-  margin-top: 48px;
-  padding-left: 32px;
-}
-.timeline::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 8px;
-  bottom: 0;
-  width: 1px;
-  background: linear-gradient(to bottom, var(--gold), transparent);
-  opacity: 0.2;
-}
-.tl-item {
-  position: relative;
-  margin-bottom: 40px;
-  opacity: 0;
-  transform: translateY(24px);
-  transition:
-    opacity 0.65s ease,
-    transform 0.65s ease;
-}
-.tl-item.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-.tl-dot {
-  position: absolute;
-  left: -38px;
-  top: 22px;
-  width: 13px;
-  height: 13px;
-  border-radius: 50%;
-  border: 2px solid var(--gold);
-  background: var(--bg);
-  transition: background 0.3s;
-}
-.tl-item:hover .tl-dot {
-  background: var(--gold);
-}
-
-/* PAST CARD */
-.past-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--rad2);
-  overflow: hidden;
-  transition:
-    border-color 0.3s,
-    box-shadow 0.35s;
-}
-.past-card:hover {
-  border-color: var(--border-card);
-  box-shadow: 0 16px 56px rgba(0, 0, 0, 0.5);
-}
-.past-card-head {
-  padding: 28px 32px 0;
-}
-.past-card-top {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 16px;
-  flex-wrap: wrap;
-  margin-bottom: 16px;
-}
-.tl-badge {
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--gold);
-  background: var(--gold-dim);
-  border: 1px solid var(--border-card);
-  padding: 4px 12px;
-  border-radius: 100px;
-}
-.past-insta {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 11px;
-  color: var(--white-dim);
-  background: rgba(245, 237, 208, 0.06);
-  border: 1px solid var(--border2);
-  padding: 5px 13px;
-  border-radius: 100px;
-  text-decoration: none;
-  transition: color 0.2s;
-}
-.past-insta:hover {
-  color: var(--gold-l);
-}
-.tl-title {
-  font-family: var(--font-display);
-  font-size: 22px;
-  font-weight: 700;
-  margin-bottom: 10px;
-  line-height: 1.15;
-}
-.past-meta-row {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin-bottom: 18px;
-}
-.past-chip {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  padding: 6px 14px;
-  border-radius: 7px;
-  font-size: 12px;
-  color: var(--white-dim);
-}
-.past-chip.green {
-  border-color: var(--border-card);
-  color: var(--gold-l);
-  background: rgba(213, 166, 58, 0.06);
-}
-.past-about {
-  padding: 0 32px 18px;
-}
-.past-about-label {
-  font-size: 9px;
-  font-weight: 500;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--gold);
-  display: block;
-  margin-bottom: 8px;
-}
-.past-about p {
-  font-size: 13.5px;
-  font-weight: 300;
-  line-height: 1.75;
-  color: var(--white-dim);
-}
-.past-stats {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1px;
-  background: var(--border);
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-}
-.past-stat {
-  background: var(--surface);
-  padding: 18px 20px;
-  text-align: center;
-}
-.past-stat-num {
-  font-family: var(--font-display);
-  font-size: 26px;
-  font-weight: 700;
-  color: var(--gold-l);
-  line-height: 1;
-  display: block;
-}
-.past-stat-lbl {
-  font-size: 10px;
-  color: var(--white-dim);
-  letter-spacing: 0.08em;
-  margin-top: 3px;
-  display: block;
-}
-.past-photos {
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr;
-  grid-template-rows: 170px 170px;
-  gap: 3px;
-}
-.past-photos .ph:first-child {
-  grid-row: 1/3;
-}
-.ph {
-  overflow: hidden;
-  position: relative;
-  background: var(--surface2);
-}
-.ph img {
+.rm-hero-bg img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition:
-    transform 0.6s ease,
-    filter 0.4s;
-  filter: saturate(0.75) brightness(0.85);
+  object-position: center 38%;
 }
-.ph:hover img {
-  transform: scale(1.06);
-  filter: saturate(1) brightness(1);
-}
-.ph-ov {
+
+/* Graded across and down: the reading column keeps enough ground for cream
+   text, the right half keeps the city, and the foot settles into Tone A so the
+   next section starts without a seam. */
+.rm-hero-scrim {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(5, 6, 5, 0.55), transparent 55%);
-  opacity: 0;
-  transition: opacity 0.35s;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(5, 6, 5, 0.96) 0%,
+      rgba(5, 6, 5, 0.88) 42%,
+      rgba(5, 6, 5, 0.62) 72%,
+      rgba(5, 6, 5, 0.45) 100%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(5, 6, 5, 0.7) 0%,
+      rgba(5, 6, 5, 0.25) 32%,
+      rgba(5, 6, 5, 0.72) 80%,
+      var(--color-bg-forest) 100%
+    );
 }
-.ph:hover .ph-ov {
-  opacity: 1;
+
+.rm-hero-inner {
+  position: relative;
+  z-index: 1;
 }
-.past-card-footer {
-  padding: 16px 32px;
-  display: flex;
+
+.rm-chapter {
+  display: inline-flex;
   align-items: center;
-  justify-content: space-between;
-  border-top: 1px solid var(--border);
+  gap: 0.55rem;
+  margin-bottom: 1.4rem;
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-gold-light);
 }
-.past-footer-tags {
+
+.rm-chapter-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-gold);
+}
+
+.rm-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.75rem, 7vw, 5.5rem);
+  font-weight: 700;
+  line-height: 1.02;
+  letter-spacing: 0.01em;
+  color: var(--color-cream);
+  margin-bottom: 1.35rem;
+}
+
+.rm-desc {
+  max-width: 34rem;
+  font-size: 1rem;
+  line-height: 1.75;
+  color: var(--color-cream-muted);
+}
+
+/* ── Stats strip ───────────────────────────────────────────────────── */
+.rm-stats {
   display: flex;
-  gap: 8px;
   flex-wrap: wrap;
+  gap: 1.25rem clamp(1.75rem, 4vw, 3.25rem);
+  margin-top: clamp(2rem, 4vw, 2.75rem);
+  padding-top: clamp(1.25rem, 2.5vw, 1.75rem);
+  border-top: 1px solid var(--border-subtle);
 }
-.past-ftag {
-  font-size: 11px;
-  padding: 4px 10px;
-  border-radius: 5px;
-  background: var(--white-faint);
-  color: var(--white-dim);
-  border: 1px solid var(--border);
+
+.rm-stat {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 0.3rem;
+  padding-right: clamp(1.75rem, 4vw, 3.25rem);
+  border-right: 1px solid var(--border-subtle);
 }
-.past-view-more {
-  font-size: 11px;
+
+.rm-stat:last-child {
+  padding-right: 0;
+  border-right: 0;
+}
+
+.rm-stat-value {
+  font-family: var(--font-display);
+  font-size: clamp(1.9rem, 3.6vw, 2.6rem);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--color-gold-light);
+  font-variant-numeric: tabular-nums;
+}
+
+.rm-stat-plus {
+  font-size: 0.55em;
+  vertical-align: super;
+}
+
+.rm-stat-label {
+  font-size: 0.68rem;
   font-weight: 500;
-  color: var(--gold);
-  text-decoration: none;
-  transition: opacity 0.2s;
-}
-.past-view-more:hover {
-  opacity: 0.7;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-cream-faint);
 }
 
-/* REVEAL */
-.reveal {
-  opacity: 0;
-  transform: translateY(20px);
-  transition:
-    opacity 0.7s ease,
-    transform 0.7s ease;
-}
-.reveal.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-.rd1 {
-  transition-delay: 0.1s;
-}
-.rd2 {
-  transition-delay: 0.2s;
+/* ═══ SECTIONS ══════════════════════════════════════════════════════ */
+.rm-section {
+  padding: clamp(3.5rem, 6vw, 5.25rem) 0;
 }
 
-@keyframes fadeUp {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-@keyframes orbit-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-@keyframes pulse-logo {
-  0%,
-  100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.08);
-  }
-}
-@keyframes pulse-dot {
-  0%,
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  50% {
-    transform: scale(1.5);
-    opacity: 0.6;
-  }
+.rm-section--cta {
+  padding-bottom: clamp(4.5rem, 7vw, 6.5rem);
 }
 
-@media (max-width: 900px) {
-  nav {
-    padding: 0 20px;
-  }
-  .nav-links,
-  .nav-cta {
-    display: none;
-  }
-  .hero {
-    padding: 100px 0 60px;
-  }
-  .section {
-    padding: 60px 0;
-  }
-  .upcoming-inner {
-    grid-template-columns: 1fr;
-  }
-  .upcoming-info {
-    border-right: none;
-    border-bottom: 1px solid var(--border);
-    padding: 32px 24px;
-  }
-  .upcoming-register {
-    padding: 32px 24px;
-  }
-  .stats-row {
-    grid-template-columns: 1fr 1fr;
-  }
-  footer {
-    flex-direction: column;
-    gap: 14px;
-    text-align: center;
-  }
+.rm-hdr {
+  margin-bottom: clamp(2rem, 3.5vw, 2.75rem);
 }
-@media (max-width: 700px) {
-  .past-photos {
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto;
-  }
-  .past-photos .ph:first-child {
-    grid-row: auto;
-  }
-  .past-photos .ph {
-    height: 140px;
-  }
-  .past-stats {
-    grid-template-columns: 1fr 1fr;
-  }
+
+.rm-hdr .section-tag {
+  margin-bottom: 0.9rem;
 }
-@media (max-width: 480px) {
-  .hero-stats {
-    flex-wrap: wrap;
-    gap: 16px;
+
+.rm-hdr .section-title-xl {
+  margin-bottom: 0;
+}
+
+/* ═══ CTA ═══════════════════════════════════════════════════════════ */
+.rm-cta {
+  max-width: 46rem;
+  margin: 0 auto;
+  text-align: center;
+  padding-top: clamp(2rem, 4vw, 3rem);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.rm-cta .section-tag {
+  margin-bottom: 1rem;
+}
+
+.rm-cta-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 3.2vw, 2.3rem);
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--color-cream);
+  margin-bottom: 1rem;
+}
+
+.rm-cta-copy {
+  font-size: 0.96rem;
+  line-height: 1.75;
+  color: var(--color-cream-muted);
+  margin-bottom: 1.85rem;
+}
+
+.rm-cta-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  justify-content: center;
+}
+
+@media (max-width: 520px) {
+  .rm-stats {
+    gap: 1rem 1.25rem;
   }
-  .hstat-div {
-    display: none;
-  }
-  .stats-row {
-    grid-template-columns: 1fr;
-  }
-  .past-stats {
-    grid-template-columns: 1fr;
-  }
-  .upcoming-info {
-    padding: 24px 16px;
-  }
-  .upcoming-register {
-    padding: 24px 16px;
-  }
-  .past-card-head {
-    padding: 24px 16px 0;
-  }
-  .past-about {
-    padding: 0 16px 18px;
-  }
-  .past-card-footer {
-    padding: 16px;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
+
+  .rm-stat {
+    padding-right: 1.25rem;
   }
 }
 </style>

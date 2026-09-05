@@ -1,39 +1,61 @@
 <template>
   <div class="app-shell" :class="{ 'app-shell--railed': !isLoungeRoute }">
-    <!-- PRELOADER -->
-    <div id="preloader" v-if="loading" :style="{ opacity: preloaderOpacity }">
+    <!-- PRELOADER
+         An institutional title card, not a spinner. The crest is on screen from
+         the first frame and does not move again: the only motion is the legend
+         turning slowly around it and the hairline filling underneath. Nothing
+         reveals itself, nothing pops, and the card leaves by fading out.
+         There is no halo, no glow and no pulse. -->
+    <div
+      id="preloader"
+      v-if="loading"
+      :style="{ opacity: preloaderOpacity }"
+      role="status"
+      aria-live="polite"
+      aria-label="Loading Sundarbans House"
+    >
       <div class="preloader-inner">
-        <div class="preloader-orbit-wrap">
-          <div class="preloader-orbit-ring">
-            <svg viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <path
-                  id="orbitPath"
-                  d="M 110,110 m -88,0 a 88,88 0 1,1 176,0 a 88,88 0 1,1 -176,0"
-                />
-              </defs>
+        <div class="preloader-crest">
+          <!-- Two concentric rules and the orbiting legend, all one SVG so the
+               ring and the text can never drift out of register. -->
+          <svg class="preloader-orbit" viewBox="0 0 240 240" aria-hidden="true">
+            <defs>
+              <path id="orbitPath" d="M 120,120 m -96,0 a 96,96 0 1,1 192,0 a 96,96 0 1,1 -192,0" />
+            </defs>
+            <circle class="preloader-ring preloader-ring--outer" cx="120" cy="120" r="112" />
+            <circle class="preloader-ring preloader-ring--inner" cx="120" cy="120" r="62" />
+            <g class="preloader-orbit-text">
               <text>
                 <textPath href="#orbitPath" startOffset="0%">
-                  ✦ SUNDARBANS HOUSE · IIT MADRAS BS · EXCELLENCE ·
+                  SUNDARBANS HOUSE · IIT MADRAS BS DEGREE · SUNDARBANS HOUSE · IIT MADRAS BS DEGREE
+                  ·
                 </textPath>
               </text>
-            </svg>
-          </div>
-          <div class="preloader-logo-center">
+            </g>
+          </svg>
+
+          <!-- Exactly one mark, never two. The crest is simply present: it does
+               not fade in, scale in or arrive over anything, so nothing reveals
+               itself part-way through the sequence. The monogram is a genuine
+               substitute — it renders only if the artwork fails to load — not a
+               layer sitting underneath waiting to be covered. -->
+          <span class="preloader-logo">
             <img
-              src="https://res.cloudinary.com/l59gy0g2/image/upload/f_auto,q_auto:good,w_1000,c_limit/v1785911356/sundarbans/src/assets/LOGO.jpg"
-              alt="Sundarbans"
-              class="preloader-logo-img"
-              @error="showFallback = true"
               v-if="!showFallback"
+              src="https://res.cloudinary.com/l59gy0g2/image/upload/f_auto,q_auto:good,w_1000,c_limit/v1785911356/sundarbans/src/assets/LOGO.jpg"
+              alt=""
+              class="preloader-logo-img"
+              fetchpriority="high"
+              @error="showFallback = true"
             />
-            <span class="preloader-logo-letter" v-else>S</span>
-          </div>
+            <span v-else class="preloader-logo-letter" aria-hidden="true">S</span>
+          </span>
         </div>
-        <div class="preloader-bar">
-          <div class="preloader-fill" :style="{ width: fillWidth }"></div>
+
+        <div class="preloader-bar" aria-hidden="true">
+          <span class="preloader-fill" :style="{ width: fillWidth }"></span>
         </div>
-        <div class="preloader-text">Loading Sundarbans...</div>
+        <p class="preloader-text">Loading Sundarbans…</p>
       </div>
     </div>
 

@@ -78,11 +78,34 @@
   --shadow-lg: 0 20px 48px rgba(0, 0, 0, 0.62);
 
   /* ── Layout ────────────────────────────────────────────────────────
-     The three numbers that decide where anything sits horizontally. The
-     rail width is owned by navigation.css (--nav-rail-width) and consumed
-     here, so the reserved gutter is stated exactly once in the codebase. */
-  --content-max-width: 1280px;
+     The numbers that decide where anything sits horizontally. The rail
+     width is owned by navigation.css (--nav-rail-width) and consumed here,
+     so the reserved gutter is stated exactly once in the codebase.
+
+     The canvas grows with the display instead of stopping dead at a laptop
+     width: 1280px holds until about 1460px, then the column opens roughly a
+     quarter of every extra pixel of viewport and stops at 1880px, which is
+     as wide as this design reads well. The slope is gentle on purpose —
+     between a 20" and a 27" monitor the composition should feel like more
+     room, not like a different layout.
+
+       1280 → 1280   1440 → 1280   1920 → 1399
+       2560 → 1566   3440 → 1794   3840 → 1880 (cap)
+
+     `--measure-max-width` is the other half of the contract: a canvas this
+     wide would run body copy past a readable line length, so running prose
+     and single-column content sit in `.container--measure` instead. It is
+     stated in rem so it tracks the type scale below and holds a constant
+     character count rather than a constant pixel width. */
+  --content-max-width: clamp(1280px, 900px + 26vw, 1880px);
   --content-gutter: clamp(1.25rem, 3vw, 2rem);
+  --measure-max-width: 62rem;
+
+  /* Vertical rhythm. A section that pads 6rem on a 13" laptop leaves a 27"
+     monitor looking cramped between bands; these open with the viewport and
+     then stop. Used by `.section` and available to any page that needs the
+     same cadence. */
+  --section-pad: clamp(6rem, 3rem + 3.4vw, 7.5rem);
 
   /* ── Legacy aliases ────────────────────────────────────────────────
      Existing rules across the app still read these names; they now point
@@ -134,7 +157,8 @@
   }
 
   .badge-dot,
-  #preloader .preloader-orbit-ring {
+  #preloader .preloader-orbit-text,
+  #preloader .preloader-inner {
     animation: none !important;
   }
 
@@ -172,6 +196,30 @@ html {
   /* Firefox */
   scrollbar-width: thin;
   scrollbar-color: var(--color-gold-muted) var(--color-bg-black);
+}
+
+/* ===== TYPE SCALE ON LARGE DISPLAYS =====
+   The whole site is sized in rem, and every major heading is already a
+   clamp() whose ceiling is in rem. So the honest way to make a 27" monitor
+   feel like a larger version of the same page — rather than a page with a
+   handful of pages patched bigger — is to move the one number all of those
+   are measured against.
+
+   Below 1600px nothing changes: the ramp starts at exactly 16px, so laptops,
+   tablets and phones render to the same pixel as before. Above it the root
+   opens to 20px at 4K, and body copy, small labels, card padding, gaps and
+   every clamp() ceiling ride along in proportion.
+
+     1600 → 16.0px   1920 → 16.6px   2560 → 17.7px
+     3440 → 19.3px   3840 → 20.0px (cap)
+
+   The ramp is continuous at the 1600px boundary, so dragging a window across
+   it produces no jump. Deliberately excluded: the navigation rail, which is
+   px-based in navigation.css and must keep reserving exactly its own width. */
+@media (min-width: 1600px) {
+  html {
+    font-size: clamp(16px, 13.14px + 0.179vw, 20px);
+  }
 }
 
 /* ===== SCROLLBAR =====
@@ -529,129 +577,183 @@ body::before {
   background-size: 180px 180px;
 }
 
-/* ===== PRELOADER ===== */
+/* ===== PRELOADER =====
+   A title card. The crest is centred inside two drawn rules, the house name
+   turns slowly around it, and one hairline reports progress. Everything here
+   is opacity and transform on four elements — no filters, no shadows, no
+   JavaScript loop. */
 #preloader {
   position: fixed;
   inset: 0;
   z-index: 99999;
-  background: var(--bg);
+  /* The deepest tone the palette has. The application fades up out of black. */
+  background: var(--color-bg-footer);
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: opacity 0.8s ease;
+  transition: opacity 0.8s var(--ease-editorial);
 }
 
 .preloader-inner {
-  text-align: center;
   display: flex;
-  align-items: center;
-  justify-content: center;
   flex-direction: column;
-}
-
-/* Orbiting text ring */
-.preloader-orbit-wrap {
-  position: relative;
-  width: 220px;
-  height: 220px;
-  display: flex;
   align-items: center;
-  justify-content: center;
+  /* The whole composition arrives once, together, and settles. */
+  animation: preloader-in 900ms var(--ease-reveal) both;
 }
 
-.preloader-orbit-ring {
+/* One square that scales with the viewport and never touches its edges, so
+   the orbiting legend cannot clip on a 375px phone. */
+.preloader-crest {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: min(240px, 62vw);
+  aspect-ratio: 1;
+}
+
+.preloader-orbit {
   position: absolute;
   inset: 0;
-  animation: orbit-spin 8s linear infinite;
-}
-
-.preloader-orbit-ring svg {
   width: 100%;
   height: 100%;
+  overflow: visible;
 }
 
-.preloader-orbit-ring textPath {
-  fill: var(--accent);
-  font-family: var(--font-display);
-  font-size: 11.5px;
-  letter-spacing: 3px;
+/* Two hairlines, both a single unit wide. The inner one is the delicate
+   boundary around the crest — it sits just outside the artwork, which is what
+   the crest's own white edge used to do far too loudly. The outer is only the
+   track the legend runs along, so it is fainter still. */
+.preloader-ring {
+  fill: none;
+  stroke: var(--color-gold-muted);
+  stroke-width: 1;
 }
 
-/* Center logo */
-.preloader-logo-center {
-  position: absolute;
-  width: 90px;
-  height: 90px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.preloader-ring--outer {
+  opacity: 0.2;
 }
 
+.preloader-ring--inner {
+  opacity: 0.45;
+}
+
+/* 26s per turn — slow enough to read as drift rather than rotation. Only this
+   group spins, so the two rules stay still and the motion reads as the text
+   travelling along a fixed ring. */
+.preloader-orbit-text {
+  transform-origin: 120px 120px;
+  animation: preloader-orbit 26s linear infinite;
+}
+
+.preloader-orbit-text text {
+  fill: var(--color-gold);
+  font-family: var(--font-body);
+  font-size: 8.5px;
+  font-weight: 500;
+  letter-spacing: 3.4px;
+  opacity: 0.75;
+}
+
+/* The crest sits well inside the inner rule, so the legend never crowds it. */
+/* The monogram and the crest occupy the same cell, so the centre is filled
+   from the first frame and nothing shifts when the artwork arrives. */
+.preloader-logo {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 46%;
+  aspect-ratio: 1;
+}
+
+.preloader-logo > * {
+  grid-area: 1 / 1;
+}
+
+/* The crest artwork carries a hard white outline at its own outer edge — the
+   bright ring that used to dominate the card. Clipping the last few percent of
+   the radius removes that edge and nothing else: the emblem, its lettering and
+   its gold border are all well inside this circle, so the mark itself is
+   untouched. The thin gold rule above takes over as the boundary.
+
+   No transition here on purpose. The crest is present, not revealed. */
 .preloader-logo-img {
-  width: 90px;
-  height: 90px;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
   border-radius: 50%;
-  animation: pulse-logo 2s ease-in-out infinite;
-  filter: drop-shadow(0 0 18px rgba(213, 166, 58, 0.7));
+  clip-path: circle(47.5% at 50% 50%);
 }
 
-/* Fallback S if no image */
 .preloader-logo-letter {
   font-family: var(--font-display);
-  font-size: 3.5rem;
-  font-weight: 900;
-  background: linear-gradient(135deg, var(--gold-light), var(--accent), var(--gold-dark));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  animation: pulse-logo 2s ease-in-out infinite;
-  filter: drop-shadow(0 0 12px rgba(213, 166, 58, 0.5));
+  font-size: clamp(2rem, 9vw, 3rem);
+  font-weight: 700;
+  color: var(--color-gold);
+  opacity: 0.75;
 }
 
-@keyframes orbit-spin {
+/* A hairline that fills, not a bar that loads. */
+.preloader-bar {
+  position: relative;
+  width: min(180px, 46vw);
+  height: 1px;
+  margin: clamp(1.75rem, 5vw, 2.5rem) 0 0.95rem;
+  background: rgba(170, 125, 35, 0.2);
+  overflow: hidden;
+}
+
+.preloader-fill {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: var(--color-gold);
+  transition: width 1.2s var(--ease-editorial);
+}
+
+.preloader-text {
+  font-family: var(--font-body);
+  font-size: 0.66rem;
+  font-weight: 500;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--color-cream-faint);
+}
+
+@keyframes preloader-orbit {
   from {
     transform: rotate(0deg);
   }
-
   to {
     transform: rotate(360deg);
   }
 }
 
-@keyframes pulse-logo {
-  0%,
-  100% {
+@keyframes preloader-in {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  to {
+    opacity: 1;
     transform: scale(1);
   }
+}
 
-  50% {
-    transform: scale(1.08);
+/* Reduced motion: the card is simply there, and the hairline jumps to its
+   final width instead of travelling. The loading state itself is unchanged. */
+@media (prefers-reduced-motion: reduce) {
+  .preloader-inner {
+    animation: none;
   }
-}
 
-.preloader-bar {
-  width: 160px;
-  height: 2px;
-  background: rgba(213, 166, 58, 0.12);
-  border-radius: 99px;
-  margin: 1.5rem auto 0.75rem;
-  overflow: hidden;
-}
+  .preloader-orbit-text {
+    animation: none;
+  }
 
-.preloader-fill {
-  height: 100%;
-  width: 0;
-  background: linear-gradient(90deg, var(--gold-dark), var(--accent2), var(--gold-dark));
-  border-radius: 99px;
-  transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.preloader-text {
-  color: var(--text2);
-  font-size: 0.75rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
+  .preloader-fill {
+    transition: none;
+  }
 }
 
 .hero-bg {
@@ -661,10 +763,17 @@ body::before {
   pointer-events: none;
 }
 
-/* Cropped to fill and nothing else: no transform, no transition, no
-   will-change. The layer is fixed, so the clip simply holds still while the
-   page moves over it. object-position favours the upper third, where the
-   misted horizon line of the canopy sits. */
+/* Cropped to fill and nothing else: no transform, no scale, no parallax. The
+   layer is fixed, so the clip simply holds still while the page moves over it.
+   object-position favours the upper third, where the misted horizon line of
+   the canopy sits.
+
+   The clip and the Save-Data substitute are listed together deliberately:
+   identical box, identical object-fit, identical object-position. The clip's
+   loading fallback is not here at all — it is the element's own `poster`, which
+   the video paints in this same box through this same object-fit, so it cannot
+   drift out of register with the frame that replaces it. Never give either of
+   these a transform. */
 .hero-bg-video,
 .hero-bg-still {
   position: absolute;
@@ -1031,17 +1140,36 @@ body.video-bg-mode .hero-section .hero-bg {
   padding-inline: var(--content-gutter);
 }
 
-/* A narrower measure for running prose and forms — same centre axis, shorter
-   line length. Use it instead of inventing another max-width. */
-.container-narrow {
+/* The reading measure. A section may use the full canvas above, but running
+   prose, forms and single-column content sit in here so a 27" monitor widens
+   the composition without stretching paragraphs to an unreadable line.
+   Same centre axis, so the two never look misaligned when stacked. */
+.container--measure {
   width: 100%;
-  max-width: 820px;
+  max-width: var(--measure-max-width);
   margin-inline: auto;
   padding-inline: var(--content-gutter);
 }
 
+/* Narrower still, for forms and short prose. Use one of these rather than
+   inventing another max-width. In rem, so it holds a constant character
+   count as the type scale opens rather than a constant pixel width. */
+.container-narrow {
+  width: 100%;
+  max-width: 51rem;
+  margin-inline: auto;
+  padding-inline: var(--content-gutter);
+}
+
+/* `.container--measure` is also valid as a modifier on `.container`, which is
+   how the meetups pages use it; the max-width has to win over the base rule
+   in that pairing regardless of source order. */
+.container.container--measure {
+  max-width: var(--measure-max-width);
+}
+
 .section {
-  padding: 6rem 0;
+  padding: var(--section-pad) 0;
 }
 
 /* ===== SECTION TAGS & TITLES ===== */
@@ -1090,8 +1218,8 @@ body.video-bg-mode .hero-section .hero-bg {
 
 .sec-hdr {
   text-align: center;
-  max-width: 700px;
-  margin: 0 auto 4rem;
+  max-width: 44rem;
+  margin: 0 auto clamp(4rem, 2rem + 2.2vw, 5.5rem);
 }
 
 .sec-sub {
@@ -1384,7 +1512,7 @@ section.rs.revealed > * {
 .cta-wrap {
   position: relative;
   z-index: 5;
-  max-width: 700px;
+  max-width: 44rem;
 }
 
 .cta-heading {
@@ -1409,7 +1537,7 @@ section.rs.revealed > * {
   color: var(--text2);
   line-height: 1.8;
   margin-bottom: 2.5rem;
-  max-width: 560px;
+  max-width: 35rem;
 }
 
 .cta-acts {
@@ -2062,7 +2190,7 @@ section.rs.revealed > * {
   border: 1px solid var(--border);
   border-radius: var(--rad2);
   width: 100%;
-  max-width: 600px;
+  max-width: 38rem;
   margin: 0 1rem;
   overflow: hidden;
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
@@ -2350,7 +2478,7 @@ section.rs.revealed > * {
 .page-hero p {
   font-size: 1rem;
   color: var(--text2);
-  max-width: 560px;
+  max-width: 35rem;
 }
 
 /* ===== COUNTDOWN ===== */
@@ -2397,108 +2525,6 @@ section.rs.revealed > * {
 .cd-over {
   color: var(--accent);
   font-weight: 700;
-}
-
-/* ===== LEADERBOARD ===== */
-.lboard-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.lboard-table th {
-  padding: 0.75rem 1rem;
-  text-align: left;
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--text2);
-  border-bottom: 1px solid var(--border);
-}
-
-.lboard-row {
-  border-bottom: 1px solid var(--border);
-  transition: background 0.15s;
-}
-
-.lboard-row:hover {
-  background: var(--surface);
-}
-
-.lboard-row td {
-  padding: 0.85rem 1rem;
-}
-
-.lboard-rank {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 1rem;
-}
-
-.rank-1 {
-  color: var(--gold-light);
-}
-
-.rank-2 {
-  color: #9ca3af;
-}
-
-.rank-3 {
-  color: #cd7c3f;
-}
-
-.lboard-member {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.lboard-avatar {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid var(--border);
-}
-
-.lboard-avatar-placeholder {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--accent), var(--gold-dark));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  color: #000;
-  font-size: 0.85rem;
-}
-
-.lboard-name {
-  font-weight: 600;
-  font-size: 0.875rem;
-  color: var(--text);
-}
-
-.lboard-city {
-  font-size: 0.73rem;
-  color: var(--text2);
-}
-
-.lboard-score {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 0.95rem;
-  color: var(--accent);
-}
-
-.lboard-badge {
-  font-size: 0.68rem;
-  background: rgba(213, 166, 58, 0.1);
-  color: var(--accent);
-  border: 1px solid var(--border-card);
-  padding: 0.2rem 0.6rem;
-  border-radius: 99px;
 }
 
 /* ===== FILTER TABS ===== */

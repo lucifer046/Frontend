@@ -24,6 +24,7 @@ const ROUTES = [
   '/community/cultural',
   '/community/esports',
   '/meetups',
+  '/leaderboard',
   '/meetups/delhi-ncr',
   '/meetups/mumbai',
   '/meetups/bangalore',

@@ -96,30 +96,48 @@
       <!-- ── 4. TYPE + 5. RESULTS ──────────────────────────────────── -->
       <div class="rb-block">
         <template v-if="currentSubject">
-          <div class="rb-block-head">
-            <div>
-              <h2 class="rb-block-title">{{ currentSubject.subject }}</h2>
-              <p class="rb-subject-desc">{{ currentSubject.description }}</p>
+          <!-- "What am I looking at?" — level, subject and total, with the type
+               nav under it. Sticky, so the answer stays on screen however far
+               down the archive the reader gets. -->
+          <div class="rb-context">
+            <div class="rb-context-head">
+              <div class="rb-context-copy">
+                <p class="rb-crumb">
+                  <span class="rb-crumb-level">{{ levelLabel(currentSubject.levelKey) }}</span>
+                  <span class="rb-crumb-sep" aria-hidden="true">›</span>
+                  <span class="rb-crumb-code">{{ currentSubject.code }}</span>
+                </p>
+                <h2 class="rb-block-title">{{ currentSubject.subject }}</h2>
+                <p class="rb-context-count">
+                  <strong>{{ typeCounts.all }}</strong>
+                  {{ typeCounts.all === 1 ? 'resource' : 'resources' }}
+                  <template v-if="resourceType !== 'all'">
+                    · {{ typeCounts[resourceType] }} {{ activeTypeLabel.toLowerCase() }}
+                  </template>
+                </p>
+              </div>
+              <button type="button" class="btn btn--text" @click="clearSubject">
+                Clear selection
+              </button>
             </div>
-            <button type="button" class="btn btn--text" @click="clearSubject">
-              Clear selection
-            </button>
+
+            <div class="rb-chips rb-types" role="group" aria-label="Resource type">
+              <button
+                v-for="type in typeMeta"
+                :key="type.key"
+                type="button"
+                class="sel"
+                :aria-pressed="resourceType === type.key"
+                @click="setResourceType(type.key)"
+              >
+                <component :is="type.icon" :size="15" :stroke-width="1.9" aria-hidden="true" />
+                {{ type.label }}
+                <span class="rb-chip-count">{{ typeCounts[type.key] }}</span>
+              </button>
+            </div>
           </div>
 
-          <div class="rb-chips rb-types" role="group" aria-label="Resource type">
-            <button
-              v-for="type in typeMeta"
-              :key="type.key"
-              type="button"
-              class="sel"
-              :aria-pressed="resourceType === type.key"
-              @click="setResourceType(type.key)"
-            >
-              <component :is="type.icon" :size="15" :stroke-width="1.9" aria-hidden="true" />
-              {{ type.label }}
-              <span class="rb-chip-count">{{ typeCounts[type.key] }}</span>
-            </button>
-          </div>
+          <p class="rb-subject-desc">{{ currentSubject.description }}</p>
 
           <div class="rb-results">
             <template v-if="resultGroups.length">
@@ -141,7 +159,11 @@
                   <span class="rb-group-count">{{ group.items.length }}</span>
                 </h3>
                 <ul class="rb-list">
-                  <li v-for="item in shownItems(group)" :key="item.key">
+                  <li
+                    v-for="(item, i) in shownItems(group)"
+                    :key="item.key"
+                    :class="{ 'rb-row--new': i >= PREVIEW_COUNT }"
+                  >
                     <a class="rb-item" :href="item.link" target="_blank" rel="noopener noreferrer">
                       <span class="rb-item-main">
                         <span class="rb-item-title">{{ item.title }}</span>
@@ -157,23 +179,39 @@
                     </a>
                   </li>
                 </ul>
-                <button
-                  v-if="group.items.length > PREVIEW_COUNT"
-                  type="button"
-                  class="btn btn--text rb-more"
-                  @click="toggleGroup(group.label)"
-                >
-                  {{
-                    expandedGroups[group.label] ? 'Show fewer' : `Show all ${group.items.length}`
-                  }}
-                  <ChevronDown
-                    class="rb-more-chevron"
-                    :class="{ 'rb-more-chevron--up': expandedGroups[group.label] }"
-                    :size="14"
-                    :stroke-width="2"
-                    aria-hidden="true"
-                  />
-                </button>
+                <div v-if="group.items.length > PREVIEW_COUNT" class="rb-more-row">
+                  <button
+                    v-if="remaining(group) > 0"
+                    type="button"
+                    class="btn btn--text rb-more"
+                    @click="showMore(group)"
+                  >
+                    Show {{ Math.min(remaining(group), STEP_COUNT) }} more
+                    <ChevronDown
+                      class="rb-more-chevron"
+                      :size="14"
+                      :stroke-width="2"
+                      aria-hidden="true"
+                    />
+                  </button>
+                  <button
+                    v-if="shownCount(group) > PREVIEW_COUNT"
+                    type="button"
+                    class="btn btn--text rb-more"
+                    @click="collapseGroup(group)"
+                  >
+                    Show fewer
+                    <ChevronDown
+                      class="rb-more-chevron rb-more-chevron--up"
+                      :size="14"
+                      :stroke-width="2"
+                      aria-hidden="true"
+                    />
+                  </button>
+                  <span class="rb-more-count">
+                    {{ shownCount(group) }} of {{ group.items.length }}
+                  </span>
+                </div>
               </section>
             </template>
 
@@ -261,7 +299,19 @@ const RESOURCE_TYPES = ['lectures', 'notes', 'pyq'];
  * to show what a group holds and judge whether it is the right one.
  */
 const PREVIEW_COUNT = 6;
-const expandedGroups = ref({});
+
+/**
+ * How many more rows one press of "Show more" reveals.
+ *
+ * The old control was all-or-nothing: "Show all 85" turned a six-row preview
+ * into eighty-five rows in one frame, which is the wall this is meant to
+ * avoid. Revealing a dozen at a time keeps the reader in control and means no
+ * press ever changes the page height by more than a screen.
+ */
+const STEP_COUNT = 12;
+
+/** Rows currently revealed per group label; absent means the PREVIEW_COUNT. */
+const groupShown = ref({});
 
 const currentLevel = ref(null);
 const currentSubjectCode = ref(null);
@@ -524,13 +574,27 @@ function withDriveFolders(groups) {
 }
 
 // ── Actions ─────────────────────────────────────────────────────────────
-function shownItems(group) {
-  if (expandedGroups.value[group.label]) return group.items;
-  return group.items.slice(0, PREVIEW_COUNT);
+function shownCount(group) {
+  return Math.min(groupShown.value[group.label] ?? PREVIEW_COUNT, group.items.length);
 }
 
-function toggleGroup(label) {
-  expandedGroups.value = { ...expandedGroups.value, [label]: !expandedGroups.value[label] };
+function shownItems(group) {
+  return group.items.slice(0, shownCount(group));
+}
+
+function remaining(group) {
+  return group.items.length - shownCount(group);
+}
+
+function showMore(group) {
+  groupShown.value = {
+    ...groupShown.value,
+    [group.label]: shownCount(group) + STEP_COUNT,
+  };
+}
+
+function collapseGroup(group) {
+  groupShown.value = { ...groupShown.value, [group.label]: PREVIEW_COUNT };
 }
 
 function selectFirstSubjectOf(level) {
@@ -547,7 +611,7 @@ function toggleLevel(level) {
   } else {
     currentLevel.value = level;
     resourceType.value = 'all';
-    expandedGroups.value = {};
+    groupShown.value = {};
     selectFirstSubjectOf(level);
   }
 }
@@ -556,12 +620,12 @@ function selectSubject(subject) {
   if (subject.levelKey !== currentLevel.value) currentLevel.value = subject.levelKey;
   currentSubjectCode.value = subject.code;
   resourceType.value = 'all';
-  expandedGroups.value = {};
+  groupShown.value = {};
 }
 
 function setResourceType(type) {
   resourceType.value = type;
-  expandedGroups.value = {};
+  groupShown.value = {};
 }
 
 function clearSubject() {
@@ -697,20 +761,83 @@ watch(visibleSubjects, (subjects) => {
 }
 
 .rb-subject-desc {
-  margin-top: 0.35rem;
+  margin: 0.9rem 0 1.5rem;
   font-size: 0.85rem;
   color: var(--text2);
   max-width: 46rem;
+}
+
+/* ── 4. Context bar ───────────────────────────────────────────────────
+   Level › code, the subject, the total, and the type nav — the answer to
+   "what am I looking at?" in one block. It sticks to the top of the
+   viewport so that answer survives a scroll through eighty-five papers.
+   The page is still the only scroll context; nothing here scrolls itself. */
+.rb-context {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  padding: 1.1rem 0 0.9rem;
+  margin-bottom: 0.25rem;
+  /* Opaque, because rows scroll underneath it — Tone A, the section's own
+     ground, so the bar is invisible until something passes behind it. */
+  background: var(--color-bg-black);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.rb-context-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.9rem;
+}
+
+.rb-crumb {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-bottom: 0.3rem;
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-gold-muted);
+}
+
+.rb-crumb-sep {
+  color: var(--text3);
+}
+
+.rb-crumb-code {
+  color: var(--text3);
+}
+
+.rb-context-count {
+  margin-top: 0.3rem;
+  font-size: 0.82rem;
+  color: var(--text2);
+}
+
+.rb-context-count strong {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+/* The type nav is the one row of selectors on screen while results are open,
+   so it carries the strong active state without competing with the level and
+   subject controls further up the page. */
+.rb-types {
+  margin-bottom: 0;
 }
 
 .rb-chips {
   display: flex;
   flex-wrap: wrap;
   gap: 0.6rem;
-}
-
-.rb-types {
-  margin-bottom: 1.75rem;
 }
 
 .rb-chip-count {
@@ -871,8 +998,45 @@ watch(visibleSubjects, (subjects) => {
   margin: 0;
 }
 
-.rb-more {
+/* "Show 12 more", "Show fewer", and a running count — the reader can always
+   see how much of the group is on screen before deciding to open more. */
+.rb-more-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.25rem;
   margin-top: 0.6rem;
+}
+
+.rb-more-count {
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  color: var(--text3);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Rows past the initial preview arrive rather than appear. Opacity and a
+   short rise only — no height animation, which would need the list measured
+   on every press and would stutter on a group of eighty-five. */
+.rb-row--new {
+  animation: rb-row-in 420ms var(--ease-reveal) backwards;
+}
+
+@keyframes rb-row-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rb-row--new {
+    animation: none;
+  }
 }
 
 /* This control's trailing glyph means "expand", not "go", so it rotates

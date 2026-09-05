@@ -8,168 +8,101 @@
       subtitle="Find and connect with Sundarbans members in your city"
     />
 
-    <section class="section rs" ref="gridSection">
+    <!-- ══ REGIONS ═══════════════════════════════════════════════════
+         Nine chapters, ordered by city name so the grid reads as a
+         directory rather than as a ranking. -->
+    <section class="mv-section tone-b rs" aria-labelledby="regions-heading">
       <div class="container">
-        <div class="sec-hdr">
-          <div class="section-tag">Across India</div>
-          <h2 class="section-title-xl">Choose <span class="tg">your city</span></h2>
-        </div>
+        <header class="mv-hdr">
+          <p class="section-tag">Across India</p>
+          <h2 id="regions-heading" class="section-title-xl">
+            Choose <span class="tg">your city</span>
+          </h2>
+        </header>
 
-        <div class="regions-grid">
-          <div
-            v-for="region in regions"
-            :key="region.slug"
-            class="region-card reveal"
-            :class="{ featured: region.featured }"
-            @mouseenter="hoveredRegion = region.slug"
-            @mouseleave="hoveredRegion = null"
-            @click="goToRegion(region.slug)"
-          >
-            <img :src="region.image" :alt="region.name" class="region-bg" loading="lazy" />
-            <div class="region-overlay"></div>
-            <div class="region-gold-tint" v-if="hoveredRegion === region.slug"></div>
-            <div class="region-content">
-              <div class="region-top">
-                <span class="region-badge" v-if="region.badge">{{ region.badge }}</span>
-              </div>
-              <div class="region-bottom">
-                <h3 class="region-name">{{ region.name }}</h3>
-                <p class="region-members">{{ region.members }} members</p>
-              </div>
-            </div>
-          </div>
-        </div>
+        <ul class="mv-regions">
+          <li v-for="region in regions" :key="region.slug">
+            <router-link :to="`/meetups/${region.slug}`" class="mvr">
+              <span class="mvr-frame">
+                <img
+                  :src="region.image"
+                  :alt="`${region.name} skyline`"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <span class="mvr-scrim" aria-hidden="true"></span>
+              </span>
 
-        <div
-          style="
-            margin-top: 4rem;
-            text-align: center;
-            padding: 3rem 2rem;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--rad2);
-          "
-        >
-          <div
-            style="
-              color: var(--accent);
-              margin-bottom: 1rem;
-              display: flex;
-              justify-content: center;
-            "
-          >
-            <Globe2 :size="34" :stroke-width="1.5" />
-          </div>
-          <h3
-            style="
-              font-family: var(--font-display);
-              font-size: 1.6rem;
-              margin-bottom: 1rem;
-              font-weight: 700;
-              color: var(--text);
-            "
-          >
-            Bring the Community to Your City
-          </h3>
-          <p
-            style="
-              color: var(--text2);
-              margin-bottom: 1.75rem;
-              max-width: 600px;
-              margin-left: auto;
-              margin-right: auto;
-              line-height: 1.6;
-            "
-          >
-            Want a meetup in your city like Siliguri or Guwahati? Suggest a location, pitch an
-            activity, or volunteer as a host. Help us expand the Sundarbans family!
+              <span v-if="region.badge" class="mvr-badge">{{ region.badge }}</span>
+
+              <span class="mvr-body">
+                <span class="mvr-name">{{ region.name }}</span>
+                <span class="mvr-foot">
+                  <span class="mvr-members">{{ region.members }} members</span>
+                  <ArrowRight class="mvr-arrow" :size="16" :stroke-width="2" aria-hidden="true" />
+                </span>
+              </span>
+            </router-link>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ══ UPCOMING ══════════════════════════════════════════════════ -->
+    <section class="mv-section tone-a rs" aria-labelledby="upcoming-heading">
+      <div class="container container--measure">
+        <header class="mv-hdr mv-hdr--left">
+          <p class="section-tag">Next event</p>
+          <h2 id="upcoming-heading" class="section-title-xl">
+            Upcoming <span class="tg">Meetup</span>
+          </h2>
+        </header>
+
+        <FeaturedMeetup
+          :meetup="nextUpcoming"
+          empty-message="Nothing is on the national calendar this week. Chapters announce their own dates — open a city above, or join the community to hear first."
+        />
+      </div>
+    </section>
+
+    <!-- ══ ARCHIVE ═══════════════════════════════════════════════════
+         Every chapter's record in one run, newest first, five at a time. -->
+    <section class="mv-section tone-b rs" aria-labelledby="archive-heading">
+      <div class="container container--measure">
+        <header class="mv-hdr mv-hdr--left">
+          <p class="section-tag">Archive</p>
+          <h2 id="archive-heading" class="section-title-xl">
+            Past <span class="tg">Meetups</span>
+          </h2>
+          <p class="mv-sub">
+            Every chapter's meetups in one run, most recent first. Open a city above for that
+            chapter on its own.
+          </p>
+        </header>
+
+        <MeetupArchive :meetups="allMeetups" />
+      </div>
+    </section>
+
+    <!-- ══ CTA ═══════════════════════════════════════════════════════ -->
+    <section class="mv-section mv-section--cta tone-a rs" aria-labelledby="cta-heading">
+      <div class="container">
+        <div class="mv-cta">
+          <p class="section-tag">Expand the map</p>
+          <h2 id="cta-heading" class="mv-cta-title">Bring the community to your city</h2>
+          <p class="mv-cta-copy">
+            Want a meetup somewhere we have not reached yet — Siliguri, Guwahati, anywhere? Suggest
+            a location, pitch an activity, or volunteer to host one.
           </p>
           <a
             href="https://forms.gle/iHeYQsAbsUTBHJJC6"
             target="_blank"
             rel="noopener noreferrer"
-            class="submit-btn"
-            style="display: inline-block; text-decoration: none"
+            class="btn btn--primary"
           >
-            Suggest Location or Volunteer
+            Suggest a location or volunteer
+            <ArrowRight :size="16" :stroke-width="2.2" aria-hidden="true" />
           </a>
-        </div>
-      </div>
-    </section>
-
-    <section class="section rs" style="background: var(--bg2)">
-      <div class="container">
-        <div class="sec-hdr">
-          <div class="section-tag">Hall of Fame</div>
-          <h2 class="section-title-xl">Regional Coordinator <span class="tg">Leaderboard</span></h2>
-          <p class="sec-sub">
-            Top Contributors and Most Active Regional Coordinators of Sundarbans House
-          </p>
-        </div>
-
-        <div class="card-base">
-          <div
-            style="
-              display: flex;
-              align-items: center;
-              justify-content: space-between;
-              margin-bottom: 1.5rem;
-              flex-wrap: wrap;
-              gap: 0.75rem;
-            "
-          >
-            <div class="filter-tabs" style="margin: 0">
-              <div
-                class="ftab"
-                v-for="tab in tabs"
-                :key="tab.key"
-                :class="{ active: activeTab === tab.key }"
-                @click="activeTab = tab.key"
-              >
-                {{ tab.label }}
-              </div>
-            </div>
-            <span style="font-size: 0.8rem; color: var(--text2)">Updated daily</span>
-          </div>
-
-          <table class="lboard-table">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Member</th>
-                <th>City</th>
-                <th>Points</th>
-                <th>Badge</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr class="lboard-row" v-for="m in members" :key="m.name + activeTab">
-                <td>
-                  <span class="lboard-rank" :class="m.rankClass">
-                    <Medal v-if="m.rankClass" :size="15" :stroke-width="1.8" />
-                    <template v-else>{{ m.rank }}</template>
-                  </span>
-                </td>
-                <td>
-                  <div class="lboard-member">
-                    <img v-if="m.img" :src="m.img" alt="" class="lboard-avatar" />
-                    <div v-else class="lboard-avatar-placeholder">{{ m.initial }}</div>
-                    <div>
-                      <div class="lboard-name">{{ m.name }}</div>
-                      <div class="lboard-city">{{ m.city }}</div>
-                    </div>
-                  </div>
-                </td>
-                <td style="color: var(--text2); font-size: 0.85rem">{{ m.city }}</td>
-                <td>
-                  <span class="lboard-score">{{ m.points }}</span>
-                </td>
-                <td>
-                  <span class="lboard-badge">{{ m.badge }}</span>
-                </td>
-              </tr>
-            </tbody>
-          </table>
         </div>
       </div>
     </section>
@@ -177,392 +110,318 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
-import { useRouter } from 'vue-router';
-import { Globe2, Medal } from 'lucide-vue-next';
-import { useScrollReveal } from '../composables/useAnimations.js';
+import { computed } from 'vue';
+import { ArrowRight } from 'lucide-vue-next';
 import PageHero from '../components/PageHero.vue';
-import { leaderboardData } from '@/data/leaderboard.js';
-
-const imgDelhi =
-  'https://res.cloudinary.com/l59gy0g2/image/upload/f_auto,q_auto:good,w_1000,c_limit/v1785911362/sundarbans/src/assets/regions/delhi.jpg';
-const imgMumbai =
-  'https://res.cloudinary.com/l59gy0g2/image/upload/f_auto,q_auto:good,w_1000,c_limit/v1785911367/sundarbans/src/assets/regions/mumbai.jpg';
-const imgBangalore =
-  'https://res.cloudinary.com/l59gy0g2/image/upload/f_auto,q_auto:good,w_1000,c_limit/v1785911358/sundarbans/src/assets/regions/bangalore.jpg';
-const imgKolkata =
-  'https://res.cloudinary.com/l59gy0g2/image/upload/f_auto,q_auto:good,w_1000,c_limit/v1785911364/sundarbans/src/assets/regions/kolkata.jpg';
-const imgHyderabad =
-  'https://res.cloudinary.com/l59gy0g2/image/upload/f_auto,q_auto:good,w_1000,c_limit/v1785911363/sundarbans/src/assets/regions/hyderabad.jpg';
-const imgPatna =
-  'https://res.cloudinary.com/l59gy0g2/image/upload/f_auto,q_auto:good,w_1000,c_limit/v1785911369/sundarbans/src/assets/regions/patna.jpg';
-const imgChandigarh =
-  'https://res.cloudinary.com/l59gy0g2/image/upload/f_auto,q_auto:good,w_1000,c_limit/v1785911359/sundarbans/src/assets/regions/chandigarh.webp';
-const imgChennai =
-  'https://res.cloudinary.com/l59gy0g2/image/upload/f_auto,q_auto:good,w_1000,c_limit/v1785911360/sundarbans/src/assets/regions/chennai.jpg';
-const imgLucknow =
-  'https://res.cloudinary.com/l59gy0g2/image/upload/f_auto,q_auto:good,w_1000,c_limit/v1785911366/sundarbans/src/assets/regions/lucknow.jpg';
+import FeaturedMeetup from '../components/meetups/FeaturedMeetup.vue';
+import MeetupArchive from '../components/meetups/MeetupArchive.vue';
+import { useScrollReveal } from '../composables/useAnimations.js';
+import { sortedRegions } from '../data/regions.js';
+import { regionConfigs } from './meetups/regionConfigs.js';
 
 useScrollReveal();
 
-const router = useRouter();
-const hoveredRegion = ref(null);
+/** Alphabetical by city — computed from the data, never hand-ordered. */
+const regions = computed(() => sortedRegions());
 
-const regions = [
-  {
-    slug: 'delhi-ncr',
-    name: 'Delhi-NCR',
-    members: '320+',
-    image: imgDelhi,
-    badge: 'Most Active',
-    featured: true,
-  },
-  { slug: 'mumbai', name: 'Mumbai', members: '450+', image: imgMumbai, badge: 'Largest Chapter' },
-  { slug: 'bangalore', name: 'Bangalore', members: '390+', image: imgBangalore, badge: null },
-  { slug: 'kolkata', name: 'Kolkata', members: '280+', image: imgKolkata, badge: null },
-  { slug: 'hyderabad', name: 'Hyderabad', members: '210+', image: imgHyderabad, badge: null },
-  { slug: 'patna', name: 'Patna', members: '180+', image: imgPatna, badge: null },
-  {
-    slug: 'chandigarh',
-    name: 'Chandigarh',
-    members: '120+',
-    image: imgChandigarh,
-    badge: 'Rising Chapter',
-  },
-  { slug: 'chennai', name: 'Chennai', members: '150+', image: imgChennai, badge: null },
-  { slug: 'lucknow', name: 'Lucknow', members: '110+', image: imgLucknow, badge: null },
-];
+/** URL slug → regionConfigs key; delhi-ncr is the only mismatch. */
+const SLUG_TO_KEY = { 'delhi-ncr': 'delhi' };
 
-function goToRegion(slug) {
-  router.push('/meetups/' + slug);
+function configFor(slug) {
+  return regionConfigs[SLUG_TO_KEY[slug] ?? slug] ?? null;
 }
 
-const RANK_CLASSES = ['rank-1', 'rank-2', 'rank-3'];
-
-const tabs = [
-  { label: 'All Time', key: 'allTime' },
-  { label: 'Term 1 (Jan–Apr)', key: 'term1' },
-  { label: 'Term 2 (May–Aug)', key: 'term2' },
-  { label: 'Term 3 (Sep–Dec)', key: 'term3' },
-];
-
-const activeTab = ref('allTime');
-
-const members = computed(() => {
-  const raw = leaderboardData[activeTab.value] ?? [];
-  return [...raw]
-    .sort((a, b) => b.points - a.points)
-    .map((m, i) => ({
-      ...m,
-      rank: String(i + 1),
-      rankClass: RANK_CLASSES[i] ?? '',
-      points: m.points.toLocaleString(),
+/**
+ * The all-India archive. Each record is tagged with the chapter it belongs to
+ * so a card in the merged list still says where it happened, and given a key
+ * that is unique across regions — the per-region `id` is only an index.
+ * MeetupArchive does the ordering.
+ */
+const allMeetups = computed(() =>
+  regions.value.flatMap((region) => {
+    const config = configFor(region.slug);
+    if (!config) return [];
+    return config.pastMeetups.map((meetup) => ({
+      ...meetup,
+      key: `${region.slug}-${meetup.id}`,
+      location: meetup.location ?? region.name,
     }));
+  })
+);
+
+/**
+ * The soonest scheduled meetup anywhere. Chapters currently publish none, so
+ * this resolves to null and the refined empty state renders — but the page
+ * picks one up automatically the moment a chapter adds an upcoming record.
+ */
+const nextUpcoming = computed(() => {
+  const scheduled = regions.value
+    .map((region) => {
+      const upcoming = configFor(region.slug)?.upcoming;
+      return upcoming ? { ...upcoming, region: region.name } : null;
+    })
+    .filter(Boolean);
+
+  if (!scheduled.length) return null;
+  return scheduled.sort((a, b) => {
+    const aTime = Date.parse(a.date ?? '');
+    const bTime = Date.parse(b.date ?? '');
+    if (Number.isNaN(aTime)) return 1;
+    if (Number.isNaN(bTime)) return -1;
+    return aTime - bTime;
+  })[0];
 });
 </script>
 
 <style scoped>
-.regions-grid {
+/* ═══ SECTIONS ══════════════════════════════════════════════════════
+   Tone A and Tone B alternate down the page; no rules or panels between
+   them, so the change of ground is what marks a new chapter. */
+.mv-section {
+  padding: clamp(3.75rem, 6.5vw, 5.75rem) 0;
+}
+
+.mv-section--cta {
+  padding-bottom: clamp(4.5rem, 7vw, 6.5rem);
+}
+
+.mv-hdr {
+  text-align: center;
+  max-width: 46rem;
+  margin: 0 auto clamp(2.5rem, 4.5vw, 3.5rem);
+}
+
+.mv-hdr--left {
+  text-align: left;
+  margin-inline: 0;
+}
+
+.mv-hdr .section-tag {
+  margin-bottom: 1rem;
+}
+
+.mv-hdr .section-title-xl {
+  margin-bottom: 0;
+}
+
+.mv-sub {
+  margin-top: 1rem;
+  font-size: 0.94rem;
+  line-height: 1.75;
+  color: var(--color-cream-muted);
+  max-width: 52ch;
+}
+
+/* ═══ REGION CARDS ══════════════════════════════════════════════════ */
+.mv-regions {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(1rem, 2vw, 1.5rem);
+  max-width: 22rem;
+  margin: 0 auto;
+  padding: 0;
+  list-style: none;
 }
-.region-card {
+
+.mvr {
   position: relative;
-  border-radius: var(--rad2);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  aspect-ratio: 3 / 4;
   overflow: hidden;
-  cursor: pointer;
-  aspect-ratio: 3/4;
-  border: 1px solid var(--border);
+  background: var(--color-card);
+  border: 1px solid var(--border-card);
+  border-radius: var(--rad2);
+  text-decoration: none;
   transition:
-    border-color 0.3s,
-    transform 0.35s,
-    box-shadow 0.35s;
+    border-color var(--duration-card) var(--ease-editorial),
+    transform var(--duration-card) var(--ease-editorial),
+    box-shadow var(--duration-card) var(--ease-editorial);
 }
-.region-card:hover {
-  border-color: var(--border-gold);
+
+.mvr:hover,
+.mvr:focus-visible {
+  border-color: var(--border-card-hover);
   transform: translateY(-4px);
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.7);
+  box-shadow: var(--shadow-md);
 }
-.region-card.featured {
-  border-color: var(--border-card);
+
+.mvr:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 3px;
 }
-.region-bg {
+
+.mvr-frame {
   position: absolute;
   inset: 0;
+}
+
+.mvr-frame img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  /* Skylines and monuments carry their subject above the midline; a centred
+     crop cuts the top off a 3:4 frame. */
+  object-position: center 35%;
+  filter: saturate(0.85) brightness(0.72);
   transition:
-    transform 0.6s ease,
-    filter 0.4s;
-  filter: saturate(0.8) brightness(0.75);
+    transform var(--duration-card) var(--ease-editorial),
+    filter var(--duration-card) var(--ease-editorial);
 }
-.region-card:hover .region-bg {
-  transform: scale(1.06);
-  filter: saturate(1) brightness(0.85);
+
+.mvr:hover .mvr-frame img,
+.mvr:focus-visible .mvr-frame img {
+  transform: scale(1.04);
+  filter: saturate(1) brightness(0.82);
 }
-.region-overlay {
+
+/* Two stops, both Tone A: the name always has ground under it, and the top of
+   the frame stays photographic. */
+.mvr-scrim {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    to top,
-    rgba(5, 6, 5, 0.88) 0%,
-    rgba(5, 6, 5, 0.3) 50%,
-    transparent 80%
-  );
-  transition: opacity 0.35s;
-}
-.region-card:hover .region-overlay {
   background: linear-gradient(
     to top,
     rgba(5, 6, 5, 0.92) 0%,
-    rgba(5, 6, 5, 0.4) 55%,
-    rgba(213, 166, 58, 0.04) 100%
+    rgba(5, 6, 5, 0.55) 38%,
+    rgba(5, 6, 5, 0.08) 72%
   );
-}
-.region-gold-tint {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(
-    ellipse 80% 60% at 50% 100%,
-    rgba(213, 166, 58, 0.12) 0%,
-    transparent 70%
-  );
-  pointer-events: none;
-}
-.region-content {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 20px;
-}
-.region-top {
-  display: flex;
-  justify-content: flex-end;
-}
-.region-badge {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--accent2);
-  background: rgba(213, 166, 58, 0.12);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  border: 1px solid var(--border-gold);
-  padding: 5px 12px;
-  border-radius: 100px;
-}
-.region-bottom {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-.region-name {
-  font-family: var(--font-display);
-  font-size: clamp(20px, 2vw, 26px);
-  font-weight: 700;
-  letter-spacing: 0.01em;
-  color: #ffffff;
-  line-height: 1.1;
-}
-.region-members {
-  font-size: 14px;
-  font-weight: 400;
-  color: var(--text2);
-  letter-spacing: 0.03em;
-}
-.submit-btn {
-  background: var(--accent);
-  color: #000;
-  padding: 12px 28px;
-  border-radius: 8px;
-  font-weight: 700;
-  font-size: 0.95rem;
-  transition: all 0.3s;
-  box-shadow: var(--shadow-sm);
-  font-family: var(--font-body);
-}
-.submit-btn:hover {
-  background: var(--gold-light);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
-}
-.card-base {
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: var(--rad2);
-  padding: 2.5rem;
-}
-.lboard-table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0 8px;
-  margin-top: 1rem;
-}
-.lboard-table th {
-  text-align: left;
-  padding: 0 16px 12px;
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: var(--text2);
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  border-bottom: 1px solid var(--border);
-}
-.lboard-row td {
-  background: var(--surface);
-  padding: 16px;
-  transition: background 0.3s;
-}
-.lboard-row:hover td {
-  background: var(--surface2);
-}
-.lboard-row td:first-child {
-  border-top-left-radius: 12px;
-  border-bottom-left-radius: 12px;
-}
-.lboard-row td:last-child {
-  border-top-right-radius: 12px;
-  border-bottom-right-radius: 12px;
-}
-.lboard-rank {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: var(--text2);
-  background: var(--bg);
-  border: 1px solid var(--border);
-}
-.rank-1 {
-  background: rgba(213, 166, 58, 0.15);
-  color: var(--accent);
-  border-color: var(--border-card);
-  font-size: 1.2rem;
-}
-.rank-2 {
-  background: rgba(200, 200, 200, 0.1);
-  color: #ccc;
-  border-color: rgba(200, 200, 200, 0.2);
-  font-size: 1.2rem;
-}
-.rank-3 {
-  background: rgba(184, 115, 51, 0.1);
-  color: #b87333;
-  border-color: rgba(184, 115, 51, 0.2);
-  font-size: 1.2rem;
-}
-.lboard-member {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-.lboard-avatar,
-.lboard-avatar-placeholder {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 1px solid var(--border);
-}
-.lboard-avatar-placeholder {
-  background: var(--surface2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-display);
-  font-weight: 700;
-  color: var(--accent);
-  font-size: 1.1rem;
-}
-.lboard-name {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 1.05rem;
-  color: var(--text);
-  line-height: 1.2;
-}
-.lboard-city {
-  font-size: 0.75rem;
-  color: var(--text2);
-  display: none;
-}
-.lboard-score {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 1.1rem;
-  color: var(--accent);
-}
-.lboard-badge {
-  display: inline-block;
-  padding: 4px 10px;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 100px;
-  font-size: 0.75rem;
-  color: var(--text2);
-}
-.filter-tabs {
-  display: flex;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 100px;
-  padding: 4px;
-  width: fit-content;
-}
-.ftab {
-  padding: 6px 16px;
-  font-size: 0.8rem;
-  font-weight: 500;
-  color: var(--text2);
-  border-radius: 100px;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-.ftab.active {
-  background: var(--accent);
-  color: #000;
-}
-.ftab:hover:not(.active) {
-  color: var(--text);
 }
 
-@media (max-width: 1100px) {
-  .regions-grid {
-    grid-template-columns: repeat(3, 1fr);
+.mvr-badge {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-gold-light);
+  padding: 0.35rem 0.7rem;
+  border: 1px solid var(--border-gold);
+  border-radius: 99px;
+}
+
+.mvr-body {
+  position: relative;
+  padding: 1.25rem;
+}
+
+.mvr-name {
+  display: block;
+  font-family: var(--font-display);
+  font-size: clamp(1.35rem, 2.2vw, 1.7rem);
+  font-weight: 700;
+  line-height: 1.15;
+  color: #fff;
+  margin-bottom: 0.4rem;
+}
+
+.mvr-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.mvr-members {
+  font-size: 0.86rem;
+  color: var(--color-cream-muted);
+}
+
+.mvr-arrow {
+  flex: none;
+  color: var(--color-gold);
+  opacity: 0;
+  transform: translateX(-6px);
+  transition:
+    opacity var(--duration-link) var(--ease-editorial),
+    transform var(--duration-link) var(--ease-editorial);
+}
+
+.mvr:hover .mvr-arrow,
+.mvr:focus-visible .mvr-arrow {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+@media (min-width: 620px) {
+  .mv-regions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: none;
   }
 }
-@media (max-width: 800px) {
-  .regions-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .card-base {
-    padding: 1.5rem;
-  }
-  .lboard-table th:nth-child(3),
-  .lboard-row td:nth-child(3) {
-    display: none;
-  }
-  .lboard-city {
-    display: block;
-    margin-top: 2px;
+
+@media (min-width: 900px) {
+  .mv-regions {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
-@media (max-width: 480px) {
-  .regions-grid {
-    grid-template-columns: 1fr;
+
+/* Four across, written as eight half-tracks so a short final row centres
+   itself instead of hanging off the left edge. The three rules catch a
+   trailing row of one, two or three cards — no hard-coded roster length. */
+@media (min-width: 1200px) {
+  .mv-regions {
+    grid-template-columns: repeat(8, minmax(0, 1fr));
   }
-  .lboard-table th:last-child,
-  .lboard-row td:last-child {
-    display: none;
+
+  .mv-regions > * {
+    grid-column: span 2;
+  }
+
+  .mv-regions > :last-child:nth-child(4n + 1) {
+    grid-column: 4 / span 2;
+  }
+
+  .mv-regions > :nth-last-child(2):nth-child(4n + 1) {
+    grid-column: 3 / span 2;
+  }
+
+  .mv-regions > :nth-last-child(3):nth-child(4n + 1) {
+    grid-column: 2 / span 2;
+  }
+}
+
+/* ═══ CTA ═══════════════════════════════════════════════════════════
+   A centred column with a hairline over it, not a large bordered panel. */
+.mv-cta {
+  max-width: 44rem;
+  margin: 0 auto;
+  text-align: center;
+  padding-top: clamp(2rem, 4vw, 3rem);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.mv-cta .section-tag {
+  margin-bottom: 1rem;
+}
+
+.mv-cta-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 3.2vw, 2.3rem);
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--color-cream);
+  margin-bottom: 1rem;
+}
+
+.mv-cta-copy {
+  font-size: 0.96rem;
+  line-height: 1.75;
+  color: var(--color-cream-muted);
+  margin-bottom: 1.85rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mvr:hover,
+  .mvr:focus-visible,
+  .mvr:hover .mvr-frame img,
+  .mvr:focus-visible .mvr-frame img,
+  .mvr:hover .mvr-arrow,
+  .mvr:focus-visible .mvr-arrow {
+    transform: none;
   }
 }
 </style>

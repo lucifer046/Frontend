@@ -7,16 +7,27 @@
            no information, so it is out of the accessibility tree. Nothing
            here is scroll-driven: no scrub, no parallax, no frame sequence. -->
       <div class="hero-bg">
+        <!-- The fallback is the video's own `poster`, not a second image layer.
+             The element paints it in exactly the box it will paint the clip in,
+             through the same decode and compositing path, so there is no
+             geometry, colour or timing seam to reconcile — and no crossfade,
+             because the poster *is* the frame that replaces it.
+
+             Which frame that is depends on the mount: the clip's opening frame
+             when it is about to play from the top, its closing frame when it is
+             about to seek to the end. Both are cut from home-1080.webm — the
+             file browsers actually load here — so the poster and the first
+             painted frame are the same picture. -->
         <video
           v-if="playVideo"
           ref="heroVideo"
           class="hero-bg-video"
+          :poster="posterSrc"
           :autoplay="!alreadyPlayed"
           muted
           playsinline
           preload="metadata"
           disablepictureinpicture
-          poster="/assets/video/home-poster.webp"
           aria-hidden="true"
           tabindex="-1"
           @play="syncVideo"
@@ -366,13 +377,50 @@ function onEnded() {
   clipFinished = true;
 }
 
+/**
+ * The poster this mount uses — the whole of the fallback strategy.
+ *
+ * The clip is a slow pull-back: it opens tight on the canopy and closes wide on
+ * the horizon, so no single still can stand in for both ends of it. Each mount
+ * therefore posts the frame it is about to paint — the opening frame when the
+ * clip will play from the top, the closing frame when it will seek to the end.
+ *
+ * Both files are cut straight out of `home-1080.webm` with ffmpeg (`-ss 0` and
+ * `-ss 24.85`, the exact time the seek below targets), so the poster and the
+ * first frame the element paints are the same picture. The element swaps one
+ * for the other itself, in its own box and through its own decode path, which
+ * is why there is no crossfade here and nothing to keep in register.
+ *
+ * `home-poster.webp` is a different photograph entirely — it matched no frame
+ * of the clip, which is what made the old hand-off read as a zoom. It is now
+ * used only by the Save-Data path, where no video ever loads.
+ */
+const CLOSING_FRAME_TIME = 24.85;
+
+const posterSrc = alreadyPlayed
+  ? '/assets/video/home-frame-last.webp'
+  : '/assets/video/home-frame-first.webp';
+
+/**
+ * Return visit: park the clip on its closing frame before a frame is ever
+ * painted. `preload="metadata"` means no frame data has been fetched at this
+ * point, so the poster is still what is on screen; the first frame the element
+ * decodes is the seek target, and the poster it replaces is a still of exactly
+ * that time. There is no window in which frame 0 can appear.
+ *
+ * The target is the same constant the still was cut at, not `duration - 0.05`:
+ * duration is reported differently between the WebM and the MP4 (and is briefly
+ * unavailable on some engines), and a target derived from it could land on a
+ * different frame than the poster. If the seek cannot be satisfied the poster
+ * simply stays — the correct fallback, and no extra state to manage.
+ */
 function onMetadata() {
   const video = heroVideo.value;
   if (!video || !alreadyPlayed) return;
-  // Seek to (not play up to) the end, so this mount opens on the frame the
-  // previous one finished on. Backing off a hair keeps it inside the last
-  // decodable frame rather than landing exactly on the boundary.
-  video.currentTime = Math.max(0, (video.duration || 0) - 0.05);
+  const seekableEnd = video.seekable.length ? video.seekable.end(video.seekable.length - 1) : 0;
+  const limit = Math.max(seekableEnd, video.duration || 0);
+  if (!Number.isFinite(limit) || limit <= 0) return;
+  video.currentTime = Math.min(CLOSING_FRAME_TIME, limit);
 }
 
 let motionQuery = null;

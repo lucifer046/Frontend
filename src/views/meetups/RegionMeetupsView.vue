@@ -1,6 +1,6 @@
 <template>
   <NotFoundView v-if="!config" />
-  <RegionMeetups v-else :key="slug" :config="config" />
+  <RegionMeetups v-else :key="slug" :config="config" :slug="slug" />
 </template>
 
 <script>

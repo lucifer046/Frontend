@@ -46,6 +46,7 @@
           <router-link to="/study">Study Corner</router-link>
           <router-link to="/exam-cities">Exam Cities</router-link>
           <router-link to="/meetups">Meetups</router-link>
+          <router-link to="/leaderboard">Leaderboard</router-link>
           <router-link to="/community">Communities</router-link>
           <router-link to="/lounge">Members Lounge</router-link>
         </nav>

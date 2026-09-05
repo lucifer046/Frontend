@@ -51,17 +51,26 @@ defineProps({
   box-shadow: var(--shadow-lg);
 }
 
+/* The mark on its own — no plate, no rule, no tint. The community accent is
+   carried by the icon itself, which is what the colour was always for; the
+   box around it only added a second border inside a card that already has
+   one. It lifts a little with the card on hover. */
 .track-icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 42px;
-  height: 42px;
-  border-radius: var(--rad);
-  border: 1px solid var(--cx-soft, var(--border-card));
-  background: var(--cx-tint, transparent);
+  width: 24px;
+  height: 24px;
   color: var(--cx, var(--accent));
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.55rem;
+  transition:
+    color var(--duration-card) var(--ease-editorial),
+    transform var(--duration-card) var(--ease-editorial);
+}
+
+.track-card:hover .track-icon {
+  color: var(--cx-bright, var(--cx, var(--color-gold-light)));
+  transform: translateY(-3px);
 }
 
 .track-title {

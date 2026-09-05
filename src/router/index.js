@@ -36,6 +36,7 @@ const routes = [
 
   // Meetups + single param route for all regions (slug map in RegionMeetupsView)
   { path: '/meetups', component: () => import('../views/MeetupsView.vue') },
+  { path: '/leaderboard', component: () => import('../views/LeaderboardView.vue') },
   {
     path: '/meetups/:region',
     component: () => import('../views/meetups/RegionMeetupsView.vue'),
