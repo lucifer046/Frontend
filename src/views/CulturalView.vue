@@ -1,14 +1,26 @@
 <template>
   <div class="community-page community-cultural">
     <PageHero
+      compact
       bg-image="https://images.unsplash.com/photo-1491438590914-bc09fcaaf77a?w=1920&q=80&auto=format&fit=crop"
       breadcrumb-title="Community"
       title="Cultural"
       accent-title="Community"
-      subtitle="Art. Music. Culture. — celebrating what makes us human."
+      subtitle="Art. Music. Culture. — celebrating what makes us human, across a House that
+        spans every region of the country."
     />
 
     <CommunitySection
+      tag="What We Celebrate"
+      title="Three"
+      accent="Strands"
+      desc="Making, performing and arguing well. Come for one, stay for whichever finds you."
+    >
+      <TrackCards :tracks="tracks" />
+    </CommunitySection>
+
+    <CommunitySection
+      alt
       tag="Upcoming Events"
       title="What's"
       accent="Coming Up"
@@ -21,7 +33,6 @@
     </CommunitySection>
 
     <CommunitySection
-      alt
       tag="Past Events"
       title="What We've"
       accent="Done"
@@ -31,6 +42,7 @@
     </CommunitySection>
 
     <CommunitySection
+      alt
       tag="Hall of Fame"
       title="Event"
       accent="Winners"
@@ -40,7 +52,6 @@
     </CommunitySection>
 
     <CommunitySection
-      alt
       tag="The Team"
       title="People Behind the"
       accent="Community"
@@ -48,6 +59,15 @@
     >
       <TeamCards :members="team" />
     </CommunitySection>
+
+    <CommunityCTA
+      alt
+      heading="Join the Cultural Community"
+      body="Bring what you make — a poem, a playlist, a photograph, an argument worth having.
+        No audition, no portfolio, and no requirement to be good at it yet."
+      join-label="Join the Cultural Community"
+      join-href="https://forms.gle/2DGXHZJLhCKG6z1T6"
+    />
   </div>
 </template>
 
@@ -58,6 +78,9 @@ import UpcomingEventCards from '../components/community/UpcomingEventCards.vue';
 import PastEventCards from '../components/community/PastEventCards.vue';
 import WinnerCards from '../components/community/WinnerCards.vue';
 import TeamCards from '../components/community/TeamCards.vue';
+import TrackCards from '../components/community/TrackCards.vue';
+import CommunityCTA from '../components/community/CommunityCTA.vue';
+import { Palette, Music, BookOpen } from 'lucide-vue-next';
 import { useScrollReveal } from '../composables/useAnimations.js';
 import { useEventDateFilter } from '../composables/useEventDateFilter.js';
 import '../assets/community.css';
@@ -96,6 +119,24 @@ const imgKaviya =
   'https://res.cloudinary.com/l59gy0g2/image/upload/f_auto,q_auto:good,w_1000,c_limit/v1785911395/sundarbans/src/assets/teams/R.Kaviya_Kaviarasi.jpg';
 
 useScrollReveal();
+
+const tracks = [
+  {
+    icon: Palette,
+    title: 'Arts & Crafts',
+    desc: 'Design, illustration and photography — the things people make when nobody sets a brief.',
+  },
+  {
+    icon: Music,
+    title: 'Music & Dance',
+    desc: 'Performances, collaborations and jam sessions, from first rehearsal to open mic.',
+  },
+  {
+    icon: BookOpen,
+    title: 'Literature & Debate',
+    desc: 'Book clubs, debates and creative writing — reading closely and arguing carefully.',
+  },
+];
 
 // ─── All upcoming events ───────────────────────────────────────────────────
 // Add `dateISO: 'YYYY-MM-DD'` OR use `day`/`month` for auto-migration.

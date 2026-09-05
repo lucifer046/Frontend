@@ -44,6 +44,7 @@
         <nav class="flinks" aria-label="Resources">
           <h2 class="fcol-title">Resources</h2>
           <router-link to="/study">Study Corner</router-link>
+          <router-link to="/exam-cities">Exam Cities</router-link>
           <router-link to="/meetups">Meetups</router-link>
           <router-link to="/community">Communities</router-link>
           <router-link to="/lounge">Members Lounge</router-link>

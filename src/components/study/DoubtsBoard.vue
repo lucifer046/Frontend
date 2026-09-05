@@ -367,27 +367,16 @@ onMounted(async () => {
   margin-top: 0.55rem;
 }
 
+/* Was a fixed 560px scroller. A scroll region inside a scrolling page traps
+   the wheel, hides how much is left, and on a phone is close to unusable —
+   so the list now grows to its content and the page scrolls, once. The name
+   is kept because it is the board's list container either way. */
 .db-scroll-box {
   max-width: 820px;
   margin: 0 auto 3rem;
-  height: 560px;
-  overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  border: 1px solid var(--border);
-  border-radius: var(--rad2);
-  padding: 1.25rem;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(213, 166, 58, 0.3) transparent;
-}
-
-.db-scroll-box::-webkit-scrollbar {
-  width: 5px;
-}
-.db-scroll-box::-webkit-scrollbar-thumb {
-  background: rgba(213, 166, 58, 0.3);
-  border-radius: 99px;
 }
 
 .db-card {

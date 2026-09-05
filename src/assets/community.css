@@ -1,1528 +1,588 @@
 /* ===========================================================================
-   Community sub-pages (Technical / Cultural / E-Sports)
+   Community sub-pages — Technical / Cultural / E-Sports
    ---------------------------------------------------------------------------
+   One design, three signatures.
+
    These three routes share their markup through src/components/community/*,
    so their styling cannot live in per-view `<style scoped>` blocks — scoped
-   rules do not cross into a child component.
+   rules do not cross into a child component. Every rule below is namespaced
+   by `.community-page`, which sits on the root element of each of the three
+   views and nowhere else.
 
-   Instead every rule below is namespaced by `.community-page`, which sits on
-   the root element of each of the three views and nowhere else. That keeps the
-   effective reach identical to the old scoped blocks (same +1 specificity a
-   `[data-v-*]` attribute used to add) while letting the shared components be
-   styled from one place.
+   What changed, and why it matters: this file used to hold three parallel
+   designs. Technical rendered its cards on #111 in Courier New with emerald
+   borders, Cultural and E-Sports each had their own radii, durations and
+   palettes, and roughly two thirds of the file was the same component written
+   three times with different numbers. Nothing about a community's personality
+   requires a different card, a different corner radius or a different
+   transition — those differences were drift, not design.
 
-   Layout:
-     1. rules that are byte-identical in every view that uses them  -> shared
-     2. everything else                                             -> per-view
-        under `.community-page.community-<variant>` (one class more specific,
-        so it always wins over the shared block regardless of source order).
+   So there is now exactly one set of component rules, and a community differs
+   only by the three accent tokens it sets on its variant class. Everything
+   else — surface, border, radius, motion, type — comes from the global system
+   in style.css, which is what makes the four pages read as one site.
+
+   The accents are deliberately desaturated. They sit at roughly the same
+   lightness as the antique gold they live beside, so a page reads as dark
+   editorial with a signature rather than as a coloured theme.
    =========================================================================== */
 
-/* ── 1. Shared by more than one view ─────────────────────────────────────── */
-
-.community-page .section-header {
-  margin-bottom: 2.5rem;
+.community-page {
+  /* Overridden per variant below. The fallback is the house gold, so a new
+     community page that forgets to set a variant still looks like the site. */
+  --cx: var(--color-gold);
+  --cx-soft: rgba(213, 166, 58, 0.5);
+  --cx-tint: rgba(213, 166, 58, 0.08);
 }
 
-/* Upcoming event cards — image layout (Technical + Cultural) */
+/* Cool and precise. A steel blue, not a cyan — anything brighter reads as a
+   developer-tool landing page rather than a house within an institution. */
+.community-page.community-tech {
+  --cx: #7ba7d9;
+  --cx-soft: rgba(123, 167, 217, 0.42);
+  --cx-tint: rgba(123, 167, 217, 0.08);
+}
+
+/* Warm and expressive. Close enough to the house gold to feel related,
+   distinctly warmer and softer so it does not read as the same accent. */
+.community-page.community-cultural {
+  --cx: #dda15e;
+  --cx-soft: rgba(221, 161, 94, 0.42);
+  --cx-tint: rgba(221, 161, 94, 0.09);
+}
+
+/* Energetic and competitive. A muted crimson — restrained on purpose, since
+   a saturated red on near-black is the fastest way to look like a gaming
+   template rather than a student house. */
+.community-page.community-esports {
+  --cx: #c96f6f;
+  --cx-soft: rgba(201, 111, 111, 0.42);
+  --cx-tint: rgba(201, 111, 111, 0.09);
+}
+
+/* ── Section shell ─────────────────────────────────────────────────────── */
+
+.community-page .section-header {
+  max-width: 46rem;
+  margin-bottom: 3rem;
+}
+
+/* The accent shows up in the label rule and the highlighted word, and
+   essentially nowhere else at this scale. */
+.community-page .section-tag {
+  color: var(--cx);
+}
+
+.community-page .tg {
+  background: none;
+  -webkit-text-fill-color: currentColor;
+  color: var(--cx);
+}
+
+/* ── Cards: one surface, one border, one motion, for every card type ───── */
+
+.community-page .event-card,
+.community-page .past-event-card,
+.community-page .winner-card,
+.community-page .team-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--color-card);
+  border: 1px solid var(--border-card);
+  border-radius: var(--rad2);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition:
+    border-color var(--duration-card) var(--ease-editorial),
+    box-shadow var(--duration-card) var(--ease-editorial),
+    transform var(--duration-card) var(--ease-editorial);
+}
+
+.community-page .event-card:hover,
+.community-page .past-event-card:hover,
+.community-page .winner-card:hover,
+.community-page .team-card:hover {
+  transform: translateY(-4px);
+  /* The accent edge is the only thing that says which community you are in. */
+  border-color: var(--cx-soft);
+  box-shadow: var(--shadow-lg);
+}
+
+/* ── Upcoming events ───────────────────────────────────────────────────── */
+
+.community-page .events-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
 .community-page .event-img-wrap {
   width: 100%;
   aspect-ratio: 16 / 9;
   overflow: hidden;
   flex-shrink: 0;
 }
+
 .community-page .event-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.5s ease;
+  display: block;
+  transition: transform var(--duration-card) var(--ease-editorial);
 }
+
 .community-page .event-card:hover .event-img {
-  transform: scale(1.05);
+  transform: scale(1.04);
 }
-.community-page .event-body {
+
+.community-page .event-body,
+.community-page .event-info {
   padding: 1.5rem;
   display: flex;
   flex-direction: column;
   flex: 1;
-}
-.community-page .register-btn:hover {
-  background: #fbbf24;
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-sm);
+  gap: 0.6rem;
 }
 
-.community-page .register-btn:active {
-  transform: translateY(0) scale(0.988);
+/* E-Sports upcoming cards lead with a date block instead of artwork. */
+.community-page .event-date-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.15rem;
+  padding: 1.1rem 1.5rem;
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--cx-tint);
 }
 
-/* Winners */
+.community-page .event-day {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--cx);
+}
+
+.community-page .event-month {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text3);
+}
+
+.community-page .event-type-tag,
+.community-page .winner-event-tag {
+  align-self: flex-start;
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--cx);
+  border: 1px solid var(--cx-soft);
+  border-radius: 99px;
+  padding: 0.2rem 0.6rem;
+}
+
+.community-page .event-title,
+.community-page .past-event-title,
+.community-page .winner-event-title {
+  font-family: var(--font-display);
+  font-size: 1.08rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1.35;
+  color: var(--text);
+}
+
+.community-page .event-desc,
+.community-page .past-event-desc {
+  font-size: 0.85rem;
+  color: var(--text2);
+  line-height: 1.7;
+}
+
+.community-page .event-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  margin-top: auto;
+  padding-top: 0.6rem;
+  font-size: 0.76rem;
+  color: var(--text3);
+}
+
+.community-page .event-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+/* ── Past events ───────────────────────────────────────────────────────── */
+
+.community-page .past-events-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.community-page .past-event-img-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: var(--color-bg-black);
+}
+
+/* A blurred copy of the artwork fills the frame behind a `contain` fit, so
+   letterboxed posters sit on their own colour instead of black bars. */
+.community-page .past-event-img-blur {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: blur(18px) saturate(0.7) brightness(0.4);
+  transform: scale(1.15);
+}
+
+.community-page .past-event-img {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  transition: transform var(--duration-card) var(--ease-editorial);
+}
+
+.community-page .past-event-card:hover .past-event-img {
+  transform: scale(1.04);
+}
+
+.community-page .past-event-overlay {
+  position: absolute;
+  inset: auto 0 0 0;
+  padding: 2rem 1rem 0.75rem;
+  background: linear-gradient(to top, rgba(5, 6, 5, 0.92), rgba(5, 6, 5, 0));
+}
+
+.community-page .past-event-date {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text2);
+}
+
+.community-page .past-event-body {
+  padding: 1.4rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  flex: 1;
+}
+
+.community-page .past-event-stat {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: auto;
+  padding-top: 0.6rem;
+  font-size: 0.76rem;
+  color: var(--text3);
+}
+
+/* ── Winners ───────────────────────────────────────────────────────────── */
+
 .community-page .winners-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 1.5rem;
 }
 
-/* Team */
-.community-page .team-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 1.5rem;
-}
-.community-page .team-photo-wrap {
-  position: relative;
-  aspect-ratio: 3 / 4;
-  overflow: hidden;
-}
-.community-page .team-photo {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: top;
-  display: block;
-  transition: transform 0.4s ease;
-}
-.community-page .team-card:hover .team-photo {
-  transform: scale(1.04);
-}
-.community-page .team-name {
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: #fff;
-  margin: 0;
-  line-height: 1.2;
-}
-.community-page .team-socials {
-  display: flex;
-  gap: 0.35rem;
-  flex-shrink: 0;
-}
-
-/* ── 2a. Technical — accent #10b981 emerald / #0ea5e9 sky ────────────────── */
-
-/* `.section-header` is load-bearing: PageHero also renders a `.tg` accent span and
-   must keep the site-wide gold gradient, which the old scoped blocks never reached. */
-.community-page.community-tech .section-header .tg {
-  background: linear-gradient(135deg, #10b981, #0ea5e9);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.community-page.community-tech .section-tag {
-  background: rgba(16, 185, 129, 0.1);
-  color: #10b981;
-  border-color: rgba(16, 185, 129, 0.3);
-  font-family: 'Courier New', Courier, monospace;
-}
-
-.community-page.community-tech .event-type-tag {
-  display: inline-block;
-  font-size: 0.75rem;
-  font-family: 'Courier New', Courier, monospace;
-  font-weight: 700;
-  padding: 0.25rem 0.65rem;
-  border-radius: 4px;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  margin-bottom: 0.8rem;
-  background: rgba(16, 185, 129, 0.1);
-  color: #34d399;
-  border: 1px solid rgba(16, 185, 129, 0.3);
-  box-shadow: 0 0 10px rgba(16, 185, 129, 0.05);
-}
-
-/* Upcoming Events */
-.community-page.community-tech .events-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 2rem;
-}
-
-.community-page.community-tech .event-card {
-  background: rgba(11, 17, 15, 0.8);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(16, 185, 129, 0.2);
-  border-radius: 8px;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  transition:
-    transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1),
-    box-shadow 0.35s ease;
-}
-.community-page.community-tech .event-card:hover {
-  transform: translateY(-6px);
-  border-color: rgba(16, 185, 129, 0.5);
-  box-shadow:
-    0 20px 50px rgba(16, 185, 129, 0.12),
-    inset 0 0 15px rgba(14, 165, 233, 0.05);
-}
-
-.community-page.community-tech .event-title {
-  font-size: 1.2rem;
-  font-weight: 700;
-  margin: 0 0 0.5rem;
-  color: #e0e0e0;
-  letter-spacing: 0.02em;
-  font-family: 'Courier New', Courier, monospace;
-}
-.community-page.community-tech .event-desc {
-  font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.65);
-  line-height: 1.6;
-  margin: 0 0 1.1rem;
-  flex: 1;
-}
-.community-page.community-tech .event-meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.8rem 1.2rem;
-  font-size: 0.82rem;
-  color: rgba(16, 185, 129, 0.85);
-  font-weight: 600;
-  font-family: 'Courier New', Courier, monospace;
-  margin-bottom: 1.3rem;
-}
-.community-page.community-tech .event-meta span {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-}
-
-.community-page.community-tech .register-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.65rem 1.4rem;
-  border-radius: 6px;
-  background: #f59e0b;
-  color: var(--color-bg-black);
-  font-weight: 700;
-  font-size: 0.9rem;
-  text-decoration: none;
-  letter-spacing: 0.02em;
-  transition:
-    background-color var(--duration-button) var(--ease-editorial),
-    border-color var(--duration-button) var(--ease-editorial),
-    color var(--duration-button) var(--ease-editorial),
-    box-shadow var(--duration-button) var(--ease-editorial),
-    transform var(--duration-button) var(--ease-editorial);
-  width: fit-content;
-}
-
-/* Past Events */
-.community-page.community-tech .past-events-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 2rem;
-}
-
-.community-page.community-tech .past-event-card {
-  background: rgba(11, 17, 15, 0.8);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(16, 185, 129, 0.2);
-  border-radius: 8px;
-  overflow: hidden;
-  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-  display: flex;
-  flex-direction: column;
-  position: relative;
-}
-.community-page.community-tech .past-event-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, #10b981, #0ea5e9);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  z-index: 10;
-}
-.community-page.community-tech .past-event-card:hover {
-  transform: translateY(-6px) scale(1.01);
-  box-shadow:
-    0 15px 40px rgba(16, 185, 129, 0.15),
-    inset 0 0 20px rgba(14, 165, 233, 0.05);
-  border-color: rgba(16, 185, 129, 0.5);
-}
-.community-page.community-tech .past-event-card:hover::before {
-  opacity: 1;
-  box-shadow: 0 2px 10px #10b981;
-}
-
-.community-page.community-tech .past-event-img-wrap {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  background: #050605;
-  overflow: hidden;
-  border-bottom: 1px solid rgba(16, 185, 129, 0.15);
-}
-.community-page.community-tech .past-event-img-blur {
-  position: absolute;
-  top: -15%;
-  left: -15%;
-  width: 130%;
-  height: 130%;
-  object-fit: cover;
-  filter: blur(20px) brightness(0.3) contrast(1.2);
-  z-index: 0;
-  transition: transform 0.5s ease;
-}
-.community-page.community-tech .past-event-img {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  z-index: 1;
-  padding: 0.5rem;
-  transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-.community-page.community-tech .past-event-card:hover .past-event-img {
-  transform: scale(1.04);
-}
-.community-page.community-tech .past-event-card:hover .past-event-img-blur {
-  transform: scale(1.05);
-}
-
-.community-page.community-tech .past-event-overlay {
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-  z-index: 2;
-}
-.community-page.community-tech .past-event-date {
-  font-family: 'Courier New', Courier, monospace;
-  font-size: 0.75rem;
-  color: #fff;
-  font-weight: 700;
-  background: rgba(0, 20, 5, 0.8);
-  border: 1px solid rgba(16, 185, 129, 0.4);
-  padding: 0.3rem 0.6rem;
-  border-radius: 4px;
-  backdrop-filter: blur(4px);
-  text-shadow: 0 0 5px #10b981;
-  letter-spacing: 0.05em;
-}
-
-.community-page.community-tech .past-event-body {
+.community-page .winner-card {
   padding: 1.5rem;
-  flex: 1;
+  gap: 1rem;
+}
+
+.community-page .winner-card-header {
   display: flex;
   flex-direction: column;
-}
-.community-page.community-tech .past-event-title {
-  font-family: 'Courier New', Courier, monospace;
-  font-size: 1.15rem;
-  font-weight: 700;
-  margin: 0.2rem 0 0.6rem;
-  color: #e0e0e0;
-  letter-spacing: 0.02em;
-  transition: text-shadow 0.3s ease;
-}
-.community-page.community-tech .past-event-card:hover .past-event-title {
-  text-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
-  color: #fff;
-}
-.community-page.community-tech .past-event-desc {
-  font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.65);
-  line-height: 1.6;
-  margin: 0 0 1rem;
-  flex: 1;
-}
-.community-page.community-tech .past-event-stat {
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
-  font-family: 'Courier New', Courier, monospace;
-  font-weight: 600;
-  font-size: 0.85rem;
-  color: rgba(16, 185, 129, 0.8);
-  padding-top: 1rem;
-  border-top: 1px dashed rgba(16, 185, 129, 0.2);
-}
-
-/* Winners */
-.community-page.community-tech .winner-card {
-  position: relative;
-  background: rgba(11, 17, 15, 0.8);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(16, 185, 129, 0.2);
-  border-radius: 8px;
-  padding: 1.5rem 1.5rem 1.5rem 1.8rem;
-  overflow: hidden;
-  transition:
-    border-color 0.3s ease,
-    box-shadow 0.3s ease;
-}
-.community-page.community-tech .winner-card::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 4px;
-  background: linear-gradient(180deg, #10b981, #0ea5e9);
-  box-shadow: 0 0 10px #10b981;
-}
-.community-page.community-tech .winner-card:hover {
-  border-color: rgba(16, 185, 129, 0.45);
-  box-shadow: 0 10px 30px rgba(16, 185, 129, 0.1);
-}
-
-.community-page.community-tech .winner-card-header {
-  margin-bottom: 1.2rem;
-}
-
-.community-page.community-tech .winner-event-tag {
-  display: inline-block;
-  font-size: 0.72rem;
-  font-family: 'Courier New', Courier, monospace;
-  font-weight: 700;
-  padding: 0.2rem 0.6rem;
-  border-radius: 4px;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  margin-bottom: 0.6rem;
-  background: rgba(16, 185, 129, 0.1);
-  color: #34d399;
-  border: 1px solid rgba(16, 185, 129, 0.3);
-}
-
-.community-page.community-tech .winner-event-title {
-  font-family: 'Courier New', Courier, monospace;
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: #e0e0e0;
-  margin: 0;
-  letter-spacing: 0.02em;
-}
-
-.community-page.community-tech .winners-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-}
-
-.community-page.community-tech .winner-row {
-  display: flex;
-  align-items: center;
-  gap: 0.9rem;
-  padding: 0.6rem 0.8rem;
-  border-radius: 6px;
-  background: rgba(16, 185, 129, 0.05);
-  border: 1px solid rgba(16, 185, 129, 0.1);
-  transition: background 0.2s;
-}
-.community-page.community-tech .winner-row:hover {
-  background: rgba(16, 185, 129, 0.1);
-}
-
-.community-page.community-tech .winner-rank {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  font-family: 'Courier New', Courier, monospace;
-  font-size: 0.75rem;
-  font-weight: 800;
-  flex-shrink: 0;
-}
-.community-page.community-tech .winner-row:nth-child(1) .winner-rank {
-  background: rgba(250, 204, 21, 0.15);
-  color: #facc15;
-  border: 1px solid rgba(250, 204, 21, 0.4);
-  text-shadow: 0 0 6px rgba(250, 204, 21, 0.5);
-}
-.community-page.community-tech .winner-row:nth-child(2) .winner-rank {
-  background: rgba(148, 163, 184, 0.15);
-  color: #94a3b8;
-  border: 1px solid rgba(148, 163, 184, 0.4);
-}
-.community-page.community-tech .winner-row:nth-child(3) .winner-rank {
-  background: rgba(180, 120, 60, 0.15);
-  color: #cd7f32;
-  border: 1px solid rgba(180, 120, 60, 0.4);
-}
-
-.community-page.community-tech .winner-info {
-  display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
-  min-width: 0;
-}
-.community-page.community-tech .winner-name {
-  font-family: 'Courier New', Courier, monospace;
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: #e0e0e0;
-  letter-spacing: 0.01em;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.community-page.community-tech .winner-email {
-  font-size: 0.7rem;
-  color: rgba(16, 185, 129, 0.5);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.community-page.community-tech .no-winner {
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-  padding: 0.8rem;
-  border-radius: 6px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px dashed rgba(255, 255, 255, 0.1);
-  font-family: 'Courier New', Courier, monospace;
-  font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.35);
-  font-style: italic;
-}
-.community-page.community-tech .no-winner-icon {
-  font-size: 1rem;
-  color: rgba(255, 255, 255, 0.2);
-}
-
-/* Team */
-.community-page.community-tech .team-card {
-  background: #111;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 8px;
-  overflow: hidden;
-  transition:
-    transform 0.2s,
-    box-shadow 0.2s;
-  font-family: 'Courier New', Courier, monospace;
-}
-.community-page.community-tech .team-card:hover {
-  transform: translateY(-4px);
-  border-color: rgba(16, 185, 129, 0.3);
-  box-shadow: 0 12px 32px rgba(16, 185, 129, 0.1);
-}
-
-.community-page.community-tech .team-overlay {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 2.5rem 1rem 0.9rem;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, transparent 100%);
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-}
-
-.community-page.community-tech .team-footer {
-  padding: 0.75rem 1rem 0.9rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
-  background: #111;
-  border-top: 1px solid rgba(16, 185, 129, 0.1);
-}
-.community-page.community-tech .team-course {
-  font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.5);
-  margin: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.community-page.community-tech .social-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  border-radius: 4px;
-  background: rgba(255, 255, 255, 0.05);
-  color: rgba(255, 255, 255, 0.4);
-  text-decoration: none;
-  transition:
-    background 0.2s,
-    color 0.2s,
-    border-color 0.2s;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-}
-.community-page.community-tech .social-btn:hover {
-  background: rgba(16, 185, 129, 0.1);
-  color: #10b981;
-  border-color: #10b981;
-}
-
-/* ── 2b. Cultural — accent #f59e0b amber / #ef4444 red ───────────────────── */
-
-.community-page.community-cultural .section-header .tg {
-  background: linear-gradient(135deg, #f59e0b, #ef4444);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.community-page.community-cultural .section-tag {
-  background: rgba(245, 158, 11, 0.1);
-  color: #f59e0b;
-  border-color: var(--border-card);
-}
-
-.community-page.community-cultural .event-type-tag {
-  display: inline-flex;
-  align-items: center;
-  font-size: 0.75rem;
-  font-weight: 600;
-  padding: 0.3rem 0.9rem;
-  border-radius: 999px;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  margin-bottom: 0.8rem;
-  background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(239, 68, 68, 0.1));
-  color: #fbbf24;
-  border: 1px solid var(--border-card);
-}
-
-/* Upcoming Events */
-.community-page.community-cultural .events-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 2rem;
-}
-
-.community-page.community-cultural .event-card {
-  background: rgba(20, 15, 10, 0.5);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--rad2);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  transition:
-    transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1),
-    box-shadow 0.35s ease;
-}
-
-.community-page.community-cultural .event-card:hover {
-  transform: translateY(-6px);
-  box-shadow:
-    0 20px 50px rgba(245, 158, 11, 0.12),
-    0 6px 16px rgba(239, 68, 68, 0.08);
-  border-color: var(--border-card);
-}
-
-.community-page.community-cultural .event-title {
-  font-size: 1.2rem;
-  font-weight: 700;
-  margin: 0 0 0.5rem;
-  color: #fff;
-  letter-spacing: 0.01em;
-}
-
-.community-page.community-cultural .event-desc {
-  font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.65);
-  line-height: 1.6;
-  margin: 0 0 1.1rem;
-  flex: 1;
-}
-
-.community-page.community-cultural .event-meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.8rem 1.2rem;
-  font-size: 0.82rem;
-  color: rgba(245, 158, 11, 0.85);
-  font-weight: 500;
-  margin-bottom: 1.3rem;
-}
-.community-page.community-cultural .event-meta span {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-}
-
-.community-page.community-cultural .register-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.65rem 1.4rem;
-  border-radius: 10px;
-  background: #f59e0b;
-  color: var(--color-bg-black);
-  font-weight: 700;
-  font-size: 0.9rem;
-  text-decoration: underline;
-  text-underline-offset: 2px;
-  letter-spacing: 0.02em;
-  transition:
-    background-color var(--duration-button) var(--ease-editorial),
-    border-color var(--duration-button) var(--ease-editorial),
-    color var(--duration-button) var(--ease-editorial),
-    box-shadow var(--duration-button) var(--ease-editorial),
-    transform var(--duration-button) var(--ease-editorial);
-  width: fit-content;
-}
-
-/* Past Events */
-.community-page.community-cultural .past-events-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 2rem;
-}
-
-.community-page.community-cultural .past-event-card {
-  background: rgba(20, 15, 10, 0.4);
-  backdrop-filter: blur(12px);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--rad2);
-  overflow: hidden;
-  transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
-  display: flex;
-  flex-direction: column;
-}
-
-.community-page.community-cultural .past-event-card:hover {
-  transform: translateY(-8px);
-  border-color: rgba(239, 68, 68, 0.3);
-  box-shadow:
-    0 20px 50px rgba(245, 158, 11, 0.15),
-    0 8px 20px rgba(239, 68, 68, 0.1);
-}
-
-.community-page.community-cultural .past-event-img-wrap {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 4 / 3;
-  background: #050605;
-  overflow: hidden;
-}
-
-.community-page.community-cultural .past-event-img-blur {
-  position: absolute;
-  top: -20%;
-  left: -20%;
-  width: 140%;
-  height: 140%;
-  object-fit: cover;
-  filter: blur(25px) brightness(0.4) saturate(1.2);
-  z-index: 0;
-  transition:
-    transform 0.6s ease,
-    filter 0.6s ease;
-}
-
-.community-page.community-cultural .past-event-card:hover .past-event-img-blur {
-  transform: scale(1.1);
-  filter: blur(15px) brightness(0.5) saturate(1.4);
-}
-
-.community-page.community-cultural .past-event-img {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  z-index: 1;
-  transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
-  padding: 0.5rem;
-}
-
-.community-page.community-cultural .past-event-card:hover .past-event-img {
-  transform: scale(1.05);
-}
-
-.community-page.community-cultural .past-event-overlay {
-  position: absolute;
-  bottom: 12px;
-  right: 12px;
-  z-index: 2;
-}
-
-.community-page.community-cultural .past-event-date {
-  font-size: 0.8rem;
-  color: #fff;
-  font-weight: 500;
-  letter-spacing: 0.05em;
-  background: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  padding: 0.4rem 0.8rem;
-  border-radius: var(--rad2);
-}
-
-.community-page.community-cultural .past-event-body {
-  padding: 1.8rem;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.community-page.community-cultural .past-event-title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin: 0.2rem 0 0.8rem;
-  color: #fff;
-  letter-spacing: 0.01em;
-}
-
-.community-page.community-cultural .past-event-desc {
-  font-size: 0.95rem;
-  color: rgba(255, 255, 255, 0.7);
-  line-height: 1.6;
-  margin: 0 0 1.2rem;
-  flex: 1;
-}
-
-.community-page.community-cultural .past-event-stat {
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
-  font-size: 0.85rem;
-  color: rgba(245, 158, 11, 0.8);
-  padding-top: 1rem;
-  border-top: 1px solid var(--border-subtle);
-  font-weight: 500;
-}
-
-/* Winners */
-.community-page.community-cultural .winner-card {
-  position: relative;
-  background: rgba(20, 15, 10, 0.5);
-  backdrop-filter: blur(12px);
-  border: 1px solid var(--border-card);
-  border-radius: var(--rad2);
-  padding: 1.5rem 1.5rem 1.5rem 1.8rem;
-  overflow: hidden;
-  transition:
-    border-color 0.3s ease,
-    box-shadow 0.3s ease;
-}
-
-/* Left amber-to-red accent bar */
-.community-page.community-cultural .winner-card::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 4px;
-  background: linear-gradient(180deg, #f59e0b, #ef4444);
-  box-shadow: none;
-  border-radius: var(--rad2) 0 0 var(--rad2);
-}
-
-.community-page.community-cultural .winner-card:hover {
-  border-color: var(--border-gold);
-  box-shadow:
-    0 10px 30px rgba(245, 158, 11, 0.1),
-    0 4px 12px rgba(239, 68, 68, 0.06);
-}
-
-.community-page.community-cultural .winner-card-header {
-  margin-bottom: 1.2rem;
-}
-
-.community-page.community-cultural .winner-event-tag {
-  display: inline-flex;
-  align-items: center;
-  font-size: 0.72rem;
-  font-weight: 600;
-  padding: 0.2rem 0.7rem;
-  border-radius: 999px;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  margin-bottom: 0.6rem;
-  background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(239, 68, 68, 0.1));
-  color: #fbbf24;
-  border: 1px solid var(--border-card);
-}
-
-.community-page.community-cultural .winner-event-title {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: #fff;
-  margin: 0;
-  letter-spacing: 0.01em;
-}
-
-.community-page.community-cultural .winners-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-}
-
-.community-page.community-cultural .winner-row {
-  display: flex;
-  align-items: center;
-  gap: 0.9rem;
-  padding: 0.55rem 0.9rem;
-  border-radius: 12px;
-  background: rgba(245, 158, 11, 0.05);
-  border: 1px solid var(--border-subtle);
-  transition: background 0.2s;
-}
-
-.community-page.community-cultural .winner-row:hover {
-  background: rgba(245, 158, 11, 0.1);
-}
-
-/* Rank badge — gold / silver / bronze */
-.community-page.community-cultural .winner-rank {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  font-size: 0.75rem;
-  font-weight: 800;
-  flex-shrink: 0;
-}
-
-.community-page.community-cultural .winner-row:nth-child(1) .winner-rank {
-  background: rgba(250, 204, 21, 0.15);
-  color: #facc15;
-  border: 1px solid rgba(250, 204, 21, 0.4);
-  text-shadow: 0 0 6px rgba(250, 204, 21, 0.5);
-}
-
-.community-page.community-cultural .winner-row:nth-child(2) .winner-rank {
-  background: rgba(148, 163, 184, 0.15);
-  color: #94a3b8;
-  border: 1px solid rgba(148, 163, 184, 0.4);
-}
-
-.community-page.community-cultural .winner-row:nth-child(3) .winner-rank {
-  background: rgba(180, 120, 60, 0.15);
-  color: #cd7f32;
-  border: 1px solid rgba(180, 120, 60, 0.4);
-}
-
-.community-page.community-cultural .winner-info {
-  display: flex;
-  flex-direction: column;
-  gap: 0.1rem;
-  min-width: 0;
-}
-
-.community-page.community-cultural .winner-name {
-  font-size: 0.92rem;
-  font-weight: 600;
-  color: #fff;
-  letter-spacing: 0.01em;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.community-page.community-cultural .winner-email {
-  font-size: 0.75rem;
-  color: rgba(245, 158, 11, 0.6);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* Team */
-.community-page.community-cultural .team-card {
-  background: #111;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: var(--rad2);
-  overflow: hidden;
-  transition:
-    transform 0.2s,
-    box-shadow 0.2s;
-}
-
-.community-page.community-cultural .team-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-md);
-}
-
-.community-page.community-cultural .team-overlay {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 2.5rem 1rem 0.9rem;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.88) 0%, transparent 100%);
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-}
-
-.community-page.community-cultural .team-footer {
-  padding: 0.75rem 1rem 0.9rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
-  background: #111;
-}
-
-.community-page.community-cultural .team-course {
-  font-size: 0.78rem;
-  color: rgba(255, 255, 255, 0.45);
-  margin: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.community-page.community-cultural .social-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.07);
-  color: rgba(255, 255, 255, 0.5);
-  text-decoration: none;
-  transition:
-    background 0.2s,
-    color 0.2s;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.community-page.community-cultural .social-btn:hover {
-  background: #f59e0b;
-  color: var(--color-bg-black);
-  border-color: #f59e0b;
-}
-
-/* ── 2c. E-Sports — Blood Protocol, #DC2626 crimson / #F97316 ember ──────── */
-
-.community-page.community-esports .section-header .tg {
-  background: linear-gradient(135deg, #dc2626, #f97316);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-/* Tags */
-.community-page.community-esports .section-tag {
-  background: rgba(220, 38, 38, 0.1);
-  color: #ef4444;
-  border-color: rgba(220, 38, 38, 0.3);
-}
-
-.community-page.community-esports .event-type-tag {
-  display: inline-block;
-  font-size: 0.72rem;
-  font-weight: 700;
-  padding: 0.25rem 0.65rem;
-  border-radius: 6px;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  margin-bottom: 0.75rem;
-  background: rgba(220, 38, 38, 0.1);
-  color: #ef4444;
-  border: 1px solid rgba(220, 38, 38, 0.25);
-  box-shadow: 0 0 10px rgba(220, 38, 38, 0.05);
-}
-
-/* Upcoming Events */
-.community-page.community-esports .events-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 1.5rem;
-}
-
-.community-page.community-esports .event-card {
-  position: relative;
-  display: flex;
-  gap: 1.2rem;
   align-items: flex-start;
-  background: rgba(15, 10, 10, 0.85);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(220, 38, 38, 0.15);
-  border-radius: 12px;
-  padding: 1.5rem;
-  overflow: hidden;
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  gap: 0.6rem;
+  padding-bottom: 0.9rem;
+  border-bottom: 1px solid var(--border-subtle);
 }
 
-.community-page.community-esports .event-card::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 4px;
-  background: linear-gradient(180deg, #dc2626, #f97316);
-  opacity: 0.5;
-  transition:
-    width 0.3s ease,
-    opacity 0.3s ease;
-}
-
-.community-page.community-esports .event-card:hover {
-  transform: translateY(-4px);
-  border-color: rgba(220, 38, 38, 0.45);
-  box-shadow:
-    0 10px 30px rgba(220, 38, 38, 0.12),
-    0 0 40px rgba(220, 38, 38, 0.06);
-}
-
-.community-page.community-esports .event-card:hover::before {
-  width: 6px;
-  opacity: 1;
-  box-shadow: 0 0 15px #dc2626;
-}
-
-.community-page.community-esports .event-date-badge {
+.community-page .winners-list {
+  list-style: none;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-width: 54px;
-  border-radius: 8px;
-  padding: 0.6rem;
-  background: rgba(220, 38, 38, 0.15);
-  border: 1px solid rgba(220, 38, 38, 0.3);
-  color: #ef4444;
-  line-height: 1;
-  flex-shrink: 0;
-  text-shadow: 0 0 8px rgba(239, 68, 68, 0.5);
+  gap: 0.75rem;
+  padding: 0;
+  margin: 0;
 }
 
-.community-page.community-esports .event-day {
-  font-size: 1.5rem;
-  font-weight: 800;
-}
-
-.community-page.community-esports .event-month {
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  margin-top: 3px;
-}
-
-.community-page.community-esports .event-info {
-  flex: 1;
-}
-
-.community-page.community-esports .event-title {
-  font-size: 1.1rem;
-  font-weight: 800;
-  margin: 0 0 0.5rem;
-  color: #fff;
-  letter-spacing: 0.02em;
-}
-
-.community-page.community-esports .event-desc {
-  font-size: 0.88rem;
-  color: rgba(255, 255, 255, 0.65);
-  margin: 0 0 0.8rem;
-  line-height: 1.6;
-}
-
-.community-page.community-esports .event-meta {
+.community-page .winner-row {
   display: flex;
-  gap: 1.2rem;
-  font-size: 0.82rem;
-  color: rgba(220, 38, 38, 0.8);
-  font-family: 'Courier New', Courier, monospace;
-  font-weight: 600;
-  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.85rem;
 }
-.community-page.community-esports .event-meta span {
+
+.community-page .winner-rank {
   display: inline-flex;
   align-items: center;
-  gap: 0.3rem;
-}
-
-/* Past Events */
-.community-page.community-esports .past-events-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1.8rem;
-}
-
-.community-page.community-esports .past-event-card {
-  background: rgba(15, 10, 10, 0.85);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(220, 38, 38, 0.15);
-  border-radius: 12px;
-  overflow: hidden;
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  position: relative;
-  display: flex;
-  flex-direction: column;
-}
-
-.community-page.community-esports .past-event-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, #dc2626, #f97316);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  z-index: 10;
-}
-
-.community-page.community-esports .past-event-card:hover {
-  transform: translateY(-6px) scale(1.01);
-  box-shadow:
-    0 12px 32px rgba(220, 38, 38, 0.15),
-    0 0 20px rgba(249, 115, 22, 0.08);
-  border-color: rgba(220, 38, 38, 0.5);
-}
-
-.community-page.community-esports .past-event-card:hover::before {
-  opacity: 1;
-  box-shadow: 0 2px 10px #dc2626;
-}
-
-.community-page.community-esports .past-event-img-wrap {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  background: #050605;
-  overflow: hidden;
-}
-
-.community-page.community-esports .past-event-img-blur {
-  position: absolute;
-  top: -15%;
-  left: -15%;
-  width: 130%;
-  height: 130%;
-  object-fit: cover;
-  filter: blur(20px) brightness(0.3);
-  z-index: 0;
-}
-
-.community-page.community-esports .past-event-img {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  z-index: 1;
-  transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-
-.community-page.community-esports .past-event-card:hover .past-event-img {
-  transform: scale(1.06);
-}
-
-.community-page.community-esports .past-event-overlay {
-  position: absolute;
-  bottom: 8px;
-  right: 8px;
-  padding: 0;
-  z-index: 2;
-}
-
-.community-page.community-esports .past-event-date {
-  font-family: 'Courier New', Courier, monospace;
-  font-size: 0.75rem;
-  color: #fff;
-  font-weight: 700;
-  background: rgba(0, 0, 0, 0.7);
-  border: 1px solid rgba(220, 38, 38, 0.3);
-  padding: 0.3rem 0.6rem;
-  border-radius: 6px;
-  backdrop-filter: blur(4px);
-  text-shadow: 0 0 5px rgba(220, 38, 38, 0.8);
-  letter-spacing: 0.05em;
-}
-
-.community-page.community-esports .past-event-body {
-  padding: 1.4rem;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.community-page.community-esports .past-event-title {
-  font-size: 1.1rem;
-  font-weight: 800;
-  margin: 0.2rem 0 0.5rem;
-  color: #fff;
-  letter-spacing: 0.02em;
-  transition: text-shadow 0.3s ease;
-}
-
-.community-page.community-esports .past-event-card:hover .past-event-title {
-  text-shadow: 0 0 10px rgba(220, 38, 38, 0.5);
-}
-
-.community-page.community-esports .past-event-desc {
-  font-size: 0.88rem;
-  color: rgba(255, 255, 255, 0.65);
-  line-height: 1.6;
-  margin: 0 0 1rem;
-  flex: 1;
-}
-
-.community-page.community-esports .past-event-stat {
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
-  font-family: 'Courier New', Courier, monospace;
-  font-weight: 600;
-  font-size: 0.82rem;
-  color: rgba(220, 38, 38, 0.8);
-  padding-top: 0.8rem;
-  border-top: 1px dashed rgba(220, 38, 38, 0.2);
-}
-
-/* Team — photo card style */
-.community-page.community-esports .team-card {
-  background: #111;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: var(--rad2);
-  overflow: hidden;
-  transition:
-    transform 0.2s,
-    box-shadow 0.2s;
-}
-
-.community-page.community-esports .team-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 32px rgba(220, 38, 38, 0.2);
-}
-
-.community-page.community-esports .team-overlay {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 2.5rem 1rem 0.9rem;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.88) 0%, transparent 100%);
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-}
-
-.community-page.community-esports .team-footer {
-  padding: 0.75rem 1rem 0.9rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
-  background: #111;
-}
-
-.community-page.community-esports .team-course {
-  font-size: 0.78rem;
-  color: rgba(255, 255, 255, 0.45);
-  margin: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.community-page.community-esports .social-btn {
-  display: flex;
-  align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.07);
-  color: rgba(255, 255, 255, 0.5);
-  text-decoration: none;
-  transition:
-    background 0.2s,
-    color 0.2s;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.community-page.community-esports .social-btn:hover {
-  background: #dc2626;
-  color: #fff;
-  border-color: #dc2626;
-}
-
-/* Pulsing border glow for first upcoming event */
-.community-page.community-esports .event-card:first-child {
-  animation: communityBorderPulse 3s ease-in-out infinite;
-}
-
-@keyframes communityBorderPulse {
-  0%,
-  100% {
-    border-color: rgba(220, 38, 38, 0.15);
-    box-shadow: 0 0 0px rgba(220, 38, 38, 0);
-  }
-  50% {
-    border-color: rgba(220, 38, 38, 0.45);
-    box-shadow: 0 0 25px rgba(220, 38, 38, 0.1);
-  }
-}
-
-/* Winners */
-.community-page.community-esports .winner-card {
-  position: relative;
-  background: rgba(15, 10, 10, 0.85);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(220, 38, 38, 0.2);
-  border-radius: 10px;
-  padding: 1.5rem 1.5rem 1.5rem 1.8rem;
-  overflow: hidden;
-  transition:
-    border-color 0.3s ease,
-    box-shadow 0.3s ease;
-}
-
-.community-page.community-esports .winner-card::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 4px;
-  background: linear-gradient(180deg, #dc2626, #f97316);
-  box-shadow: 0 0 10px #dc2626;
-}
-
-.community-page.community-esports .winner-card:hover {
-  border-color: rgba(220, 38, 38, 0.45);
-  box-shadow: 0 10px 30px rgba(220, 38, 38, 0.12);
-}
-
-.community-page.community-esports .winner-card-header {
-  margin-bottom: 1.1rem;
-}
-
-.community-page.community-esports .winner-event-tag {
-  display: inline-block;
-  font-size: 0.7rem;
-  font-weight: 700;
-  padding: 0.2rem 0.6rem;
-  border-radius: 4px;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  margin-bottom: 0.5rem;
-  background: rgba(220, 38, 38, 0.1);
-  color: #ef4444;
-  border: 1px solid rgba(220, 38, 38, 0.3);
-}
-
-.community-page.community-esports .winner-event-title {
-  font-size: 1rem;
-  font-weight: 700;
-  color: #e0e0e0;
-  margin: 0;
-  letter-spacing: 0.02em;
-}
-
-.community-page.community-esports .winners-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.community-page.community-esports .winner-row {
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-  padding: 0.55rem 0.8rem;
-  border-radius: 6px;
-  background: rgba(220, 38, 38, 0.05);
-  border: 1px solid rgba(220, 38, 38, 0.1);
-  transition: background 0.2s;
-}
-.community-page.community-esports .winner-row:hover {
-  background: rgba(220, 38, 38, 0.1);
-}
-
-.community-page.community-esports .winner-rank {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
+  flex: none;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
-  font-size: 0.72rem;
-  font-weight: 800;
-  flex-shrink: 0;
-}
-.community-page.community-esports .winner-row:nth-child(1) .winner-rank {
-  background: rgba(250, 204, 21, 0.15);
-  color: #facc15;
-  border: 1px solid rgba(250, 204, 21, 0.4);
-}
-.community-page.community-esports .winner-row:nth-child(2) .winner-rank {
-  background: rgba(148, 163, 184, 0.15);
-  color: #94a3b8;
-  border: 1px solid rgba(148, 163, 184, 0.4);
-}
-.community-page.community-esports .winner-row:nth-child(3) .winner-rank {
-  background: rgba(180, 120, 60, 0.15);
-  color: #cd7f32;
-  border: 1px solid rgba(180, 120, 60, 0.4);
-}
-.community-page.community-esports .winner-row:nth-child(n + 4) .winner-rank {
-  background: rgba(220, 38, 38, 0.1);
-  color: #ef4444;
-  border: 1px solid rgba(220, 38, 38, 0.3);
+  border: 1px solid var(--cx-soft);
+  background: var(--cx-tint);
+  color: var(--cx);
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 700;
 }
 
-.community-page.community-esports .winner-info {
+.community-page .winner-info {
   display: flex;
   flex-direction: column;
   gap: 0.15rem;
   min-width: 0;
 }
-.community-page.community-esports .winner-name {
-  font-size: 0.88rem;
-  font-weight: 600;
-  color: #e0e0e0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.community-page.community-esports .winner-email {
-  font-size: 0.68rem;
-  color: rgba(220, 38, 38, 0.6);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+
+.community-page .winner-name {
+  font-size: 0.9rem;
+  color: var(--text);
 }
 
-.community-page.community-esports .no-winner {
+.community-page .winner-email {
+  font-size: 0.72rem;
+  color: var(--text3);
+  overflow-wrap: anywhere;
+}
+
+.community-page .no-winner {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem;
-  border-radius: 6px;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px dashed rgba(255, 255, 255, 0.1);
-  font-size: 0.82rem;
-  color: rgba(255, 255, 255, 0.3);
-  font-style: italic;
+  gap: 0.6rem;
+  font-size: 0.85rem;
+  color: var(--text3);
 }
-.community-page.community-esports .no-winner-icon {
-  color: rgba(255, 255, 255, 0.2);
+
+.community-page .no-winner-icon {
+  color: var(--cx);
+}
+
+/* ── Team ──────────────────────────────────────────────────────────────── */
+
+/* auto-fit rather than auto-fill: a row that cannot be filled stretches its
+   cards to share the width instead of leaving a phantom column, which is what
+   used to strand a lone fifth card looking like a mistake. */
+.community-page .team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 1.5rem;
+}
+
+.community-page .team-photo-wrap {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  background: var(--color-card-raised);
+  flex-shrink: 0;
+}
+
+.community-page .team-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  display: block;
+  transition: transform var(--duration-card) var(--ease-editorial);
+}
+
+.community-page .team-card:hover .team-photo {
+  transform: scale(1.04);
+}
+
+/* The no-photo state. Not a broken image and not a stock face: the member's
+   initials, set in the display face on the card's own surface. It is a
+   deliberate design, so a card without a portrait still looks finished. */
+.community-page .team-monogram {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(120% 120% at 50% 0%, var(--cx-tint) 0%, rgba(5, 6, 5, 0) 70%),
+    var(--color-card-raised);
+}
+
+.community-page .team-monogram span {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--cx);
+  opacity: 0.85;
+}
+
+.community-page .team-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 1.1rem 1.2rem 1.2rem;
+  flex: 1;
+}
+
+.community-page .team-name {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1.3;
+  color: var(--text);
+}
+
+.community-page .team-role {
+  font-size: 0.78rem;
+  color: var(--cx);
+  letter-spacing: 0.02em;
+}
+
+.community-page .team-level {
+  font-size: 0.72rem;
+  color: var(--text3);
+}
+
+/* Unboxed marks, the same treatment the footer uses — no square chips. */
+.community-page .team-socials {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  /* auto, not a fixed gap: a name that wraps to two lines must not push its
+     row of marks below the neighbouring cards'. */
+  margin-top: auto;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.community-page .team-socials a {
+  display: inline-flex;
+  color: var(--text3);
+  transition:
+    color var(--duration-link) var(--ease-editorial),
+    transform var(--duration-link) var(--ease-editorial);
+}
+
+.community-page .team-socials a:hover {
+  color: var(--cx);
+  transform: translateY(-2px);
+}
+
+.community-page .team-socials a:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+
+/* ── Empty states ──────────────────────────────────────────────────────── */
+
+.community-page .community-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.85rem;
+  padding: 3.5rem 1rem;
+  text-align: center;
+  color: var(--text3);
+  font-size: 0.95rem;
+}
+
+.community-page .community-empty svg {
+  color: var(--cx);
+}
+
+/* ── Closing CTA ───────────────────────────────────────────────────────── */
+
+.community-page .community-cta {
+  max-width: 44rem;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.community-page .community-cta h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 3.4vw, 2.6rem);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  margin-bottom: 1rem;
+}
+
+.community-page .community-cta p {
+  color: var(--text2);
+  font-size: 0.95rem;
+  line-height: 1.8;
+  margin-bottom: 2rem;
+}
+
+.community-page .community-cta-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+/* The one place a community accent touches a button: the outline tier borrows
+   the accent for its edge. The fill, the motion, the press and the arrow all
+   still come from the global system. */
+.community-page .btn--outline {
+  border-color: var(--cx-soft);
+  color: var(--text);
+}
+
+.community-page .btn--outline:hover {
+  border-color: var(--cx);
+}
+
+/* ── Responsive ────────────────────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+  .community-page .section-header {
+    margin-bottom: 2rem;
+  }
+
+  .community-page .events-grid,
+  .community-page .past-events-grid,
+  .community-page .winners-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Two portraits per row reads better than one giant card per screen. */
+  .community-page .team-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .community-page .team-body {
+    padding: 0.9rem 1rem 1rem;
+  }
+
+  .community-page .community-cta-actions .btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 420px) {
+  .community-page .team-grid {
+    grid-template-columns: 1fr;
+  }
 }

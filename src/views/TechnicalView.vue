@@ -1,14 +1,26 @@
 <template>
   <div class="community-page community-tech">
     <PageHero
+      compact
       bg-image="https://images.unsplash.com/photo-1531482615713-2afd69097998?w=1920&q=80&auto=format&fit=crop"
       breadcrumb-title="Community"
-      title="Tech"
+      title="Technical"
       accent-title="Community"
-      subtitle="Build. Code. Innovate. — where engineers and thinkers come together."
+      subtitle="Build. Code. Innovate. — where engineers and thinkers come together across
+        development, AI/ML and data science."
     />
 
     <CommunitySection
+      tag="What We Build"
+      title="Three"
+      accent="Tracks"
+      desc="Pick the one that fits what you want to get good at. Nothing stops you doing all three."
+    >
+      <TrackCards :tracks="tracks" />
+    </CommunitySection>
+
+    <CommunitySection
+      alt
       tag="Upcoming Events"
       title="What's"
       accent="Coming Up"
@@ -21,7 +33,6 @@
     </CommunitySection>
 
     <CommunitySection
-      alt
       tag="Past Events"
       title="What We've"
       accent="Done"
@@ -31,6 +42,7 @@
     </CommunitySection>
 
     <CommunitySection
+      alt
       tag="Hall of Fame"
       title="Event"
       accent="Winners"
@@ -40,7 +52,6 @@
     </CommunitySection>
 
     <CommunitySection
-      alt
       tag="The Team"
       title="People Behind the"
       accent="Community"
@@ -48,6 +59,15 @@
     >
       <TeamCards :members="team" />
     </CommunitySection>
+
+    <CommunityCTA
+      alt
+      heading="Join the Technical Community"
+      body="Ship something with people who will review it. Open to every level — bring a
+        half-finished idea and find the three people who want to finish it with you."
+      join-label="Join the Technical Community"
+      join-href="https://docs.google.com/forms/d/e/1FAIpQLSd0H31y_2l02T2TCPSaMvooqdnRyLzcpZ4ysT32PAOhvx5lkA/viewform?usp=header"
+    />
   </div>
 </template>
 
@@ -58,6 +78,9 @@ import UpcomingEventCards from '../components/community/UpcomingEventCards.vue';
 import PastEventCards from '../components/community/PastEventCards.vue';
 import WinnerCards from '../components/community/WinnerCards.vue';
 import TeamCards from '../components/community/TeamCards.vue';
+import TrackCards from '../components/community/TrackCards.vue';
+import CommunityCTA from '../components/community/CommunityCTA.vue';
+import { Code2, Bot, BarChart3 } from 'lucide-vue-next';
 import { useScrollReveal } from '../composables/useAnimations.js';
 import { useEventDateFilter } from '../composables/useEventDateFilter.js';
 import '../assets/community.css';
@@ -76,6 +99,26 @@ const imgUbuntuQuiz =
   'https://res.cloudinary.com/l59gy0g2/image/upload/f_auto,q_auto:good,w_1000,c_limit/v1785911351/sundarbans/src/assets/Community_Events/Technical/Ubuntu_Mastery_Quiz.jpg';
 
 useScrollReveal();
+
+// The three domains the community is organised around — the same tracks the
+// index page advertises, restated here as the page's own opening chapter.
+const tracks = [
+  {
+    icon: Code2,
+    title: 'Development',
+    desc: 'Full-stack, mobile apps and system design. Build the thing, then make it hold up.',
+  },
+  {
+    icon: Bot,
+    title: 'AI / ML',
+    desc: 'Machine learning, NLP and computer vision — from paper reading to working models.',
+  },
+  {
+    icon: BarChart3,
+    title: 'Data Science',
+    desc: 'Analytics, visualization and data pipelines. Turning a messy export into an answer.',
+  },
+];
 
 // ─── All upcoming events ───────────────────────────────────────────────────
 // Add `dateISO: 'YYYY-MM-DD'` OR use `day`/`month` for auto-migration.

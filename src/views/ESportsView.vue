@@ -1,14 +1,26 @@
 <template>
   <div class="community-page community-esports">
     <PageHero
+      compact
       bg-image="https://images.unsplash.com/photo-1542751371-adc38448a05e?w=1920&q=80&auto=format&fit=crop"
       breadcrumb-title="Community"
       title="E-Sports"
       accent-title="Community"
-      subtitle="Play. Compete. Win. — where Sundarbans players grind together."
+      subtitle="Play. Compete. Win. — where Sundarbans players grind together, from casual
+        lobbies to bracket finals."
     />
 
     <CommunitySection
+      tag="Competitive Ecosystem"
+      title="Three"
+      accent="Arenas"
+      desc="Everything the community runs sits in one of these. Turn up to any of them cold."
+    >
+      <TrackCards :tracks="tracks" />
+    </CommunitySection>
+
+    <CommunitySection
+      alt
       tag="Upcoming Events"
       title="What's"
       accent="Coming Up"
@@ -51,7 +63,6 @@
     </CommunitySection>
 
     <CommunitySection
-      alt
       tag="Past Events"
       title="What We've"
       accent="Done"
@@ -78,16 +89,27 @@
     >
       <TeamCards :members="team" />
     </CommunitySection>
+
+    <CommunityCTA
+      alt
+      heading="Join the E-Sports Community"
+      body="Find a roster, enter a bracket, or just turn up to a lobby. Every title the House
+        plays has a team behind it, and most of them are short a player."
+      join-label="Join the E-Sports Community"
+      join-href="https://forms.gle/q48tZxiUuqUeLN7y9"
+    />
   </div>
 </template>
 
 <script setup>
-import { Gamepad2, Clock, MapPin } from 'lucide-vue-next';
+import { Gamepad2, Clock, MapPin, UsersRound, Target } from 'lucide-vue-next';
 import PageHero from '../components/PageHero.vue';
 import CommunitySection from '../components/community/CommunitySection.vue';
 import PastEventCards from '../components/community/PastEventCards.vue';
 import WinnerCards from '../components/community/WinnerCards.vue';
 import TeamCards from '../components/community/TeamCards.vue';
+import TrackCards from '../components/community/TrackCards.vue';
+import CommunityCTA from '../components/community/CommunityCTA.vue';
 import { useScrollReveal } from '../composables/useAnimations.js';
 import { useEventDateFilter } from '../composables/useEventDateFilter.js';
 import '../assets/community.css';
@@ -116,6 +138,24 @@ const imgOpenMic =
   'https://res.cloudinary.com/l59gy0g2/image/upload/f_auto,q_auto:good,w_1000,c_limit/v1785911344/sundarbans/src/assets/Community_Events/E-Sports/Open_Mic.jpg';
 
 useScrollReveal();
+
+const tracks = [
+  {
+    icon: Gamepad2,
+    title: 'Competitive Gaming',
+    desc: 'Tournaments, scrimmages and ranked ladders across the titles the House plays.',
+  },
+  {
+    icon: UsersRound,
+    title: 'Team Formation',
+    desc: 'Find teammates, build a roster, and go into a bracket with people you have played with.',
+  },
+  {
+    icon: Target,
+    title: 'Skill Development',
+    desc: 'Coaching, VOD reviews and strategy sessions — getting better on purpose.',
+  },
+];
 
 // ─── All upcoming events ───────────────────────────────────────────────────
 // Add `dateISO: 'YYYY-MM-DD'` OR use `day`/`month` for auto-migration.

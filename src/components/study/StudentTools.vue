@@ -21,6 +21,7 @@
           <h3 class="st-title">{{ tool.title }}</h3>
           <p class="st-desc">{{ tool.description }}</p>
           <a
+            v-if="tool.href"
             class="btn btn--text st-cta"
             :href="tool.href"
             v-bind="tool.external ? { target: '_blank', rel: 'noopener noreferrer' } : {}"
@@ -28,6 +29,9 @@
             {{ tool.cta }}
             <ArrowRight :size="14" :stroke-width="2" aria-hidden="true" />
           </a>
+          <!-- No destination on record. A link to "#" reloads the page and
+               looks broken; this states the situation instead. -->
+          <span v-else class="st-pending">{{ tool.pendingLabel }}</span>
         </article>
       </div>
     </div>
@@ -44,8 +48,12 @@ const tools = [
     icon: BarChart3,
     title: 'Score Checker',
     description: 'Check your exam scores updated by IITM BS after each exam',
+    // Left without an href on purpose: the real portal URL is not recorded
+    // anywhere in this repo, and guessing one would send students to a page
+    // that is not ours. Fill in `href` when WebOps confirms the destination.
     cta: 'Open Scores',
-    href: '#',
+    href: null,
+    pendingLabel: 'Link coming soon',
     external: false,
   },
   {
@@ -107,6 +115,14 @@ const tools = [
 .st-cta {
   margin-top: auto;
   padding-top: 0.9rem;
+}
+
+.st-pending {
+  margin-top: auto;
+  padding-top: 0.9rem;
+  font-size: 0.78rem;
+  font-style: italic;
+  color: var(--text3);
 }
 
 @media (max-width: 1100px) {

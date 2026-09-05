@@ -1,17 +1,19 @@
 <template>
   <!-- Empty state when every upcoming event has passed -->
-  <div v-if="events.length === 0" style="text-align: center; padding: 3rem 0; color: var(--text2)">
-    <div
-      style="color: var(--accent); margin-bottom: 0.75rem; display: flex; justify-content: center"
-    >
-      <CalendarX :size="28" :stroke-width="1.6" />
-    </div>
-    <p style="font-size: 1.1rem">{{ emptyText }}</p>
-  </div>
+  <p v-if="events.length === 0" class="community-empty">
+    <CalendarX :size="28" :stroke-width="1.6" aria-hidden="true" />
+    <span>{{ emptyText }}</span>
+  </p>
   <div v-else class="events-grid">
-    <div v-for="event in events" :key="event.id" class="event-card">
+    <article v-for="event in events" :key="event.id" class="event-card">
       <div class="event-img-wrap">
-        <img :src="event.image" :alt="event.title" class="event-img" />
+        <img
+          :src="event.image"
+          :alt="event.title"
+          class="event-img"
+          loading="lazy"
+          decoding="async"
+        />
       </div>
       <div class="event-body">
         <span class="event-type-tag">{{ event.type }}</span>
@@ -23,19 +25,30 @@
           <span><MapPin :size="13" :stroke-width="1.9" /> {{ event.venue }}</span>
         </div>
         <a
-          :href="event.registerLink || '#'"
+          v-if="hasLink(event.registerLink)"
+          :href="event.registerLink"
           target="_blank"
           rel="noopener noreferrer"
-          class="register-btn"
-          >Register Now</a
+          class="btn btn--outline btn--sm event-cta"
         >
+          Register Now
+          <ArrowRight :size="14" :stroke-width="2" aria-hidden="true" />
+        </a>
+        <span v-else class="event-cta-pending">Registration opens soon</span>
       </div>
-    </div>
+    </article>
   </div>
 </template>
 
 <script setup>
-import { Calendar, Clock, MapPin, CalendarX } from 'lucide-vue-next';
+import { Calendar, Clock, MapPin, CalendarX, ArrowRight } from 'lucide-vue-next';
+
+// Several events carry `registerLink: '#'`, which reloads the page and reads
+// as a broken control. Those render as a status line instead of a button.
+function hasLink(href) {
+  const value = String(href ?? '').trim();
+  return value !== '' && value !== '#';
+}
 
 // Image-led upcoming-event card, used by the Technical and Cultural pages.
 // E-Sports uses a different card (date badge, no artwork) and keeps it locally.
@@ -44,3 +57,17 @@ defineProps({
   emptyText: { type: String, required: true },
 });
 </script>
+
+<style scoped>
+.event-cta {
+  align-self: flex-start;
+  margin-top: 0.9rem;
+}
+
+.event-cta-pending {
+  margin-top: 0.9rem;
+  font-size: 0.78rem;
+  font-style: italic;
+  color: var(--text3);
+}
+</style>
