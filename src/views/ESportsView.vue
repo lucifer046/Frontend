@@ -19,7 +19,17 @@
         v-if="upcomingEvents.length === 0"
         style="text-align: center; padding: 3rem 0; color: var(--text2)"
       >
-        <p style="font-size: 1.1rem">🎮 No upcoming events right now — check back soon!</p>
+        <div
+          style="
+            color: var(--accent);
+            margin-bottom: 0.75rem;
+            display: flex;
+            justify-content: center;
+          "
+        >
+          <Gamepad2 :size="28" :stroke-width="1.6" />
+        </div>
+        <p style="font-size: 1.1rem">No upcoming events right now — check back soon!</p>
       </div>
       <div v-else class="events-grid">
         <div v-for="event in upcomingEvents" :key="event.id" class="event-card">
@@ -32,8 +42,8 @@
             <h3 class="event-title">{{ event.title }}</h3>
             <p class="event-desc">{{ event.description }}</p>
             <div class="event-meta">
-              <span>🕐 {{ event.time }}</span>
-              <span>📍 {{ event.venue }}</span>
+              <span><Clock :size="13" :stroke-width="1.9" /> {{ event.time }}</span>
+              <span><MapPin :size="13" :stroke-width="1.9" /> {{ event.venue }}</span>
             </div>
           </div>
         </div>
@@ -72,6 +82,7 @@
 </template>
 
 <script setup>
+import { Gamepad2, Clock, MapPin } from 'lucide-vue-next';
 import PageHero from '../components/PageHero.vue';
 import CommunitySection from '../components/community/CommunitySection.vue';
 import PastEventCards from '../components/community/PastEventCards.vue';

@@ -13,13 +13,17 @@
         <span class="event-type-tag">{{ event.type }}</span>
         <h3 class="past-event-title">{{ event.title }}</h3>
         <p class="past-event-desc">{{ event.description }}</p>
-        <div class="past-event-stat">👥 {{ event.attendees }} attended</div>
+        <div class="past-event-stat">
+          <Users :size="13" :stroke-width="1.9" /> {{ event.attendees }} attended
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
+import { Users } from 'lucide-vue-next';
+
 defineProps({
   events: { type: Array, required: true },
 });

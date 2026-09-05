@@ -13,16 +13,7 @@
       <div class="container">
         <div class="about-grid">
           <div>
-            <div
-              class="section-tag"
-              style="
-                background: rgba(79, 142, 247, 0.1);
-                color: #4f8ef7;
-                border-color: rgba(79, 142, 247, 0.3);
-              "
-            >
-              Tech Community
-            </div>
+            <div class="section-tag" style="color: #4f8ef7">Tech Community</div>
             <h2 class="section-title-xl"><span class="tg">Build.</span> Code. Innovate.</h2>
             <p class="desc">
               Connect with builders, analysts, and innovators across specialized technical domains.
@@ -30,21 +21,21 @@
             </p>
             <div class="about-highlights">
               <div class="hi">
-                <div class="hi-icon">💻</div>
+                <div class="hi-icon"><Code2 :size="20" :stroke-width="1.8" /></div>
                 <div>
                   <strong>Development Track</strong>
                   <p>Full-stack, mobile apps, system design</p>
                 </div>
               </div>
               <div class="hi">
-                <div class="hi-icon">🤖</div>
+                <div class="hi-icon"><Bot :size="20" :stroke-width="1.8" /></div>
                 <div>
                   <strong>AI/ML Track</strong>
                   <p>Machine learning, NLP, computer vision</p>
                 </div>
               </div>
               <div class="hi">
-                <div class="hi-icon">📊</div>
+                <div class="hi-icon"><BarChart3 :size="20" :stroke-width="1.8" /></div>
                 <div>
                   <strong>Data Science</strong>
                   <p>Analytics, visualization, data pipelines</p>
@@ -57,7 +48,7 @@
                 target="_blank"
                 rel="noopener noreferrer"
                 class="submit-btn"
-                style="display: inline-flex; background: #f59e0b; color: #0a0f1e"
+                style="display: inline-flex; background: #f59e0b; color: var(--color-bg-black)"
               >
                 Join Community
               </a>
@@ -82,16 +73,7 @@
       <div class="container">
         <div class="about-grid" style="direction: rtl">
           <div style="direction: ltr">
-            <div
-              class="section-tag"
-              style="
-                background: rgba(245, 158, 11, 0.1);
-                color: #f59e0b;
-                border-color: rgba(245, 158, 11, 0.3);
-              "
-            >
-              Cultural Community
-            </div>
+            <div class="section-tag" style="color: #f59e0b">Cultural Community</div>
             <h2 class="section-title-xl">
               <span
                 style="
@@ -110,21 +92,21 @@
             </p>
             <div class="about-highlights">
               <div class="hi">
-                <div class="hi-icon">🎨</div>
+                <div class="hi-icon"><Palette :size="20" :stroke-width="1.8" /></div>
                 <div>
                   <strong>Arts & Crafts</strong>
                   <p>Design, illustration, photography</p>
                 </div>
               </div>
               <div class="hi">
-                <div class="hi-icon">🎵</div>
+                <div class="hi-icon"><Music :size="20" :stroke-width="1.8" /></div>
                 <div>
                   <strong>Music & Dance</strong>
                   <p>Performances, collaborations, jam sessions</p>
                 </div>
               </div>
               <div class="hi">
-                <div class="hi-icon">📖</div>
+                <div class="hi-icon"><BookOpen :size="20" :stroke-width="1.8" /></div>
                 <div>
                   <strong>Literature & Debate</strong>
                   <p>Book clubs, debates, creative writing</p>
@@ -137,7 +119,7 @@
                 target="_blank"
                 rel="noopener noreferrer"
                 class="submit-btn"
-                style="display: inline-flex; background: #f59e0b; color: #0a0f1e"
+                style="display: inline-flex; background: #f59e0b; color: var(--color-bg-black)"
               >
                 Join Community
               </a>
@@ -162,16 +144,7 @@
       <div class="container">
         <div class="about-grid">
           <div>
-            <div
-              class="section-tag"
-              style="
-                background: rgba(220, 38, 38, 0.1);
-                color: #ef4444;
-                border-color: rgba(220, 38, 38, 0.3);
-              "
-            >
-              E-Sports Community
-            </div>
+            <div class="section-tag" style="color: #ef4444">E-Sports Community</div>
             <h2 class="section-title-xl">
               <span
                 style="
@@ -189,21 +162,21 @@
             </p>
             <div class="about-highlights">
               <div class="hi">
-                <div class="hi-icon">🎮</div>
+                <div class="hi-icon"><Gamepad2 :size="20" :stroke-width="1.8" /></div>
                 <div>
                   <strong>Competitive Gaming</strong>
                   <p>Tournaments, scrimmages, ranked ladders</p>
                 </div>
               </div>
               <div class="hi">
-                <div class="hi-icon">🏟️</div>
+                <div class="hi-icon"><UsersRound :size="20" :stroke-width="1.8" /></div>
                 <div>
                   <strong>Team Formation</strong>
                   <p>Find teammates, build rosters, compete together</p>
                 </div>
               </div>
               <div class="hi">
-                <div class="hi-icon">🎯</div>
+                <div class="hi-icon"><Target :size="20" :stroke-width="1.8" /></div>
                 <div>
                   <strong>Skill Development</strong>
                   <p>Coaching, VOD reviews, strategy sessions</p>
@@ -216,7 +189,7 @@
                 target="_blank"
                 rel="noopener noreferrer"
                 class="submit-btn"
-                style="display: inline-flex; background: #f59e0b; color: #0a0f1e"
+                style="display: inline-flex; background: #f59e0b; color: var(--color-bg-black)"
               >
                 Join Community
               </a>
@@ -242,6 +215,17 @@
 import { useScrollReveal } from '../composables/useAnimations.js';
 import PageHero from '../components/PageHero.vue';
 import { RouterLink } from 'vue-router';
+import {
+  Code2,
+  Bot,
+  BarChart3,
+  Palette,
+  Music,
+  BookOpen,
+  Gamepad2,
+  UsersRound,
+  Target,
+} from 'lucide-vue-next';
 
 useScrollReveal();
 </script>
@@ -260,19 +244,30 @@ useScrollReveal();
   align-items: center;
   gap: 0.4rem;
   padding: 0.7rem 1.4rem;
-  border-radius: var(--rad1, 8px);
-  border: 1.5px solid var(--accent, #4f8ef7);
+  border-radius: var(--rad, 8px);
+  border: 1px solid var(--accent, #4f8ef7);
   color: var(--accent, #4f8ef7);
   font-weight: 600;
   font-size: 0.95rem;
   text-decoration: none;
   transition:
-    background 0.2s,
-    color 0.2s;
+    background-color var(--duration-button) var(--ease-editorial),
+    border-color var(--duration-button) var(--ease-editorial),
+    color var(--duration-button) var(--ease-editorial),
+    box-shadow var(--duration-button) var(--ease-editorial),
+    transform var(--duration-button) var(--ease-editorial);
 }
 
+/* Outline stays outline on hover — a raised dark surface and a brighter
+   edge, never a sudden fill. */
 .explore-btn:hover {
-  background: var(--accent, #4f8ef7);
-  color: #fff;
+  background: var(--color-surface-hover);
+  border-color: var(--accent, #4f8ef7);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.explore-btn:active {
+  transform: translateY(0) scale(0.988);
 }
 </style>

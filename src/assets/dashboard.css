@@ -1,23 +1,23 @@
 /* ============================================================
    SUNDARBANS HOUSE WIDGETS — dashboard.css
    Design System: Dark Forest Luxury
-   Fonts: Cormorant Garamond (display) · Outfit (body)
+   Fonts: Cormorant Garamond (lounge display) · Chillax (body, via --font-body)
    ============================================================ */
 
 /* Google Fonts import (replaces the HTML link tags) */
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap');
 
 /* ── DESIGN TOKENS ── */
 .dashboard-page {
   /* Backgrounds */
-  --black: #060808;
-  --deep: #0a0f0a;
-  --forest: #131d13;
-  --panel: rgba(15, 22, 15, 0.88);
-  --panel-solid: #0f160f;
+  --black: var(--color-bg-black);
+  --deep: var(--color-bg-forest);
+  --forest: var(--color-card);
+  --panel: var(--color-card);
+  --panel-solid: var(--color-bg-forest);
 
   /* Borders */
-  --border: rgba(201, 168, 76, 0.2);
+  --border: var(--border-card);
   --border-soft: rgba(255, 255, 255, 0.07);
 
   /* Gold palette */
@@ -40,13 +40,13 @@
 
   background: var(--black);
   color: var(--cream);
-  font-family: 'Outfit', sans-serif;
+  font-family: var(--font-body);
   min-height: 100vh;
   overflow-x: hidden;
   background-image:
     radial-gradient(circle at 10% 0%, rgba(201, 168, 76, 0.12), transparent 28rem),
     radial-gradient(circle at 88% 10%, rgba(76, 175, 80, 0.1), transparent 26rem),
-    linear-gradient(180deg, #080a08 0%, #0b0d08 44%, #060808 100%);
+    linear-gradient(180deg, #050605 0%, #050605 44%, #050605 100%);
 }
 
 /* ── FILM GRAIN OVERLAY ── */
@@ -154,7 +154,7 @@
 }
 .dashboard-page .nav-inner {
   width: 100%;
-  max-width: 1400px;
+  max-width: var(--content-max-width);
   margin: 0 auto;
   display: flex;
   align-items: center;
@@ -173,7 +173,7 @@
   border-radius: 7px;
   display: grid;
   place-items: center;
-  font-size: 16px;
+  color: var(--gold);
   background: var(--gold-dim);
 }
 .dashboard-page .nav-brand-name {
@@ -208,7 +208,7 @@
    DASHBOARD SHELL + HERO
 ═══════════════════════════════════════════ */
 .dashboard-page .dashboard-shell {
-  max-width: 1400px;
+  max-width: var(--content-max-width);
   margin: 0 auto;
   padding: 52px 48px 120px;
   position: relative;
@@ -332,7 +332,7 @@
   border-radius: 8px;
   background: transparent;
   color: var(--muted);
-  font-family: 'Outfit', sans-serif;
+  font-family: var(--font-body);
   text-align: left;
   cursor: pointer;
   transition:
@@ -481,7 +481,7 @@
   gap: 8px;
   padding: 10px 22px;
   border-radius: 100px;
-  font-family: 'Outfit', sans-serif;
+  font-family: var(--font-body);
   font-size: 12px;
   font-weight: 500;
   letter-spacing: 0.1em;
@@ -520,6 +520,7 @@
   background: var(--gold-dim);
   color: var(--cream);
   border-color: var(--border);
+  transform: translateY(-2px);
 }
 
 .dashboard-page .btn-green {
@@ -611,7 +612,7 @@
 }
 .dashboard-page .streak-day.done {
   background: linear-gradient(135deg, rgba(255, 140, 0, 0.25), rgba(201, 168, 76, 0.15));
-  border: 1px solid rgba(201, 168, 76, 0.4);
+  border: 1px solid var(--border-gold);
 }
 .dashboard-page .streak-day.empty {
   background: var(--subtle);
@@ -620,7 +621,7 @@
 }
 .dashboard-page .streak-day.today-slot {
   border: 1px solid var(--gold) !important;
-  box-shadow: 0 0 12px rgba(201, 168, 76, 0.25);
+  box-shadow: none;
 }
 .dashboard-page .streak-day-name {
   font-size: 7px;
@@ -704,7 +705,7 @@
   flex-direction: column;
   align-items: center;
   gap: 5px;
-  font-family: 'Outfit', sans-serif;
+  font-family: var(--font-body);
   font-size: 10px;
   color: var(--muted);
   letter-spacing: 0.06em;
@@ -820,7 +821,7 @@
   border-radius: 12px;
   padding: 14px 16px;
   color: var(--cream);
-  font-family: 'Outfit', sans-serif;
+  font-family: var(--font-body);
   font-size: 13px;
   resize: none;
   min-height: 86px;
@@ -872,7 +873,7 @@
 .dashboard-page .confession-item {
   background: var(--subtle);
   border: 1px solid var(--border-soft);
-  border-radius: 14px;
+  border-radius: var(--rad2);
   padding: 15px 17px;
   transition: border-color 0.2s;
   animation: slide-up 0.4s cubic-bezier(0.16, 1, 0.3, 1);
@@ -910,7 +911,7 @@
   align-items: center;
   gap: 4px;
   color: var(--muted);
-  font-family: 'Outfit', sans-serif;
+  font-family: var(--font-body);
 }
 .dashboard-page .reaction-btn:hover {
   border-color: var(--border);
@@ -1061,7 +1062,7 @@
   border: 1px solid var(--border-soft);
   background: transparent;
   color: var(--muted);
-  font-family: 'Outfit', sans-serif;
+  font-family: var(--font-body);
   font-size: 11px;
   letter-spacing: 0.08em;
   cursor: pointer;
@@ -1146,7 +1147,7 @@
 .dashboard-page .pomo-session-dot.filled {
   background: var(--gold);
   border-color: var(--gold);
-  box-shadow: 0 0 6px rgba(201, 168, 76, 0.5);
+  box-shadow: none;
 }
 .dashboard-page .pomo-session-lbl {
   font-size: 10px;
@@ -1237,7 +1238,7 @@
   border-radius: 10px;
   padding: 11px 36px 11px 14px;
   color: var(--cream);
-  font-family: 'Outfit', sans-serif;
+  font-family: var(--font-body);
   font-size: 13px;
   outline: none;
   cursor: pointer;
@@ -1251,7 +1252,7 @@
   border-color: var(--border);
 }
 .dashboard-page .buddy-select option {
-  background: #0f160f;
+  background: var(--color-bg-forest);
   color: var(--cream);
 }
 .dashboard-page .buddy-select.error {
@@ -1266,7 +1267,7 @@
 .dashboard-page .buddy-result {
   background: var(--gold-dim2);
   border: 1px solid var(--border);
-  border-radius: 14px;
+  border-radius: var(--rad2);
   padding: 20px 22px;
   display: none;
   animation: slide-up 0.45s cubic-bezier(0.16, 1, 0.3, 1);
@@ -1377,7 +1378,7 @@
 .dashboard-page .diff-medium {
   background: rgba(255, 180, 50, 0.18);
   color: #f5b642;
-  border: 1px solid rgba(255, 180, 50, 0.3);
+  border: 1px solid var(--border-card);
 }
 .dashboard-page .diff-easy {
   background: rgba(76, 175, 80, 0.18);
@@ -1465,7 +1466,7 @@
   font-size: 12px;
   color: var(--muted);
   background: rgba(201, 168, 76, 0.06);
-  border: 1px dashed rgba(201, 168, 76, 0.25);
+  border: 1px dashed var(--border-card);
   border-radius: 10px;
   padding: 13px 15px;
   margin-bottom: 13px;
@@ -1550,7 +1551,7 @@
 .dashboard-page .meme-winner-wrap {
   background: var(--gold-dim2);
   border: 1px solid var(--border);
-  border-radius: 16px;
+  border-radius: var(--rad2);
   padding: 20px;
   margin-bottom: 18px;
   text-align: center;
@@ -1666,7 +1667,7 @@
   border: 1px solid var(--border-soft);
   background: var(--subtle);
   transition: all 0.2s;
-  font-family: 'Outfit', sans-serif;
+  font-family: var(--font-body);
   color: var(--muted);
 }
 .dashboard-page .meme-cand-v:hover {
@@ -1683,8 +1684,8 @@
   color: #b0b0b0;
 }
 .dashboard-page .meme-drop-zone {
-  border: 1px dashed rgba(201, 168, 76, 0.32);
-  border-radius: 14px;
+  border: 1px dashed var(--border-card);
+  border-radius: var(--rad2);
   padding: 22px;
   text-align: center;
   cursor: pointer;
@@ -1736,7 +1737,7 @@
   padding: 36px 48px;
 }
 .dashboard-page .footer-inner {
-  max-width: 1400px;
+  max-width: var(--content-max-width);
   margin: 0 auto;
   display: flex;
   align-items: center;

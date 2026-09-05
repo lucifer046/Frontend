@@ -16,7 +16,7 @@
     >
       <UpcomingEventCards
         :events="upcomingEvents"
-        empty-text="🛠️ No upcoming events right now — check back soon!"
+        empty-text="No upcoming events right now — check back soon!"
       />
     </CommunitySection>
 

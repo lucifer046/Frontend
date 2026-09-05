@@ -30,7 +30,7 @@
             <div class="section-tag">Featured</div>
             <h3
               style="
-                font-family: Cinzel, serif;
+                font-family: var(--font-display);
                 font-size: 1.8rem;
                 font-weight: 800;
                 margin: 0.75rem 0;
@@ -46,11 +46,36 @@
               <div id="mainEventCountdown" class="countdown-widget"></div>
             </div>
             <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1.25rem">
-              <span style="font-size: 0.8rem; color: var(--text2)"
-                >📅 This Friday, 6:00 PM – 8:00 PM</span
+              <span
+                style="
+                  display: inline-flex;
+                  align-items: center;
+                  gap: 0.3rem;
+                  font-size: 0.8rem;
+                  color: var(--text2);
+                "
+                ><Calendar :size="13" :stroke-width="1.9" /> This Friday, 6:00 PM – 8:00 PM</span
               >
-              <span style="font-size: 0.8rem; color: var(--text2)">📍 Online (Zoom)</span>
-              <span style="font-size: 0.8rem; color: var(--text2)">🎟️ Free for all members</span>
+              <span
+                style="
+                  display: inline-flex;
+                  align-items: center;
+                  gap: 0.3rem;
+                  font-size: 0.8rem;
+                  color: var(--text2);
+                "
+                ><MapPin :size="13" :stroke-width="1.9" /> Online (Zoom)</span
+              >
+              <span
+                style="
+                  display: inline-flex;
+                  align-items: center;
+                  gap: 0.3rem;
+                  font-size: 0.8rem;
+                  color: var(--text2);
+                "
+                ><Ticket :size="13" :stroke-width="1.9" /> Free for all members</span
+              >
             </div>
             <a href="#" class="btn-hero-primary" style="display: inline-flex">Register Now →</a>
           </div>
@@ -94,7 +119,17 @@
           v-if="filteredEvents.length === 0"
           style="text-align: center; padding: 3rem 0; color: var(--text2)"
         >
-          <p style="font-size: 1.1rem">🎉 No upcoming events right now — check back soon!</p>
+          <div
+            style="
+              color: var(--accent);
+              margin-bottom: 0.75rem;
+              display: flex;
+              justify-content: center;
+            "
+          >
+            <PartyPopper :size="28" :stroke-width="1.6" />
+          </div>
+          <p style="font-size: 1.1rem">No upcoming events right now — check back soon!</p>
         </div>
         <div v-else class="grid-3">
           <div
@@ -113,7 +148,7 @@
             <div class="section-tag" :style="ev.tagStyle || ''">
               {{ ev.category }}
             </div>
-            <h3 style="font-family: Cinzel, serif; font-weight: 700; margin: 0.5rem 0 0.4rem">
+            <h3 style="font-family: var(--font-display); font-weight: 700; margin: 0.5rem 0 0.4rem">
               {{ ev.title }}
             </h3>
             <p class="desc" style="margin-bottom: 0.75rem">{{ ev.desc }}</p>
@@ -126,9 +161,13 @@
                 color: var(--text2);
               "
             >
-              <span>📅 {{ ev.date }}</span
-              ><span>🕐 {{ ev.time }}</span
-              ><span>📍 {{ ev.location }}</span>
+              <span style="display: inline-flex; align-items: center; gap: 0.3rem"
+                ><Calendar :size="13" :stroke-width="1.9" /> {{ ev.date }}</span
+              ><span style="display: inline-flex; align-items: center; gap: 0.3rem"
+                ><Clock :size="13" :stroke-width="1.9" /> {{ ev.time }}</span
+              ><span style="display: inline-flex; align-items: center; gap: 0.3rem"
+                ><MapPin :size="13" :stroke-width="1.9" /> {{ ev.location }}</span
+              >
             </div>
             <a href="#" class="submit-btn" style="font-size: 0.85rem; padding: 0.55rem 1.25rem"
               >Register Now</a
@@ -162,7 +201,7 @@
 
             <div class="section-tag" style="opacity: 0.7">{{ p.category }}</div>
 
-            <h3 style="font-family: Cinzel, serif; font-weight: 700; margin: 0.5rem 0 0.4rem">
+            <h3 style="font-family: var(--font-display); font-weight: 700; margin: 0.5rem 0 0.4rem">
               {{ p.title }}
             </h3>
 
@@ -178,8 +217,12 @@
                 flex-wrap: wrap;
               "
             >
-              <span>📅 {{ p.date }}</span>
-              <span v-if="p.location">📍 {{ p.location }}</span>
+              <span style="display: inline-flex; align-items: center; gap: 0.3rem"
+                ><Calendar :size="13" :stroke-width="1.9" /> {{ p.date }}</span
+              >
+              <span v-if="p.location" style="display: inline-flex; align-items: center; gap: 0.3rem"
+                ><MapPin :size="13" :stroke-width="1.9" /> {{ p.location }}</span
+              >
             </div>
           </div>
         </div>
@@ -191,7 +234,7 @@
       class="cta-section rs"
       style="
         padding: 5rem 0;
-        background: linear-gradient(135deg, rgba(212, 160, 23, 0.06), rgba(8, 7, 5, 0.95));
+        background: linear-gradient(135deg, rgba(213, 166, 58, 0.06), rgba(5, 6, 5, 0.95));
       "
     >
       <div class="container">
@@ -214,6 +257,7 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { Calendar, Clock, MapPin, Ticket, PartyPopper } from 'lucide-vue-next';
 import PageHero from '../components/PageHero.vue';
 
 import { useScrollReveal } from '../composables/useAnimations.js';

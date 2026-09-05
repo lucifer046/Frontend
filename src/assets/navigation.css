@@ -1,0 +1,106 @@
+/* ===== VERTICAL NAVIGATION — TOKENS & LAYOUT CONTRACT =====
+   Everything the rest of the app needs to know about the navigation lives
+   here: its dimensions, its motion vocabulary, its layer, and the single
+   rule that reserves room for it. The component's own appearance is scoped
+   inside src/components/navigation/VerticalNavigation.vue. */
+
+:root {
+  /* ── Dimensions ───────────────────────────────────────────────────
+     Collapsed width is what the page permanently reserves. The open
+     width overlays the content instead of pushing it, so nothing
+     reflows and no horizontal overflow is possible. */
+  --nav-rail-width: 78px; /* the reserved gutter — stated once, here */
+  --vnav-w: var(--nav-rail-width);
+  --vnav-w-open: 252px;
+  --vnav-item-h: 46px;
+  --vnav-mobile-h: 62px;
+
+  /* ── Surface ──────────────────────────────────────────────────────
+     Opaque by design. No backdrop-filter anywhere in the navigation. */
+  --vnav-surface: var(--color-bg-black);
+  --vnav-surface-open: var(--color-bg-forest);
+  --vnav-hairline: var(--border-subtle);
+  --vnav-shadow: 0 0 0 1px rgba(0, 0, 0, 0.4), 24px 0 60px rgba(0, 0, 0, 0.45);
+
+  /* ── Motion ───────────────────────────────────────────────────────
+     One vocabulary for the rail, the indicator, the drawer and the page
+     transition, so nothing in the navigation invents its own timing. */
+  --nav-fast: 220ms;
+  --nav-medium: 420ms;
+  --nav-slow: 620ms;
+  --nav-drawer: 520ms;
+  --nav-page-in: 540ms;
+  --nav-page-out: 280ms;
+  --ease-nav: var(--ease-editorial);
+  --ease-nav-reveal: var(--ease-reveal);
+  /* Slightly longer tail than --ease-nav: the indicator arrives and settles
+     rather than stopping dead. */
+  --ease-nav-settle: cubic-bezier(0.32, 0.72, 0.24, 1);
+
+  /* ── Layering ─────────────────────────────────────────────────────
+     Above every page surface, below the search overlay (9999), the grain
+     (5000) and the preloader (99999). */
+  --vnav-z-scrim: 1200;
+  --vnav-z-rail: 1210;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --nav-fast: 1ms;
+    --nav-medium: 1ms;
+    --nav-slow: 1ms;
+    --nav-drawer: 1ms;
+    --nav-page-in: 1ms;
+    --nav-page-out: 1ms;
+  }
+}
+
+/* ── Layout contract ────────────────────────────────────────────────
+   The only thing the rail asks of the page: a reserved gutter equal to
+   its collapsed width, and only where the rail is actually mounted.
+   Expansion overlays, so this value never changes at runtime — there is
+   no layout shift and no reflow when the rail opens. */
+.app-shell--railed {
+  padding-left: 0;
+  transition: padding-left var(--nav-medium) var(--ease-nav);
+}
+
+@media (min-width: 1024px) {
+  .app-shell--railed {
+    padding-left: var(--vnav-w);
+  }
+}
+
+/* ===== PAGE TRANSITION =====
+   Turning a page, not sliding a carousel: the outgoing view drifts a short
+   way against the reading direction as it leaves, the incoming one arrives
+   from the other side. Small distances, mode="out-in", so the two never
+   overlap and no scroll position is fought over. */
+.page-turn-enter-active {
+  transition:
+    opacity var(--nav-page-in) var(--ease-nav-reveal),
+    transform var(--nav-page-in) var(--ease-nav-reveal);
+}
+
+.page-turn-leave-active {
+  transition:
+    opacity var(--nav-page-out) var(--ease-nav),
+    transform var(--nav-page-out) var(--ease-nav);
+}
+
+.page-turn-enter-from {
+  opacity: 0;
+  transform: translate3d(14px, 0, 0);
+}
+
+.page-turn-leave-to {
+  opacity: 0;
+  transform: translate3d(-12px, 0, 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-turn-enter-from,
+  .page-turn-leave-to {
+    transform: none;
+  }
+}

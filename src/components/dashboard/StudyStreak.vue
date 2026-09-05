@@ -16,7 +16,9 @@
 
     <!-- Flame + counter -->
     <div class="streak-flame-wrap">
-      <div class="streak-flame" :style="{ fontSize: flameSize + 'px' }">🔥</div>
+      <div class="streak-flame">
+        <Flame :size="flameSize" :stroke-width="1.5" />
+      </div>
       <div>
         <div class="streak-number">{{ streak }}</div>
         <div class="streak-label">Day Streak</div>
@@ -43,7 +45,10 @@
         :class="{ done: day.done, empty: !day.done, 'today-slot': day.isToday }"
       >
         <span class="streak-day-name">{{ day.name }}</span>
-        <span class="streak-day-icon">{{ day.done ? '🔥' : '·' }}</span>
+        <span class="streak-day-icon">
+          <Flame v-if="day.done" :size="14" :stroke-width="1.8" />
+          <template v-else>·</template>
+        </span>
       </div>
     </div>
 
@@ -64,6 +69,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
+import { Flame } from 'lucide-vue-next';
 import { save, load } from '../../composables/useLocalStorage.js';
 
 const emit = defineEmits(['confetti']);

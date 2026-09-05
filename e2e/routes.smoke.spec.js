@@ -13,6 +13,7 @@ const ROUTES = [
   '/about',
   '/events',
   '/study',
+  '/exam-cities',
   '/teams',
   '/contact',
   '/login',

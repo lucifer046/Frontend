@@ -630,7 +630,7 @@ onUnmounted(() => cardObserver?.disconnect());
 /* ── MEMBER CARD ─────────────────────────────────────── */
 .tm-card {
   position: relative;
-  border-radius: 20px;
+  border-radius: var(--rad2);
   overflow: hidden;
   background: var(--surface);
   border: 1px solid var(--border);
@@ -658,8 +658,8 @@ onUnmounted(() => cardObserver?.disconnect());
 }
 
 .tm-card:hover {
-  border-color: rgba(240, 192, 64, 0.58);
-  background: rgba(212, 160, 23, 0.08);
+  border-color: var(--border-card-hover);
+  background: rgba(213, 166, 58, 0.08);
 }
 
 .tm-photo-wrap {
@@ -667,7 +667,7 @@ onUnmounted(() => cardObserver?.disconnect());
   width: 100%;
   aspect-ratio: 3/4;
   overflow: hidden;
-  background: rgba(212, 160, 23, 0.05);
+  background: var(--color-card);
 }
 
 .tm-photo-wrap img {
@@ -686,7 +686,7 @@ onUnmounted(() => cardObserver?.disconnect());
 }
 
 .tm-name {
-  font-family: 'Cinzel', serif;
+  font-family: var(--font-display);
   font-weight: 600;
   font-size: 1.25rem;
   letter-spacing: -0.02em;
@@ -737,8 +737,8 @@ onUnmounted(() => cardObserver?.disconnect());
 }
 
 .tm-soc:hover {
-  background: rgba(212, 160, 23, 0.1);
-  border-color: rgba(212, 160, 23, 0.35);
+  background: rgba(213, 166, 58, 0.1);
+  border-color: var(--border-card);
   color: var(--accent);
   transform: translateY(-2px);
 }
@@ -797,8 +797,8 @@ onUnmounted(() => cardObserver?.disconnect());
   bottom: calc(100% + 5px);
   left: 50%;
   transform: translateX(-50%);
-  background: #1a1500;
-  border: 1px solid rgba(212, 160, 23, 0.2);
+  background: var(--color-card-raised);
+  border: 1px solid var(--border-card);
   color: rgba(255, 255, 255, 0.6);
   font-size: 0.6rem;
   white-space: nowrap;
@@ -820,11 +820,11 @@ onUnmounted(() => cardObserver?.disconnect());
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Syne', sans-serif;
+  font-family: var(--font-display);
   font-size: 2.5rem;
   font-weight: 800;
-  color: rgba(212, 160, 23, 0.25);
-  background: linear-gradient(135deg, rgba(212, 160, 23, 0.04), rgba(212, 160, 23, 0.08));
+  color: rgba(213, 166, 58, 0.25);
+  background: linear-gradient(135deg, rgba(213, 166, 58, 0.04), rgba(213, 166, 58, 0.08));
 }
 
 /* ── RESPONSIVE ────────────────────────────────────── */

@@ -62,7 +62,7 @@
 
         <!-- NO UPCOMING STATE -->
         <div v-if="!config.upcoming" class="no-upcoming reveal">
-          <div class="no-upcoming-icon">📅</div>
+          <div class="no-upcoming-icon"><Calendar :size="32" :stroke-width="1.6" /></div>
           <h3>No upcoming meetup scheduled</h3>
           <p>
             Check back soon — we're planning the next one. Join our community to get notified first.
@@ -86,9 +86,13 @@
               </div>
               <h3 class="event-name">{{ config.upcoming.name }}</h3>
               <div class="event-chips">
-                <div class="chip">📅 {{ config.upcoming.date }}</div>
-                <div class="chip">⏰ {{ config.upcoming.time }}</div>
-                <div class="chip">🆓 Free Entry</div>
+                <div class="chip">
+                  <Calendar :size="13" :stroke-width="2" /> {{ config.upcoming.date }}
+                </div>
+                <div class="chip">
+                  <Clock :size="13" :stroke-width="2" /> {{ config.upcoming.time }}
+                </div>
+                <div class="chip"><Ticket :size="13" :stroke-width="2" /> Free Entry</div>
               </div>
               <div class="info-block">
                 <span class="info-lbl">About this Meetup</span>
@@ -97,7 +101,7 @@
               <div class="info-block">
                 <span class="info-lbl">Venue &amp; Address</span>
                 <div class="address-box">
-                  <div class="address-pin">📍</div>
+                  <div class="address-pin"><MapPin :size="16" :stroke-width="1.8" /></div>
                   <div class="address-lines">
                     <strong>{{ config.upcoming.venue }}</strong>
                     <span>{{ config.upcoming.address1 }}</span>
@@ -157,7 +161,7 @@
           class="no-upcoming reveal"
           style="margin-top: 40px"
         >
-          <div class="no-upcoming-icon">🗂️</div>
+          <div class="no-upcoming-icon"><Archive :size="32" :stroke-width="1.6" /></div>
           <h3>No past meetups yet</h3>
           <p>This chapter is just getting started. The first meetup will be the one to remember.</p>
         </div>
@@ -192,13 +196,21 @@
                 </div>
                 <h3 class="tl-title">{{ meetup.title }}</h3>
                 <div class="past-meta-row">
-                  <div v-if="meetup.date" class="past-chip">📅 {{ meetup.date }}</div>
-                  <div v-if="meetup.location" class="past-chip">📍 {{ meetup.location }}</div>
-                  <div v-if="meetup.duration" class="past-chip">⏱️ {{ meetup.duration }}</div>
-                  <div v-if="meetup.meetupNumber" class="past-chip">
-                    #️⃣ {{ meetup.meetupNumber }}
+                  <div v-if="meetup.date" class="past-chip">
+                    <Calendar :size="12" :stroke-width="2" /> {{ meetup.date }}
                   </div>
-                  <span v-if="meetup.special" class="past-chip green">🏆 {{ meetup.special }}</span>
+                  <div v-if="meetup.location" class="past-chip">
+                    <MapPin :size="12" :stroke-width="2" /> {{ meetup.location }}
+                  </div>
+                  <div v-if="meetup.duration" class="past-chip">
+                    <Timer :size="12" :stroke-width="2" /> {{ meetup.duration }}
+                  </div>
+                  <div v-if="meetup.meetupNumber" class="past-chip">
+                    <Hash :size="12" :stroke-width="2" /> {{ meetup.meetupNumber }}
+                  </div>
+                  <span v-if="meetup.special" class="past-chip green">
+                    <Trophy :size="12" :stroke-width="2" /> {{ meetup.special }}
+                  </span>
                 </div>
               </div>
               <div class="past-about">
@@ -211,7 +223,7 @@
                   <span class="past-stat-lbl">Attended</span>
                 </div>
                 <div v-if="meetup.organizer" class="past-stat">
-                  <span class="past-stat-num">👤</span>
+                  <span class="past-stat-num"><User :size="16" :stroke-width="1.8" /></span>
                   <span class="past-stat-lbl">{{ meetup.organizer }}</span>
                 </div>
                 <div v-else-if="meetup.numberDisplay" class="past-stat">
@@ -219,7 +231,7 @@
                   <span class="past-stat-lbl">Meetup No.</span>
                 </div>
                 <div class="past-stat">
-                  <span class="past-stat-num">⭐</span>
+                  <span class="past-stat-num"><Star :size="16" :stroke-width="1.8" /></span>
                   <span class="past-stat-lbl">Community Event</span>
                 </div>
               </div>
@@ -255,6 +267,19 @@
 </template>
 
 <script>
+import {
+  Calendar,
+  Clock,
+  Ticket,
+  MapPin,
+  Archive,
+  Trophy,
+  User,
+  Star,
+  Timer,
+  Hash,
+} from 'lucide-vue-next';
+
 const logoSrc =
   'https://res.cloudinary.com/l59gy0g2/image/upload/f_auto,q_auto:good,w_1000,c_limit/v1785911356/sundarbans/src/assets/LOGO.jpg';
 const houseSrc =
@@ -262,6 +287,8 @@ const houseSrc =
 
 export default {
   name: 'RegionMeetups',
+
+  components: { Calendar, Clock, Ticket, MapPin, Archive, Trophy, User, Star, Timer, Hash },
 
   props: {
     // Each region page passes its own config object
@@ -353,21 +380,19 @@ export default {
 </script>
 
 <style scoped>
+/* This page predates the global palette and used to carry its own copy of it.
+   The local names stay (hundreds of rules below read them) but every value now
+   comes from the global tokens, so the region pages cannot drift again. */
 .region-meetups {
-  --bg: #080705;
-  --surface: #110f0a;
-  --surface2: #18150e;
-  --border: rgba(212, 160, 23, 0.13);
-  --border2: rgba(212, 160, 23, 0.22);
-  --gold: #d4a017;
-  --gold-l: #f0c040;
-  --gold-d: #8b6914;
-  --gold-dim: rgba(212, 160, 23, 0.12);
-  --white: #f5edd0;
+  --border2: var(--border-card);
+  --gold-l: var(--color-gold-light);
+  --gold-d: var(--color-gold-muted);
+  --gold-dim: rgba(213, 166, 58, 0.12);
+  --white: var(--color-cream);
   --white-dim: rgba(245, 237, 208, 0.55);
   --white-faint: rgba(245, 237, 208, 0.08);
 
-  font-family: 'Outfit', sans-serif;
+  font-family: var(--font-body);
   background: var(--bg);
   color: var(--white);
   overflow-x: hidden;
@@ -380,20 +405,24 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 100px 48px 80px;
+  padding: 100px 0 80px;
   position: relative;
   z-index: 2;
 }
+/* Same grid as every other page — the region pages used to run 120px
+   narrower than the rest of the site. */
 .container {
-  max-width: 1160px;
+  max-width: var(--content-max-width);
   margin: 0 auto;
+  width: 100%;
+  padding-inline: var(--content-gutter);
 }
 .hero-pill {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: rgba(212, 160, 23, 0.1);
-  border: 1px solid rgba(212, 160, 23, 0.3);
+  background: rgba(213, 166, 58, 0.1);
+  border: 1px solid var(--border-card);
   padding: 7px 16px;
   border-radius: 100px;
   width: fit-content;
@@ -412,7 +441,7 @@ export default {
   animation: pulse-dot 1.8s ease-in-out infinite;
 }
 .hero-title {
-  font-family: 'Cinzel', serif;
+  font-family: var(--font-display);
   font-size: clamp(50px, 8.5vw, 112px);
   font-weight: 900;
   line-height: 0.95;
@@ -451,7 +480,7 @@ export default {
   gap: 4px;
 }
 .hstat-num {
-  font-family: 'Cinzel', serif;
+  font-family: var(--font-display);
   font-size: 36px;
   font-weight: 700;
   color: var(--gold-l);
@@ -498,7 +527,7 @@ export default {
     background 0.25s,
     transform 0.2s,
     box-shadow 0.3s;
-  box-shadow: 0 6px 28px rgba(212, 160, 23, 0.35);
+  box-shadow: var(--shadow-md);
   letter-spacing: 0.04em;
 }
 .btn-primary:hover {
@@ -522,7 +551,7 @@ export default {
 }
 .btn-ghost:hover {
   color: var(--gold-l);
-  border-color: rgba(212, 160, 23, 0.4);
+  border-color: var(--border-gold);
 }
 
 /* STATS */
@@ -532,7 +561,7 @@ export default {
   gap: 1px;
   background: var(--border);
   border: 1px solid var(--border);
-  border-radius: 14px;
+  border-radius: var(--rad2);
   overflow: hidden;
 }
 .stat-cell {
@@ -547,7 +576,7 @@ export default {
   background: var(--surface2);
 }
 .stat-num {
-  font-family: 'Cinzel', serif;
+  font-family: var(--font-display);
   font-size: 48px;
   font-weight: 700;
   color: var(--gold-l);
@@ -562,7 +591,7 @@ export default {
 
 /* SECTION */
 .section {
-  padding: 80px 48px;
+  padding: 80px 0;
   position: relative;
   z-index: 2;
 }
@@ -576,7 +605,7 @@ export default {
   margin-bottom: 12px;
 }
 .sec-title {
-  font-family: 'Cinzel', serif;
+  font-family: var(--font-display);
   font-size: clamp(28px, 4vw, 48px);
   font-weight: 700;
   line-height: 1.1;
@@ -596,14 +625,16 @@ export default {
   padding: 64px 32px;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 18px;
+  border-radius: var(--rad2);
 }
 .no-upcoming-icon {
-  font-size: 40px;
+  display: flex;
+  justify-content: center;
+  color: var(--gold);
   margin-bottom: 16px;
 }
 .no-upcoming h3 {
-  font-family: 'Cinzel', serif;
+  font-family: var(--font-display);
   font-size: 22px;
   font-weight: 700;
   margin-bottom: 10px;
@@ -620,9 +651,9 @@ export default {
 /* UPCOMING CARD */
 .upcoming-card {
   margin-top: 48px;
-  border-radius: 18px;
+  border-radius: var(--rad2);
   background: var(--surface);
-  border: 1px solid rgba(212, 160, 23, 0.18);
+  border: 1px solid var(--border-subtle);
   overflow: hidden;
   position: relative;
 }
@@ -647,8 +678,8 @@ export default {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  background: rgba(212, 160, 23, 0.1);
-  border: 1px solid rgba(212, 160, 23, 0.3);
+  background: rgba(213, 166, 58, 0.1);
+  border: 1px solid var(--border-card);
   color: var(--gold-l);
   padding: 5px 14px;
   border-radius: 100px;
@@ -666,7 +697,7 @@ export default {
   animation: pulse-dot 1.5s ease-in-out infinite;
 }
 .event-name {
-  font-family: 'Cinzel', serif;
+  font-family: var(--font-display);
   font-size: clamp(26px, 3.2vw, 42px);
   font-weight: 700;
   line-height: 1.1;
@@ -724,7 +755,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
+  color: var(--gold);
 }
 .address-lines {
   display: flex;
@@ -760,7 +791,7 @@ export default {
   margin-bottom: 20px;
 }
 .spots-big {
-  font-family: 'Cinzel', serif;
+  font-family: var(--font-display);
   font-size: 72px;
   font-weight: 700;
   color: var(--gold-l);
@@ -881,14 +912,14 @@ export default {
 .past-card {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 16px;
+  border-radius: var(--rad2);
   overflow: hidden;
   transition:
     border-color 0.3s,
     box-shadow 0.35s;
 }
 .past-card:hover {
-  border-color: rgba(212, 160, 23, 0.25);
+  border-color: var(--border-card);
   box-shadow: 0 16px 56px rgba(0, 0, 0, 0.5);
 }
 .past-card-head {
@@ -909,7 +940,7 @@ export default {
   text-transform: uppercase;
   color: var(--gold);
   background: var(--gold-dim);
-  border: 1px solid rgba(212, 160, 23, 0.22);
+  border: 1px solid var(--border-card);
   padding: 4px 12px;
   border-radius: 100px;
 }
@@ -930,7 +961,7 @@ export default {
   color: var(--gold-l);
 }
 .tl-title {
-  font-family: 'Cinzel', serif;
+  font-family: var(--font-display);
   font-size: 22px;
   font-weight: 700;
   margin-bottom: 10px;
@@ -954,9 +985,9 @@ export default {
   color: var(--white-dim);
 }
 .past-chip.green {
-  border-color: rgba(212, 160, 23, 0.3);
+  border-color: var(--border-card);
   color: var(--gold-l);
-  background: rgba(212, 160, 23, 0.06);
+  background: rgba(213, 166, 58, 0.06);
 }
 .past-about {
   padding: 0 32px 18px;
@@ -990,7 +1021,7 @@ export default {
   text-align: center;
 }
 .past-stat-num {
-  font-family: 'Cinzel', serif;
+  font-family: var(--font-display);
   font-size: 26px;
   font-weight: 700;
   color: var(--gold-l);
@@ -1034,7 +1065,7 @@ export default {
 .ph-ov {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(8, 7, 5, 0.55), transparent 55%);
+  background: linear-gradient(to top, rgba(5, 6, 5, 0.55), transparent 55%);
   opacity: 0;
   transition: opacity 0.35s;
 }
@@ -1135,10 +1166,10 @@ export default {
     display: none;
   }
   .hero {
-    padding: 100px 24px 60px;
+    padding: 100px 0 60px;
   }
   .section {
-    padding: 60px 24px;
+    padding: 60px 0;
   }
   .upcoming-inner {
     grid-template-columns: 1fr;

@@ -380,13 +380,13 @@ function downloadCertificate() {
   min-height: 100vh;
   background: #0a0a0f;
   color: #f0e8d0;
-  font-family: 'Outfit', sans-serif;
+  font-family: var(--font-body);
 }
 
 /* ── HERO ── */
 .verify-hero {
   position: relative;
-  padding: 120px 24px 80px;
+  padding: 120px var(--content-gutter) 80px;
   text-align: center;
   overflow: hidden;
 }
@@ -395,8 +395,8 @@ function downloadCertificate() {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse 70% 60% at 50% 0%, rgba(212, 160, 23, 0.12) 0%, transparent 70%),
-    radial-gradient(ellipse 40% 40% at 80% 100%, rgba(212, 160, 23, 0.06) 0%, transparent 60%);
+    radial-gradient(ellipse 70% 60% at 50% 0%, rgba(213, 166, 58, 0.12) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 40% at 80% 100%, rgba(213, 166, 58, 0.06) 0%, transparent 60%);
   pointer-events: none;
 }
 
@@ -410,12 +410,12 @@ function downloadCertificate() {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: rgba(212, 160, 23, 0.1);
-  border: 1px solid rgba(212, 160, 23, 0.3);
+  background: rgba(213, 166, 58, 0.1);
+  border: 1px solid var(--border-card);
   border-radius: 100px;
   padding: 6px 16px;
   font-size: 0.8rem;
-  color: #d4a017;
+  color: #d5a63a;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   margin-bottom: 28px;
@@ -424,7 +424,7 @@ function downloadCertificate() {
 .badge-dot {
   width: 7px;
   height: 7px;
-  background: #d4a017;
+  background: #d5a63a;
   border-radius: 50%;
   animation: pulse 2s infinite;
 }
@@ -442,7 +442,7 @@ function downloadCertificate() {
 }
 
 .verify-title {
-  font-family: 'Cinzel', serif;
+  font-family: var(--font-display);
   font-size: clamp(2.4rem, 5.5vw, 4.2rem);
   font-weight: 700;
   line-height: 1.15;
@@ -452,7 +452,7 @@ function downloadCertificate() {
 
 .verify-title-accent {
   font-style: italic;
-  color: #d4a017;
+  color: #d5a63a;
 }
 
 .verify-subtitle {
@@ -466,13 +466,13 @@ function downloadCertificate() {
 .verify-form-section {
   max-width: 680px;
   margin: 0 auto;
-  padding: 0 24px 60px;
+  padding: 0 var(--content-gutter) 60px;
 }
 
 .verify-card {
   background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(212, 160, 23, 0.2);
-  border-radius: 16px;
+  border: 1px solid var(--border-card);
+  border-radius: var(--rad2);
   padding: 32px;
   margin-bottom: 24px;
 }
@@ -485,7 +485,7 @@ function downloadCertificate() {
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #d4a017;
+  color: #d5a63a;
   margin-bottom: 16px;
 }
 
@@ -501,7 +501,7 @@ function downloadCertificate() {
   border-radius: 10px;
   padding: 14px 18px;
   font-size: 1rem;
-  font-family: 'Outfit', sans-serif;
+  font-family: var(--font-body);
   color: #f0e8d0;
   outline: none;
   transition: border-color 0.2s;
@@ -512,7 +512,7 @@ function downloadCertificate() {
 }
 
 .verify-input:focus {
-  border-color: rgba(212, 160, 23, 0.6);
+  border-color: var(--border-card-hover);
 }
 
 .verify-input:disabled {
@@ -520,14 +520,14 @@ function downloadCertificate() {
 }
 
 .verify-btn {
-  background: linear-gradient(135deg, #d4a017, #f0c040);
+  background: linear-gradient(135deg, #d5a63a, #e9c873);
   color: #0a0a0f;
   border: none;
   border-radius: 10px;
   padding: 14px 28px;
   font-size: 0.95rem;
   font-weight: 700;
-  font-family: 'Outfit', sans-serif;
+  font-family: var(--font-body);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -574,7 +574,7 @@ function downloadCertificate() {
 
 /* ── RESULT CARDS ── */
 .verify-result {
-  border-radius: 16px;
+  border-radius: var(--rad2);
   padding: 28px;
   display: flex;
   gap: 20px;
@@ -612,7 +612,7 @@ function downloadCertificate() {
 }
 
 .result-body h3 {
-  font-family: 'Cinzel', serif;
+  font-family: var(--font-display);
   font-size: 1.1rem;
   font-weight: 700;
   margin: 0 0 8px;
@@ -623,14 +623,14 @@ function downloadCertificate() {
 }
 
 .type-tag {
-  font-family: 'Outfit', sans-serif;
+  font-family: var(--font-body);
   font-size: 0.65rem;
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #d4a017;
-  background: rgba(212, 160, 23, 0.12);
-  border: 1px solid rgba(212, 160, 23, 0.3);
+  color: #d5a63a;
+  background: rgba(213, 166, 58, 0.12);
+  border: 1px solid var(--border-card);
   border-radius: 100px;
   padding: 3px 10px;
 }
@@ -663,7 +663,7 @@ function downloadCertificate() {
   font-size: 0.72rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: rgba(212, 160, 23, 0.7);
+  color: rgba(213, 166, 58, 0.7);
   font-weight: 600;
 }
 
@@ -687,12 +687,12 @@ function downloadCertificate() {
 }
 
 .view-btn {
-  background: rgba(212, 160, 23, 0.1);
-  color: #d4a017;
+  background: rgba(213, 166, 58, 0.1);
+  color: #d5a63a;
 }
 
 .view-btn:hover {
-  background: rgba(212, 160, 23, 0.2);
+  background: rgba(213, 166, 58, 0.2);
 }
 
 .download-btn {
@@ -700,13 +700,13 @@ function downloadCertificate() {
   align-items: center;
   gap: 8px;
   background: transparent;
-  border: 1px solid rgba(212, 160, 23, 0.4);
+  border: 1px solid var(--border-gold);
   border-radius: 8px;
   padding: 10px 20px;
   font-size: 0.88rem;
   font-weight: 600;
-  color: #d4a017;
-  font-family: 'Outfit', sans-serif;
+  color: #d5a63a;
+  font-family: var(--font-body);
   cursor: pointer;
   transition:
     background 0.2s,
@@ -714,14 +714,14 @@ function downloadCertificate() {
 }
 
 .download-btn:hover {
-  background: rgba(212, 160, 23, 0.1);
-  border-color: rgba(212, 160, 23, 0.7);
+  background: rgba(213, 166, 58, 0.1);
+  border-color: var(--border-card-hover);
 }
 
 /* ── INFO STRIPS ── */
 .verify-info-section {
   border-top: 1px solid rgba(240, 232, 208, 0.07);
-  padding: 60px 24px;
+  padding: 60px var(--content-gutter);
 }
 
 .info-strip {
@@ -741,18 +741,18 @@ function downloadCertificate() {
 .info-icon {
   width: 44px;
   height: 44px;
-  background: rgba(212, 160, 23, 0.1);
-  border: 1px solid rgba(212, 160, 23, 0.25);
+  background: rgba(213, 166, 58, 0.1);
+  border: 1px solid var(--border-card);
   border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #d4a017;
+  color: #d5a63a;
   flex-shrink: 0;
 }
 
 .info-item h4 {
-  font-family: 'Cinzel', serif;
+  font-family: var(--font-display);
   font-size: 0.95rem;
   font-weight: 700;
   color: #f0e8d0;

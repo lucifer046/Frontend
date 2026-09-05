@@ -22,13 +22,18 @@
 
     <div class="points-insight">
       <span>Leading track</span>
-      <strong>{{ leadingCategory.icon }} {{ leadingCategory.name }}</strong>
+      <strong>
+        <component :is="categoryIcon(leadingCategory.icon)" :size="15" :stroke-width="1.9" />
+        {{ leadingCategory.name }}
+      </strong>
     </div>
 
     <!-- Category breakdown bars -->
     <div class="points-categories">
       <div class="points-cat" v-for="c in cats" :key="c.name">
-        <div class="points-cat-icon">{{ c.icon }}</div>
+        <div class="points-cat-icon">
+          <component :is="categoryIcon(c.icon)" :size="18" :stroke-width="1.8" />
+        </div>
         <div class="points-cat-info">
           <div class="points-cat-name">{{ c.name }}</div>
           <div class="points-cat-bar">
@@ -49,6 +54,19 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { BookOpen, Drama, Trophy, Handshake } from 'lucide-vue-next';
+
+// House-point category icon keys -> vector icons (dashboard.json stores the
+// key, not an emoji, so new categories just need an entry here).
+const CATEGORY_ICONS = {
+  academic: BookOpen,
+  cultural: Drama,
+  sports: Trophy,
+  community: Handshake,
+};
+function categoryIcon(key) {
+  return CATEGORY_ICONS[key] ?? BookOpen;
+}
 
 const props = defineProps({
   config: { type: Object, default: null },
@@ -57,10 +75,10 @@ const props = defineProps({
 const cats = props.config
   ? props.config.categories
   : [
-      { name: 'Academic', icon: '📚', points: 312, max: 400, color: '#e8c97a' },
-      { name: 'Cultural', icon: '🎭', points: 198, max: 400, color: '#b07ae0' },
-      { name: 'Sports', icon: '🏏', points: 241, max: 400, color: '#4caf50' },
-      { name: 'Community', icon: '🤝', points: 167, max: 400, color: '#7ab0e0' },
+      { name: 'Academic', icon: 'academic', points: 312, max: 400, color: '#e8c97a' },
+      { name: 'Cultural', icon: 'cultural', points: 198, max: 400, color: '#b07ae0' },
+      { name: 'Sports', icon: 'sports', points: 241, max: 400, color: '#4caf50' },
+      { name: 'Community', icon: 'community', points: 167, max: 400, color: '#7ab0e0' },
     ];
 
 const TOTAL = cats.reduce((s, c) => s + c.points, 0);

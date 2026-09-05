@@ -52,14 +52,15 @@
 
     <!-- Collapsible hint -->
     <div class="challenge-hint" :class="{ show: hintShown }">
-      💡 <strong>Hint:</strong> Use a <em>sliding window</em> with a hash set. Advance the right
-      pointer; when you hit a duplicate, shrink from the left until it is removed. Track the maximum
-      window size throughout.
+      <Lightbulb :size="15" :stroke-width="1.8" /> <strong>Hint:</strong> Use a
+      <em>sliding window</em> with a hash set. Advance the right pointer; when you hit a duplicate,
+      shrink from the left until it is removed. Track the maximum window size throughout.
     </div>
 
     <!-- Solved confirmation -->
     <div class="challenge-solved-wrap" :class="{ show: mySolved }">
-      ✅ You solved it! <strong>{{ solvedPtsText }}</strong> points added to your tally.
+      <CircleCheck :size="15" :stroke-width="1.8" /> You solved it!
+      <strong>{{ solvedPtsText }}</strong> points added to your tally.
     </div>
 
     <!-- Action buttons -->
@@ -90,6 +91,7 @@
 
 <script setup>
 import { ref } from 'vue';
+import { Lightbulb, CircleCheck } from 'lucide-vue-next';
 import { save, load } from '../../composables/useLocalStorage.js';
 
 const props = defineProps({
@@ -147,3 +149,11 @@ function markSolved() {
   }
 }
 </script>
+
+<style scoped>
+.challenge-hint svg,
+.challenge-solved-wrap svg {
+  vertical-align: -3px;
+  color: var(--gold, #c9a84c);
+}
+</style>

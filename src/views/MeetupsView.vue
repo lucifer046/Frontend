@@ -47,13 +47,22 @@
             padding: 3rem 2rem;
             background: var(--surface);
             border: 1px solid var(--border);
-            border-radius: 16px;
+            border-radius: var(--rad2);
           "
         >
-          <div style="font-size: 2.2rem; margin-bottom: 1rem">🌍</div>
+          <div
+            style="
+              color: var(--accent);
+              margin-bottom: 1rem;
+              display: flex;
+              justify-content: center;
+            "
+          >
+            <Globe2 :size="34" :stroke-width="1.5" />
+          </div>
           <h3
             style="
-              font-family: Cinzel, serif;
+              font-family: var(--font-display);
               font-size: 1.6rem;
               margin-bottom: 1rem;
               font-weight: 700;
@@ -136,7 +145,10 @@
             <tbody>
               <tr class="lboard-row" v-for="m in members" :key="m.name + activeTab">
                 <td>
-                  <span class="lboard-rank" :class="m.rankClass">{{ m.rank }}</span>
+                  <span class="lboard-rank" :class="m.rankClass">
+                    <Medal v-if="m.rankClass" :size="15" :stroke-width="1.8" />
+                    <template v-else>{{ m.rank }}</template>
+                  </span>
                 </td>
                 <td>
                   <div class="lboard-member">
@@ -167,6 +179,7 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
+import { Globe2, Medal } from 'lucide-vue-next';
 import { useScrollReveal } from '../composables/useAnimations.js';
 import PageHero from '../components/PageHero.vue';
 import { leaderboardData } from '@/data/leaderboard.js';
@@ -224,7 +237,6 @@ function goToRegion(slug) {
   router.push('/meetups/' + slug);
 }
 
-const MEDALS = ['🥇', '🥈', '🥉'];
 const RANK_CLASSES = ['rank-1', 'rank-2', 'rank-3'];
 
 const tabs = [
@@ -242,7 +254,7 @@ const members = computed(() => {
     .sort((a, b) => b.points - a.points)
     .map((m, i) => ({
       ...m,
-      rank: MEDALS[i] ?? String(i + 1),
+      rank: String(i + 1),
       rankClass: RANK_CLASSES[i] ?? '',
       points: m.points.toLocaleString(),
     }));
@@ -257,7 +269,7 @@ const members = computed(() => {
 }
 .region-card {
   position: relative;
-  border-radius: 18px;
+  border-radius: var(--rad2);
   overflow: hidden;
   cursor: pointer;
   aspect-ratio: 3/4;
@@ -268,12 +280,12 @@ const members = computed(() => {
     box-shadow 0.35s;
 }
 .region-card:hover {
-  border-color: rgba(212, 160, 23, 0.4);
+  border-color: var(--border-gold);
   transform: translateY(-4px);
   box-shadow: 0 24px 64px rgba(0, 0, 0, 0.7);
 }
 .region-card.featured {
-  border-color: rgba(212, 160, 23, 0.3);
+  border-color: var(--border-card);
 }
 .region-bg {
   position: absolute;
@@ -295,8 +307,8 @@ const members = computed(() => {
   inset: 0;
   background: linear-gradient(
     to top,
-    rgba(8, 7, 5, 0.88) 0%,
-    rgba(8, 7, 5, 0.3) 50%,
+    rgba(5, 6, 5, 0.88) 0%,
+    rgba(5, 6, 5, 0.3) 50%,
     transparent 80%
   );
   transition: opacity 0.35s;
@@ -304,9 +316,9 @@ const members = computed(() => {
 .region-card:hover .region-overlay {
   background: linear-gradient(
     to top,
-    rgba(8, 7, 5, 0.92) 0%,
-    rgba(8, 7, 5, 0.4) 55%,
-    rgba(212, 160, 23, 0.04) 100%
+    rgba(5, 6, 5, 0.92) 0%,
+    rgba(5, 6, 5, 0.4) 55%,
+    rgba(213, 166, 58, 0.04) 100%
   );
 }
 .region-gold-tint {
@@ -314,7 +326,7 @@ const members = computed(() => {
   inset: 0;
   background: radial-gradient(
     ellipse 80% 60% at 50% 100%,
-    rgba(212, 160, 23, 0.12) 0%,
+    rgba(213, 166, 58, 0.12) 0%,
     transparent 70%
   );
   pointer-events: none;
@@ -337,10 +349,10 @@ const members = computed(() => {
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--accent2);
-  background: rgba(212, 160, 23, 0.12);
+  background: rgba(213, 166, 58, 0.12);
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
-  border: 1px solid rgba(212, 160, 23, 0.4);
+  border: 1px solid var(--border-gold);
   padding: 5px 12px;
   border-radius: 100px;
 }
@@ -350,7 +362,7 @@ const members = computed(() => {
   gap: 4px;
 }
 .region-name {
-  font-family: 'Cinzel', serif;
+  font-family: var(--font-display);
   font-size: clamp(20px, 2vw, 26px);
   font-weight: 700;
   letter-spacing: 0.01em;
@@ -371,18 +383,18 @@ const members = computed(() => {
   font-weight: 700;
   font-size: 0.95rem;
   transition: all 0.3s;
-  box-shadow: 0 4px 20px rgba(212, 160, 23, 0.25);
-  font-family: 'Outfit', sans-serif;
+  box-shadow: var(--shadow-sm);
+  font-family: var(--font-body);
 }
 .submit-btn:hover {
   background: var(--gold-light);
   transform: translateY(-2px);
-  box-shadow: 0 8px 30px rgba(212, 160, 23, 0.4);
+  box-shadow: var(--shadow-md);
 }
 .card-base {
   background: var(--bg);
   border: 1px solid var(--border);
-  border-radius: 24px;
+  border-radius: var(--rad2);
   padding: 2.5rem;
 }
 .lboard-table {
@@ -431,9 +443,9 @@ const members = computed(() => {
   border: 1px solid var(--border);
 }
 .rank-1 {
-  background: rgba(212, 160, 23, 0.15);
+  background: rgba(213, 166, 58, 0.15);
   color: var(--accent);
-  border-color: rgba(212, 160, 23, 0.3);
+  border-color: var(--border-card);
   font-size: 1.2rem;
 }
 .rank-2 {
@@ -466,13 +478,13 @@ const members = computed(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Cinzel', serif;
+  font-family: var(--font-display);
   font-weight: 700;
   color: var(--accent);
   font-size: 1.1rem;
 }
 .lboard-name {
-  font-family: 'Cinzel', serif;
+  font-family: var(--font-display);
   font-weight: 700;
   font-size: 1.05rem;
   color: var(--text);
@@ -484,7 +496,7 @@ const members = computed(() => {
   display: none;
 }
 .lboard-score {
-  font-family: 'Cinzel', serif;
+  font-family: var(--font-display);
   font-weight: 700;
   font-size: 1.1rem;
   color: var(--accent);

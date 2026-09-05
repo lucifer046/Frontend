@@ -11,6 +11,6 @@
   - `src/assets/` = assets processed/bundled by Vite (import them); `public/` = served as-is at the root URL.
   - Static data as JSON/CSV/JS in `src/data/`, `public/data/`, and per-region export folders under `src/views/meetups/`. No committed members roster.
   - Certificates live on Google Drive (URLs in code/data), not under `public/certificates/`.
-  - Display images live on Cloudinary (delivery transforms in URL). Dump new files in `media/` and run `npm run media:sync`; copy URLs from `media/manifest.json`. Hero frames stay in `public/assets/frames/`.
+  - Display images live on Cloudinary (delivery transforms in URL). Dump new files in `media/` and run `npm run media:sync`; copy URLs from `media/manifest.json`. The homepage hero uses the optimized clips in `public/assets/video/` (`home-1080.webm` first, `home-1080.mp4` fallback, `home-poster.webp` poster); the uncompressed master is kept out of `public/` so it is never deployed.
 - Workflow: changes land via GitHub PRs (repo `Anuraj-dev/Frontend`, branch `main`). See `CONTRIBUTING.md` for the full onboarding path.
 

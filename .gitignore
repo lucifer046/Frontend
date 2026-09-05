@@ -22,3 +22,6 @@ src/views/meetups/region_exports_json_and_csv/csv/
 tmp/
 Teams/
 prototypes/
+
+# Local QA harness scratch (kept out of the repo; regenerate as needed)
+qa-*.mjs

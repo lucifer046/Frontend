@@ -1,5 +1,5 @@
 <template>
-  <section class="page-hero">
+  <section class="page-hero" :class="{ 'page-hero--compact': compact }">
     <div class="page-hero-bg">
       <img :src="bgImage" :alt="breadcrumbTitle" />
       <div class="page-hero-overlay"></div>
@@ -38,6 +38,16 @@ defineProps({
   subtitle: {
     type: String,
     default: '',
+  },
+  /**
+   * Opt-in shorter hero for pages whose real content is a tool the visitor
+   * came to use — Study Corner, Exam Cities. It trims the vertical padding
+   * and deepens the overlay so the controls below are reachable in one
+   * glance. Off by default, so the nine editorial pages are untouched.
+   */
+  compact: {
+    type: Boolean,
+    default: false,
   },
 });
 </script>

@@ -95,7 +95,9 @@
           >
             <div class="event-card-top">
               <span class="event-day-badge">{{ ev.dayLabel }}</span>
-              <span class="event-icon">{{ ev.icon }}</span>
+              <span class="event-icon"
+                ><component :is="ev.icon" :size="18" :stroke-width="1.7"
+              /></span>
             </div>
             <h3>{{ ev.title }}</h3>
             <p>{{ ev.desc }}</p>
@@ -156,7 +158,7 @@
         <div class="reading-grid">
           <div class="reading-card" v-observe>
             <div class="reading-card-header">
-              <span class="reading-icon">📘</span>
+              <span class="reading-icon"><BookOpen :size="30" :stroke-width="1.6" /></span>
               <div class="room-live-chip">
                 <span class="room-dot"></span>
                 {{ isNightOwlTime ? 'Live Now' : 'Tonight' }}
@@ -189,7 +191,7 @@
 
           <div class="reading-card" v-observe style="transition-delay: 0.1s">
             <div class="reading-card-header">
-              <span class="reading-icon">📙</span>
+              <span class="reading-icon"><BookMarked :size="30" :stroke-width="1.6" /></span>
               <div class="room-live-chip">
                 <span class="room-dot"></span>
                 {{ isNightOwlTime ? 'Live Now' : 'Tonight' }}
@@ -366,7 +368,7 @@
               <div class="podium-block podium-block-2">2</div>
             </div>
             <div class="podium-slot podium-1" v-if="leaderboard[0]">
-              <div class="podium-crown">♛</div>
+              <div class="podium-crown"><Crown :size="22" :stroke-width="1.7" /></div>
               <div class="podium-avatar gold-av">{{ leaderboard[0].name.charAt(0) }}</div>
               <div class="podium-name">{{ leaderboard[0].name.split(' ')[0] }}</div>
               <div class="podium-pts">{{ leaderboard[0].pts }}<span>pts</span></div>
@@ -390,7 +392,7 @@
               :class="{ 'is-you': member.roll === memberEmail }"
             >
               <div class="lb-rank" :class="getMedalClass(index)">
-                <span v-if="index < 3">{{ ['♛', '♜', '♝'][index] }}</span>
+                <Medal v-if="index < 3" :size="15" :stroke-width="1.8" />
                 <span v-else>{{ index + 1 }}</span>
               </div>
               <div
@@ -434,6 +436,17 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { useRouter } from 'vue-router';
+import {
+  BookOpen,
+  BookMarked,
+  Crown,
+  Medal,
+  Brain,
+  HelpCircle,
+  Drama,
+  Dumbbell,
+  Mic2,
+} from 'lucide-vue-next';
 import MembersNavbar from '../components/MembersNavbar.vue';
 
 const router = useRouter();
@@ -464,7 +477,7 @@ const events = ref([
   {
     day: 1,
     dayLabel: 'Monday',
-    icon: '🧠',
+    icon: Brain,
     title: 'Technical Session',
     desc: 'Advanced DSA, system design, and competitive programming with live mentors.',
     time: '8:00 PM IST',
@@ -475,7 +488,7 @@ const events = ref([
   {
     day: 2,
     dayLabel: 'Tuesday',
-    icon: '❓',
+    icon: HelpCircle,
     title: 'Doubt Session',
     desc: 'Live mentor Q&A. Bring your questions, leave with clarity. No question is too small.',
     time: '8:00 PM IST',
@@ -486,7 +499,7 @@ const events = ref([
   {
     day: 4,
     dayLabel: 'Thursday',
-    icon: '🎭',
+    icon: Drama,
     title: 'Cultural Night',
     desc: 'Debate nights, open mic, talent showcase. Express yourself with your Sundarbans family.',
     time: '8:00 PM IST',
@@ -497,7 +510,7 @@ const events = ref([
   {
     day: 5,
     dayLabel: 'Friday',
-    icon: '🏏',
+    icon: Dumbbell,
     title: 'Sports & Fitness',
     desc: 'House matches, fitness challenges, and friendly competitions. Stay active, stay sharp.',
     time: '8:00 PM IST',
@@ -508,7 +521,7 @@ const events = ref([
   {
     day: 0,
     dayLabel: 'Sunday',
-    icon: '🎤',
+    icon: Mic2,
     title: 'Talk with Senior',
     desc: 'Career guidance, strategy sessions, and real stories from seniors who have been there.',
     time: '8:00 PM IST',
@@ -681,10 +694,10 @@ const waRegions = [
 
 <style scoped>
 .members-lounge-page {
-  --black: #050707;
-  --deep: #090d09;
-  --panel: rgba(12, 18, 12, 0.88);
-  --border: rgba(201, 168, 76, 0.18);
+  --black: var(--color-bg-black);
+  --deep: var(--color-bg-forest);
+  --panel: var(--color-card);
+  --border: var(--border-subtle);
   --border-soft: rgba(255, 255, 255, 0.065);
   --gold: #c9a84c;
   --gold-light: #e8c97a;
@@ -697,7 +710,7 @@ const waRegions = [
 
   background: var(--black);
   color: var(--cream);
-  font-family: 'Outfit', sans-serif;
+  font-family: var(--font-body);
   min-height: 100vh;
   overflow-x: hidden;
   position: relative;
@@ -1006,18 +1019,18 @@ const waRegions = [
   background: var(--gold);
   color: var(--black);
   border-radius: 100px;
-  font-family: 'Outfit', sans-serif;
+  font-family: var(--font-body);
   font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   text-decoration: none;
   transition: all 0.25s;
-  box-shadow: 0 4px 24px rgba(201, 168, 76, 0.25);
+  box-shadow: var(--shadow-sm);
 }
 .cta-primary:hover {
   background: var(--gold-light);
-  box-shadow: 0 6px 36px rgba(201, 168, 76, 0.4);
+  box-shadow: var(--shadow-md);
   transform: translateY(-1px);
 }
 .cta-secondary {
@@ -1084,7 +1097,7 @@ const waRegions = [
 
 /* LAYOUT */
 .container {
-  max-width: 1320px;
+  max-width: var(--content-max-width);
   margin: 0 auto;
   padding: 0 60px;
 }
@@ -1173,7 +1186,7 @@ section {
   opacity: 1;
 }
 .event-card.today-event {
-  border-color: rgba(201, 168, 76, 0.3);
+  border-color: var(--border-card);
   box-shadow:
     0 0 0 1px rgba(201, 168, 76, 0.1),
     0 0 48px rgba(201, 168, 76, 0.07);
@@ -1198,7 +1211,8 @@ section {
   border-radius: 100px;
 }
 .event-icon {
-  font-size: 28px;
+  display: flex;
+  color: var(--gold);
 }
 .event-card h3 {
   font-family: 'Cormorant Garamond', serif;
@@ -1239,7 +1253,7 @@ section {
   background: transparent;
   border: 1px solid var(--border);
   border-radius: 100px;
-  font-family: 'Outfit', sans-serif;
+  font-family: var(--font-body);
   font-size: 11px;
   font-weight: 500;
   letter-spacing: 0.14em;
@@ -1254,7 +1268,7 @@ section {
   background: var(--gold);
   color: var(--black);
   border-color: var(--gold);
-  box-shadow: 0 4px 20px rgba(201, 168, 76, 0.3);
+  box-shadow: var(--shadow-sm);
 }
 .join-btn svg {
   width: 12px;
@@ -1274,7 +1288,7 @@ section {
   gap: 6px;
   padding: 4px 12px;
   background: rgba(201, 168, 76, 0.12);
-  border: 1px solid rgba(201, 168, 76, 0.32);
+  border: 1px solid var(--border-card);
   border-radius: 100px;
   font-size: 9px;
   font-weight: 600;
@@ -1297,7 +1311,7 @@ section {
 }
 .title-aside {
   display: block;
-  font-family: 'Outfit', sans-serif;
+  font-family: var(--font-body);
   font-size: 14px;
   color: var(--muted);
   font-weight: 300;
@@ -1343,7 +1357,8 @@ section {
   margin-bottom: 20px;
 }
 .reading-icon {
-  font-size: 42px;
+  display: flex;
+  color: var(--gold);
 }
 .room-live-chip {
   display: flex;
@@ -1430,7 +1445,7 @@ section {
 
 .reading-pick-card {
   background: linear-gradient(145deg, rgba(20, 28, 20, 0.95), rgba(12, 18, 12, 0.88));
-  border-color: rgba(201, 168, 76, 0.12);
+  border-color: var(--border-subtle);
 }
 .pick-label {
   font-size: 9px;
@@ -1604,7 +1619,7 @@ section {
 .podium-block-1 {
   height: 80px;
   background: linear-gradient(180deg, rgba(201, 168, 76, 0.25), rgba(201, 168, 76, 0.08));
-  border-color: rgba(201, 168, 76, 0.2);
+  border-color: var(--border-card);
   color: var(--gold);
 }
 .podium-block-2 {
@@ -1660,6 +1675,9 @@ section {
 }
 
 .lb-rank {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   font-family: 'Cormorant Garamond', serif;
   font-size: 20px;
   min-width: 32px;
@@ -1930,7 +1948,7 @@ section {
   background: rgba(37, 211, 102, 0.08);
   border: 1px solid rgba(37, 211, 102, 0.2);
   border-radius: 100px;
-  font-family: 'Outfit', sans-serif;
+  font-family: var(--font-body);
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.14em;

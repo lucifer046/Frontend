@@ -45,7 +45,7 @@
                     justify-content: center;
                     width: 42px;
                     height: 42px;
-                    background: rgba(212, 160, 23, 0.1);
+                    background: rgba(213, 166, 58, 0.1);
                     border-radius: 50%;
                     color: var(--accent);
                   "
@@ -59,7 +59,7 @@
                 <div>
                   <h4
                     style="
-                      font-family: Cinzel, serif;
+                      font-family: var(--font-display);
                       font-size: 0.95rem;
                       font-weight: 700;
                       margin-bottom: 0.25rem;
@@ -98,7 +98,7 @@
                     justify-content: center;
                     width: 42px;
                     height: 42px;
-                    background: rgba(212, 160, 23, 0.1);
+                    background: rgba(213, 166, 58, 0.1);
                     border-radius: 50%;
                     color: var(--accent);
                   "
@@ -112,7 +112,7 @@
                 <div>
                   <h4
                     style="
-                      font-family: Cinzel, serif;
+                      font-family: var(--font-display);
                       font-size: 0.95rem;
                       font-weight: 700;
                       margin-bottom: 0.25rem;
@@ -149,7 +149,7 @@
                     justify-content: center;
                     width: 42px;
                     height: 42px;
-                    background: rgba(212, 160, 23, 0.1);
+                    background: rgba(213, 166, 58, 0.1);
                     border-radius: 50%;
                     color: var(--accent);
                   "
@@ -163,7 +163,7 @@
                 <div>
                   <h4
                     style="
-                      font-family: Cinzel, serif;
+                      font-family: var(--font-display);
                       font-size: 0.95rem;
                       font-weight: 700;
                       margin-bottom: 0.25rem;
@@ -180,7 +180,7 @@
           <div class="card-base rs">
             <h3
               style="
-                font-family: Cinzel, serif;
+                font-family: var(--font-display);
                 font-weight: 700;
                 margin-bottom: 1.5rem;
                 font-size: 1.1rem;
@@ -189,8 +189,17 @@
               Send a Message
             </h3>
             <div v-if="sent" style="text-align: center; padding: 2rem">
-              <div style="font-size: 3rem; margin-bottom: 1rem">✅</div>
-              <h4 style="font-family: Cinzel, serif; font-weight: 700; margin-bottom: 0.5rem">
+              <div
+                style="
+                  color: var(--accent);
+                  margin-bottom: 1rem;
+                  display: flex;
+                  justify-content: center;
+                "
+              >
+                <CircleCheck :size="44" :stroke-width="1.5" />
+              </div>
+              <h4 style="font-family: var(--font-display); font-weight: 700; margin-bottom: 0.5rem">
                 Message Sent!
               </h4>
               <p class="desc">We'll get back to you within 24 hours.</p>
@@ -288,6 +297,7 @@
 
 <script setup>
 import { ref } from 'vue';
+import { CircleCheck } from 'lucide-vue-next';
 import PageHero from '../components/PageHero.vue';
 import { useScrollReveal } from '../composables/useAnimations.js';
 useScrollReveal();

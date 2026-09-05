@@ -9,10 +9,10 @@
   "housePoints": {
     "total": 918,
     "categories": [
-      { "name": "Academic", "icon": "📚", "points": 312, "max": 400, "color": "#e8c97a" },
-      { "name": "Cultural", "icon": "🎭", "points": 198, "max": 400, "color": "#b07ae0" },
-      { "name": "Sports", "icon": "🏏", "points": 241, "max": 400, "color": "#4caf50" },
-      { "name": "Community", "icon": "🤝", "points": 167, "max": 400, "color": "#7ab0e0" }
+      { "name": "Academic", "icon": "academic", "points": 312, "max": 400, "color": "#e8c97a" },
+      { "name": "Cultural", "icon": "cultural", "points": 198, "max": 400, "color": "#b07ae0" },
+      { "name": "Sports", "icon": "sports", "points": 241, "max": 400, "color": "#4caf50" },
+      { "name": "Community", "icon": "community", "points": 167, "max": 400, "color": "#7ab0e0" }
     ]
   },
 

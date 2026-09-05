@@ -74,14 +74,19 @@
                 d="M 170,170 m -150,0 a 150,150 0 1,1 300,0 a 150,150 0 1,1 -300,0"
               />
             </defs>
-            <text font-family="Outfit" font-size="9" fill="rgba(201,168,76,0.6)" letter-spacing="8">
+            <text
+              font-family="Chillax"
+              font-size="9"
+              fill="rgba(201,168,76,0.6)"
+              letter-spacing="8"
+            >
               <textPath href="#ring-path">
                 SUNDARBANS HOUSE · IIT MADRAS · EXCLUSIVE MEMBERS PORTAL ·
               </textPath>
             </text>
           </svg>
           <div class="badge-center">
-            <span class="badge-icon">🌿</span>
+            <span class="badge-icon"><TreePine :size="56" :stroke-width="1.4" /></span>
             <div class="badge-title">Members Lounge</div>
           </div>
         </div>
@@ -112,6 +117,7 @@
 <script setup>
 import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { TreePine } from 'lucide-vue-next';
 
 const message = ref('');
 const router = useRouter();
@@ -303,7 +309,7 @@ onMounted(() => {
 <style scoped>
 .login-page {
   min-height: 100vh;
-  background: #080a08;
+  background: #050605;
   color: #f5f0e8;
   overflow: hidden;
 }
@@ -344,7 +350,7 @@ onMounted(() => {
   margin-bottom: 18px;
 }
 h1 {
-  font-family: 'Cinzel', serif;
+  font-family: var(--font-display);
   font-weight: 300;
   font-size: clamp(48px, 5.5vw, 72px);
   line-height: 1.05;
@@ -389,7 +395,7 @@ h1 em {
     background 0.2s;
 }
 .google-btn:hover {
-  border-color: rgba(201, 168, 76, 0.5);
+  border-color: var(--border-card-hover);
   background: rgba(255, 255, 255, 0.06);
 }
 .google-btn.loading {
@@ -457,7 +463,8 @@ h1 em {
   text-align: center;
 }
 .badge-icon {
-  font-size: 64px;
+  display: flex;
+  color: #c9a84c;
 }
 .badge-title {
   color: #c9a84c;
@@ -481,7 +488,7 @@ h1 em {
   padding: 20px;
 }
 .info-card-num {
-  font-family: 'Cinzel', serif;
+  font-family: var(--font-display);
   font-size: 36px;
   color: #e8c97a;
 }

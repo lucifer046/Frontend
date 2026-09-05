@@ -10,7 +10,7 @@
     <header class="dash-navbar">
       <div class="nav-inner">
         <router-link to="/" class="nav-brand">
-          <div class="nav-brand-icon">🌿</div>
+          <div class="nav-brand-icon"><TreePine :size="18" :stroke-width="1.8" /></div>
           <span class="nav-brand-name">Sundarbans</span>
         </router-link>
         <span class="nav-title">House Widgets</span>
@@ -158,6 +158,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import { TreePine } from 'lucide-vue-next';
 import { useConfetti } from '../composables/useConfetti.js';
 
 // Widget components

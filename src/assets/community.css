@@ -48,7 +48,12 @@
 }
 .community-page .register-btn:hover {
   background: #fbbf24;
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.community-page .register-btn:active {
+  transform: translateY(0) scale(0.988);
 }
 
 /* Winners */
@@ -179,6 +184,11 @@
   font-family: 'Courier New', Courier, monospace;
   margin-bottom: 1.3rem;
 }
+.community-page.community-tech .event-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
 
 .community-page.community-tech .register-btn {
   display: inline-flex;
@@ -187,14 +197,17 @@
   padding: 0.65rem 1.4rem;
   border-radius: 6px;
   background: #f59e0b;
-  color: #0a0f1e;
+  color: var(--color-bg-black);
   font-weight: 700;
   font-size: 0.9rem;
   text-decoration: none;
   letter-spacing: 0.02em;
   transition:
-    background 0.2s,
-    transform 0.2s;
+    background-color var(--duration-button) var(--ease-editorial),
+    border-color var(--duration-button) var(--ease-editorial),
+    color var(--duration-button) var(--ease-editorial),
+    box-shadow var(--duration-button) var(--ease-editorial),
+    transform var(--duration-button) var(--ease-editorial);
   width: fit-content;
 }
 
@@ -244,7 +257,7 @@
   position: relative;
   width: 100%;
   aspect-ratio: 16 / 9;
-  background: #050806;
+  background: #050605;
   overflow: hidden;
   border-bottom: 1px solid rgba(16, 185, 129, 0.15);
 }
@@ -324,6 +337,9 @@
   flex: 1;
 }
 .community-page.community-tech .past-event-stat {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
   font-family: 'Courier New', Courier, monospace;
   font-weight: 600;
   font-size: 0.85rem;
@@ -563,7 +579,7 @@
 .community-page.community-cultural .section-tag {
   background: rgba(245, 158, 11, 0.1);
   color: #f59e0b;
-  border-color: rgba(245, 158, 11, 0.3);
+  border-color: var(--border-card);
 }
 
 .community-page.community-cultural .event-type-tag {
@@ -578,7 +594,7 @@
   margin-bottom: 0.8rem;
   background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(239, 68, 68, 0.1));
   color: #fbbf24;
-  border: 1px solid rgba(245, 158, 11, 0.25);
+  border: 1px solid var(--border-card);
 }
 
 /* Upcoming Events */
@@ -590,8 +606,8 @@
 
 .community-page.community-cultural .event-card {
   background: rgba(20, 15, 10, 0.5);
-  border: 1px solid rgba(245, 158, 11, 0.15);
-  border-radius: 20px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--rad2);
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -605,7 +621,7 @@
   box-shadow:
     0 20px 50px rgba(245, 158, 11, 0.12),
     0 6px 16px rgba(239, 68, 68, 0.08);
-  border-color: rgba(245, 158, 11, 0.3);
+  border-color: var(--border-card);
 }
 
 .community-page.community-cultural .event-title {
@@ -633,6 +649,11 @@
   font-weight: 500;
   margin-bottom: 1.3rem;
 }
+.community-page.community-cultural .event-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
 
 .community-page.community-cultural .register-btn {
   display: inline-flex;
@@ -641,15 +662,18 @@
   padding: 0.65rem 1.4rem;
   border-radius: 10px;
   background: #f59e0b;
-  color: #0a0f1e;
+  color: var(--color-bg-black);
   font-weight: 700;
   font-size: 0.9rem;
   text-decoration: underline;
   text-underline-offset: 2px;
   letter-spacing: 0.02em;
   transition:
-    background 0.2s,
-    transform 0.2s;
+    background-color var(--duration-button) var(--ease-editorial),
+    border-color var(--duration-button) var(--ease-editorial),
+    color var(--duration-button) var(--ease-editorial),
+    box-shadow var(--duration-button) var(--ease-editorial),
+    transform var(--duration-button) var(--ease-editorial);
   width: fit-content;
 }
 
@@ -663,8 +687,8 @@
 .community-page.community-cultural .past-event-card {
   background: rgba(20, 15, 10, 0.4);
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(245, 158, 11, 0.15);
-  border-radius: 24px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--rad2);
   overflow: hidden;
   transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
   display: flex;
@@ -683,7 +707,7 @@
   position: relative;
   width: 100%;
   aspect-ratio: 4 / 3;
-  background: #050505;
+  background: #050605;
   overflow: hidden;
 }
 
@@ -738,7 +762,7 @@
   backdrop-filter: blur(8px);
   border: 1px solid rgba(255, 255, 255, 0.15);
   padding: 0.4rem 0.8rem;
-  border-radius: 20px;
+  border-radius: var(--rad2);
 }
 
 .community-page.community-cultural .past-event-body {
@@ -765,10 +789,13 @@
 }
 
 .community-page.community-cultural .past-event-stat {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
   font-size: 0.85rem;
   color: rgba(245, 158, 11, 0.8);
   padding-top: 1rem;
-  border-top: 1px solid rgba(245, 158, 11, 0.15);
+  border-top: 1px solid var(--border-subtle);
   font-weight: 500;
 }
 
@@ -777,8 +804,8 @@
   position: relative;
   background: rgba(20, 15, 10, 0.5);
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(245, 158, 11, 0.2);
-  border-radius: 20px;
+  border: 1px solid var(--border-card);
+  border-radius: var(--rad2);
   padding: 1.5rem 1.5rem 1.5rem 1.8rem;
   overflow: hidden;
   transition:
@@ -795,12 +822,12 @@
   bottom: 0;
   width: 4px;
   background: linear-gradient(180deg, #f59e0b, #ef4444);
-  box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
-  border-radius: 20px 0 0 20px;
+  box-shadow: none;
+  border-radius: var(--rad2) 0 0 var(--rad2);
 }
 
 .community-page.community-cultural .winner-card:hover {
-  border-color: rgba(245, 158, 11, 0.4);
+  border-color: var(--border-gold);
   box-shadow:
     0 10px 30px rgba(245, 158, 11, 0.1),
     0 4px 12px rgba(239, 68, 68, 0.06);
@@ -822,7 +849,7 @@
   margin-bottom: 0.6rem;
   background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(239, 68, 68, 0.1));
   color: #fbbf24;
-  border: 1px solid rgba(245, 158, 11, 0.25);
+  border: 1px solid var(--border-card);
 }
 
 .community-page.community-cultural .winner-event-title {
@@ -849,7 +876,7 @@
   padding: 0.55rem 0.9rem;
   border-radius: 12px;
   background: rgba(245, 158, 11, 0.05);
-  border: 1px solid rgba(245, 158, 11, 0.1);
+  border: 1px solid var(--border-subtle);
   transition: background 0.2s;
 }
 
@@ -918,7 +945,7 @@
 .community-page.community-cultural .team-card {
   background: #111;
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 20px;
+  border-radius: var(--rad2);
   overflow: hidden;
   transition:
     transform 0.2s,
@@ -927,7 +954,7 @@
 
 .community-page.community-cultural .team-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 12px 32px rgba(245, 158, 11, 0.18);
+  box-shadow: var(--shadow-md);
 }
 
 .community-page.community-cultural .team-overlay {
@@ -978,7 +1005,7 @@
 
 .community-page.community-cultural .social-btn:hover {
   background: #f59e0b;
-  color: #0a0f1e;
+  color: var(--color-bg-black);
   border-color: #f59e0b;
 }
 
@@ -1119,6 +1146,11 @@
   font-weight: 600;
   flex-wrap: wrap;
 }
+.community-page.community-esports .event-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
 
 /* Past Events */
 .community-page.community-esports .past-events-grid {
@@ -1169,7 +1201,7 @@
   position: relative;
   width: 100%;
   aspect-ratio: 16 / 9;
-  background: #0a0a0a;
+  background: #050605;
   overflow: hidden;
 }
 
@@ -1250,6 +1282,9 @@
 }
 
 .community-page.community-esports .past-event-stat {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
   font-family: 'Courier New', Courier, monospace;
   font-weight: 600;
   font-size: 0.82rem;
@@ -1262,7 +1297,7 @@
 .community-page.community-esports .team-card {
   background: #111;
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 20px;
+  border-radius: var(--rad2);
   overflow: hidden;
   transition:
     transform 0.2s,

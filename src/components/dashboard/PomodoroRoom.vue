@@ -87,7 +87,8 @@
 
     <!-- Session-complete banner -->
     <div class="pomo-done-banner" :class="{ show: showBanner }">
-      🎉 Session complete! Take a break.
+      <PartyPopper :size="15" :stroke-width="1.8" style="vertical-align: -3px" /> Session complete!
+      Take a break.
     </div>
 
     <!-- Live studiers -->
@@ -111,6 +112,7 @@
 
 <script setup>
 import { ref, computed, onUnmounted } from 'vue';
+import { PartyPopper } from 'lucide-vue-next';
 import { save, load } from '../../composables/useLocalStorage.js';
 
 const props = defineProps({

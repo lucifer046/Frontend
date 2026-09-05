@@ -10,7 +10,7 @@
 
     <!-- Current champion -->
     <div class="meme-winner-wrap">
-      <div class="meme-winner-crown">👑</div>
+      <div class="meme-winner-crown"><Crown :size="22" :stroke-width="1.7" /></div>
       <div class="meme-winner-title">This Week's Champion</div>
       <div class="meme-winner-img">😭📚</div>
       <div class="meme-winner-byline">
@@ -65,13 +65,13 @@
       @click="triggerFileInput"
       v-if="!uploaded"
     >
-      <div class="meme-drop-icon">🖼️</div>
+      <div class="meme-drop-icon"><ImagePlus :size="26" :stroke-width="1.6" /></div>
       <div class="meme-drop-text">
         Drag &amp; drop your meme or <strong>click to browse</strong>
       </div>
     </div>
     <div class="meme-drop-zone" v-else>
-      <div class="meme-drop-icon">✅</div>
+      <div class="meme-drop-icon"><CircleCheck :size="26" :stroke-width="1.6" /></div>
       <div class="meme-drop-text"><strong>Meme received!</strong> Judges are reviewing…</div>
     </div>
 
@@ -92,6 +92,7 @@
 
 <script setup>
 import { computed, ref } from 'vue';
+import { Crown, ImagePlus, CircleCheck } from 'lucide-vue-next';
 import { save, load } from '../../composables/useLocalStorage.js';
 
 const props = defineProps({

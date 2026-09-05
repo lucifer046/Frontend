@@ -1,276 +1,206 @@
 <template>
-  <section class="section rs" style="background: var(--bg2)" id="levelPicker">
+  <!-- Tone A. The whole point of this section is that it is the first thing
+       under the hero: search, level, subject, type, results — in that order,
+       top to bottom, with nothing to scroll past. -->
+  <section class="section tone-a rs" id="resource-browser">
     <div class="container">
-      <div class="sc-layout">
-        <!-- LEFT: Level cards (vertical sidebar) -->
-        <div class="sc-sidebar">
-          <div class="sc-sidebar-hdr">
-            <div class="section-tag" style="margin-bottom: 0">Choose Level</div>
-          </div>
-          <div class="sc-sidebar-cards">
-            <div
-              v-for="level in levelMeta"
-              :key="level.key"
-              class="sc-sidebar-card"
-              :class="{ active: currentLevel === level.key }"
-              @click="loadLevel(level.key)"
-            >
-              <div class="sc-sidebar-card-top">
-                <span class="sc-sidebar-emoji">{{ level.emoji }}</span>
-                <div class="sc-sidebar-meta">
-                  <h3 class="sc-card-title">{{ level.title }}</h3>
-                  <p class="sc-card-desc">{{ level.description }}</p>
-                </div>
-              </div>
-              <div class="sc-card-stats">
-                <span class="sc-stat-badge">{{ (scData[level.key] || []).length }} subjects</span>
-                <span class="sc-stat-badge">Notes + PYQs</span>
-              </div>
-              <div class="sc-sidebar-arrow">
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2.5"
-                >
-                  <path d="M5 12h14M12 5l7 7-7 7" />
-                </svg>
-              </div>
-            </div>
-          </div>
+      <!-- ── 1. SEARCH ─────────────────────────────────────────────── -->
+      <div class="rb-search">
+        <label class="rb-search-label" for="rb-search-input">Search resources</label>
+        <div class="rb-search-field">
+          <Search class="rb-search-icon" :size="17" :stroke-width="1.9" aria-hidden="true" />
+          <input
+            id="rb-search-input"
+            v-model="search"
+            type="search"
+            class="form-input rb-search-input"
+            placeholder="Search subjects, notes, PYQs…"
+            autocomplete="off"
+          />
+          <button
+            v-if="search"
+            type="button"
+            class="rb-search-clear"
+            aria-label="Clear search"
+            @click="search = ''"
+          >
+            <X :size="15" :stroke-width="2" />
+          </button>
+        </div>
+        <p class="rb-search-hint">
+          Searches every subject, note and past paper across all three levels.
+        </p>
+      </div>
+
+      <!-- ── 2. LEVEL ──────────────────────────────────────────────── -->
+      <div class="rb-block">
+        <h2 class="rb-block-title" id="rb-level-label">Choose a level</h2>
+        <div class="rb-chips" role="group" aria-labelledby="rb-level-label">
+          <button
+            v-for="level in levelMeta"
+            :key="level.key"
+            type="button"
+            class="sel rb-level"
+            :aria-pressed="currentLevel === level.key"
+            @click="toggleLevel(level.key)"
+          >
+            <component :is="level.icon" :size="16" :stroke-width="1.8" aria-hidden="true" />
+            {{ level.title }}
+            <span class="rb-chip-count">{{ (scData[level.key] || []).length }}</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ── 3. SUBJECT ────────────────────────────────────────────── -->
+      <div class="rb-block">
+        <div class="rb-block-head">
+          <h2 class="rb-block-title" id="rb-subject-label">
+            {{ currentLevel ? `${currentLevelLabel} subjects` : 'Subjects' }}
+          </h2>
+          <p class="rb-block-meta" role="status" aria-live="polite">{{ subjectSummary }}</p>
         </div>
 
-        <!-- RIGHT: Content panel -->
-        <div class="sc-panel-wrap">
-          <!-- Search + tabs always visible -->
-          <div class="sc-panel-search">
-            <div class="sc-search-input-wrap">
-              <input
-                v-model="search"
-                type="text"
-                placeholder="Search subjects, notes, PYQs..."
-                class="form-input sc-mid-search-input"
-              />
-              <svg
-                class="sc-mid-search-icon"
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <circle cx="11" cy="11" r="8" />
-                <path d="m21 21-4.35-4.35" />
-              </svg>
+        <div
+          v-if="visibleSubjects.length"
+          class="rb-subject-grid"
+          role="group"
+          aria-labelledby="rb-subject-label"
+        >
+          <button
+            v-for="subject in visibleSubjects"
+            :key="subject.levelKey + subject.code"
+            type="button"
+            class="rb-subject"
+            :aria-pressed="isCurrentSubject(subject)"
+            @click="selectSubject(subject)"
+          >
+            <span class="rb-subject-code">{{ subject.code }}</span>
+            <span class="rb-subject-name">{{ subject.subject }}</span>
+            <span v-if="!currentLevel" class="rb-subject-level">{{
+              levelLabel(subject.levelKey)
+            }}</span>
+          </button>
+        </div>
+
+        <p v-else-if="query" class="rb-note">
+          No subject matches “{{ query }}”.
+          <button type="button" class="btn btn--text" @click="clearAll">Clear search</button>
+        </p>
+
+        <p v-else class="rb-note rb-note--rest">
+          Pick Foundation, Diploma or BS Degree above, or type in the search box to look across all
+          three at once.
+        </p>
+      </div>
+
+      <!-- ── 4. TYPE + 5. RESULTS ──────────────────────────────────── -->
+      <div class="rb-block">
+        <template v-if="currentSubject">
+          <div class="rb-block-head">
+            <div>
+              <h2 class="rb-block-title">{{ currentSubject.subject }}</h2>
+              <p class="rb-subject-desc">{{ currentSubject.description }}</p>
             </div>
+            <button type="button" class="btn btn--text" @click="clearSubject">
+              Clear selection
+            </button>
           </div>
 
-          <!-- Empty state: no level selected -->
-          <div v-if="!currentLevel" class="sc-panel-empty">
-            <div style="font-size: 3rem; margin-bottom: 1rem">📚</div>
-            <p style="font-size: 1rem; color: var(--text2)">
-              Select a level on the left to browse subjects
+          <div class="rb-chips rb-types" role="group" aria-label="Resource type">
+            <button
+              v-for="type in typeMeta"
+              :key="type.key"
+              type="button"
+              class="sel"
+              :aria-pressed="resourceType === type.key"
+              @click="setResourceType(type.key)"
+            >
+              <component :is="type.icon" :size="15" :stroke-width="1.9" aria-hidden="true" />
+              {{ type.label }}
+              <span class="rb-chip-count">{{ typeCounts[type.key] }}</span>
+            </button>
+          </div>
+
+          <div class="rb-results">
+            <template v-if="resultGroups.length">
+              <section
+                v-for="group in resultGroups"
+                :key="group.label"
+                class="rb-group"
+                :class="{ 'rb-group--featured': group.featured }"
+              >
+                <h3 v-if="group.label" class="rb-group-label">
+                  <component
+                    :is="group.icon"
+                    v-if="group.icon"
+                    :size="14"
+                    :stroke-width="1.9"
+                    aria-hidden="true"
+                  />
+                  {{ group.label }}
+                  <span class="rb-group-count">{{ group.items.length }}</span>
+                </h3>
+                <ul class="rb-list">
+                  <li v-for="item in shownItems(group)" :key="item.key">
+                    <a class="rb-item" :href="item.link" target="_blank" rel="noopener noreferrer">
+                      <span class="rb-item-main">
+                        <span class="rb-item-title">{{ item.title }}</span>
+                        <span class="rb-item-meta">
+                          <span class="rb-item-type">{{ item.typeLabel }}</span>
+                          <span v-if="item.badge" class="rb-item-badge">{{ item.badge }}</span>
+                        </span>
+                      </span>
+                      <span class="rb-item-cta">
+                        {{ item.cta }}
+                        <ArrowRight :size="14" :stroke-width="2" aria-hidden="true" />
+                      </span>
+                    </a>
+                  </li>
+                </ul>
+                <button
+                  v-if="group.items.length > PREVIEW_COUNT"
+                  type="button"
+                  class="btn btn--text rb-more"
+                  @click="toggleGroup(group.label)"
+                >
+                  {{
+                    expandedGroups[group.label] ? 'Show fewer' : `Show all ${group.items.length}`
+                  }}
+                  <ChevronDown
+                    class="rb-more-chevron"
+                    :class="{ 'rb-more-chevron--up': expandedGroups[group.label] }"
+                    :size="14"
+                    :stroke-width="2"
+                    aria-hidden="true"
+                  />
+                </button>
+              </section>
+            </template>
+
+            <p v-else class="rb-empty">
+              <FileSearch :size="26" :stroke-width="1.6" aria-hidden="true" />
+              <span>
+                No {{ resourceType === 'all' ? 'resources' : activeTypeLabel.toLowerCase() }} here
+                yet<template v-if="search"> for “{{ search }}”</template>.
+              </span>
+              <button
+                v-if="resourceType !== 'all'"
+                type="button"
+                class="btn btn--outline btn--sm"
+                @click="setResourceType('all')"
+              >
+                Show everything for this subject
+              </button>
             </p>
           </div>
+        </template>
 
-          <!-- Level selected: subjects + resources -->
-          <template v-else>
-            <div class="sc-panel-body">
-              <!-- Subject strip -->
-              <div class="sc-subject-strip" id="scSubjectStrip">
-                <div class="sc-strip-header">
-                  <span class="sc-strip-label">{{ currentLevelLabel }} — Subjects</span>
-                  <button class="sc-back-btn" @click="resetLevel">&larr; Clear</button>
-                </div>
-                <div class="sc-badges-row" id="scSubjectList">
-                  <button
-                    v-for="subject in filteredSubjects"
-                    :key="subject.code"
-                    class="sc-subj-badge"
-                    :class="{ active: currentSubject?.code === subject.code }"
-                    @click="selectSubject(subject)"
-                  >
-                    {{ subject.subject }}
-                  </button>
-                </div>
-              </div>
-
-              <!-- Resource panel -->
-              <div class="sc-resource-panel" id="scPanel">
-                <template v-if="currentSubject">
-                  <div style="margin-bottom: 0.25rem">
-                    <div class="section-tag" style="margin-bottom: 0.5rem">
-                      {{ currentSubject.code }}
-                    </div>
-                    <p style="font-size: 0.8rem; color: var(--text3); letter-spacing: 0.03em">
-                      {{ currentSubject.description }}
-                    </p>
-                  </div>
-
-                  <div class="sc-tab-bar">
-                    <button
-                      class="sc-tab"
-                      :class="{ active: currentResourceType === 'lectures' }"
-                      @click="currentResourceType = 'lectures'"
-                    >
-                      📺 Lectures
-                    </button>
-                    <button
-                      class="sc-tab"
-                      :class="{ active: currentResourceType === 'notes' }"
-                      @click="currentResourceType = 'notes'"
-                    >
-                      📝 Notes
-                    </button>
-                    <button
-                      class="sc-tab"
-                      :class="{ active: currentResourceType === 'pyq' }"
-                      @click="currentResourceType = 'pyq'"
-                    >
-                      📄 PYQs
-                    </button>
-                  </div>
-
-                  <template v-if="currentResourceType === 'notes' && groupedNotes.length">
-                    <div
-                      class="sc-author-card"
-                      v-for="(group, index) in groupedNotes"
-                      :key="group.author"
-                    >
-                      <div class="sc-author-header" @click="toggleAuthor(index)">
-                        <span class="sc-author-name"
-                          >✦ {{ group.author }}
-                          <span class="sc-author-count"
-                            >({{ group.items.length }}
-                            {{ group.items.length === 1 ? 'note' : 'notes' }})</span
-                          >
-                        </span>
-                        <svg
-                          class="sc-author-chevron"
-                          :style="{
-                            transform: openAuthors[index] ? 'rotate(180deg)' : 'rotate(0deg)',
-                          }"
-                          width="16"
-                          height="16"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="2"
-                        >
-                          <path d="M6 9l6 6 6-6" />
-                        </svg>
-                      </div>
-                      <div class="sc-author-body" :class="{ open: openAuthors[index] }">
-                        <div class="sc-author-notes">
-                          <a
-                            v-for="item in group.items"
-                            :key="item.title"
-                            :href="item.link"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            class="sc-resource-item"
-                          >
-                            <span>{{ cleanTitle(item.title) }}</span>
-                            <div style="display: flex; align-items: center; gap: 0.75rem">
-                              <span v-if="item.badge" class="sc-badge">{{ item.badge }}</span>
-                              <svg
-                                width="14"
-                                height="14"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="2"
-                                style="color: var(--text3)"
-                              >
-                                <path d="M5 12h14M12 5l7 7-7 7" />
-                              </svg>
-                            </div>
-                          </a>
-                        </div>
-                      </div>
-                    </div>
-                  </template>
-
-                  <template v-else-if="currentResourceType === 'pyq' && groupedPyq.length">
-                    <div class="sc-year-group" v-for="group in groupedPyq" :key="group.year">
-                      <div class="sc-year-label">
-                        {{ group.year === 'Google Drive Folder' ? '🗂️' : '📅' }}
-                        {{ group.year }}
-                        <span class="sc-year-count"
-                          >({{ group.items.length }}
-                          {{ group.year === 'Google Drive Folder' ? 'folder' : 'papers' }})</span
-                        >
-                      </div>
-                      <a
-                        v-for="item in group.items"
-                        :key="item.title"
-                        :href="item.link"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="sc-resource-item"
-                      >
-                        <span>{{ cleanTitle(item.title) }}</span>
-                        <svg
-                          width="14"
-                          height="14"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="2"
-                          style="color: var(--text3)"
-                        >
-                          <path d="M5 12h14M12 5l7 7-7 7" />
-                        </svg>
-                      </a>
-                    </div>
-                  </template>
-
-                  <template v-else-if="filteredResources.length">
-                    <a
-                      v-for="item in filteredResources"
-                      :key="item.title"
-                      :href="item.link"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="sc-resource-item"
-                    >
-                      <span>{{ cleanTitle(item.title) }}</span>
-                      <div style="display: flex; align-items: center; gap: 0.75rem">
-                        <span v-if="item.badge" class="sc-badge">{{ item.badge }}</span>
-                        <svg
-                          width="14"
-                          height="14"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="2"
-                          style="color: var(--text3)"
-                        >
-                          <path d="M5 12h14M12 5l7 7-7 7" />
-                        </svg>
-                      </div>
-                    </a>
-                  </template>
-
-                  <div v-else class="sc-empty">
-                    <div style="font-size: 2rem">🔍</div>
-                    <p style="font-size: 0.85rem">No matching resources found.</p>
-                  </div>
-                </template>
-
-                <div v-else class="sc-empty">
-                  <div style="font-size: 3rem">📖</div>
-                  <p style="font-size: 0.9rem">Select a subject above to view resources</p>
-                </div>
-              </div>
-              <!-- /sc-resource-panel -->
-            </div>
-            <!-- /sc-panel-body -->
-          </template>
-        </div>
+        <!-- Concise empty state — a sentence and a way forward, not a
+             580px-tall bordered box with an icon in the middle of it. -->
+        <p v-else class="rb-empty rb-empty--start">
+          <BookOpen :size="26" :stroke-width="1.6" aria-hidden="true" />
+          <span>Pick a level above — or search — to browse notes, lectures and past papers.</span>
+        </p>
       </div>
     </div>
   </section>
@@ -278,53 +208,66 @@
 
 <script setup>
 import { computed, ref, watch } from 'vue';
+import {
+  Sprout,
+  Ruler,
+  GraduationCap,
+  BookOpen,
+  PlayCircle,
+  NotebookPen,
+  FileText,
+  FolderOpen,
+  Calendar,
+  Layers,
+  User,
+  Search,
+  FileSearch,
+  ArrowRight,
+  ChevronDown,
+  X,
+} from 'lucide-vue-next';
 
 import scData from '../../data/scData_generated.js';
 
 // Shared with the doubts board, so the view owns it.
 const search = defineModel('search', { type: String, default: '' });
 
-const tabs = ['All Levels', 'Foundation', 'Diploma', 'BS Degree'];
-const activeTab = ref('All Levels');
+/** Trimmed, lower-cased query — every filter below reads this, not `search`. */
+const query = computed(() => search.value.trim().toLowerCase());
 
 const levelMeta = [
-  {
-    key: 'foundation',
-    emoji: '🌱',
-    title: 'Foundation Level',
-    description: 'Maths, English, Computational Thinking, Statistics, Python basics',
-  },
-  {
-    key: 'diploma',
-    emoji: '📐',
-    title: 'Diploma Level',
-    description: 'DSA, DBMS, Machine Learning, App Development, Java and more',
-  },
-  {
-    key: 'bs',
-    emoji: '🎓',
-    title: 'BS Degree Level',
-    description: 'Deep Learning, LLMs, NLP, CV, MLOps and more electives',
-  },
+  { key: 'foundation', icon: Sprout, title: 'Foundation' },
+  { key: 'diploma', icon: Ruler, title: 'Diploma' },
+  { key: 'bs', icon: GraduationCap, title: 'BS Degree' },
 ];
 
-const tabToLevel = {
-  Foundation: 'foundation',
-  Diploma: 'diploma',
-  'BS Degree': 'bs',
-};
+// The three types the data actually carries. There is deliberately no
+// "Assignments" or "Practice" filter: no subject in scData has either, and an
+// always-empty filter is worse than no filter.
+const typeMeta = [
+  { key: 'all', icon: Layers, label: 'All', cta: 'Open' },
+  { key: 'lectures', icon: PlayCircle, label: 'Lectures', cta: 'Watch' },
+  { key: 'notes', icon: NotebookPen, label: 'Notes', cta: 'View notes' },
+  { key: 'pyq', icon: FileText, label: 'PYQs', cta: 'Open paper' },
+];
 
-const visibleLevels = computed(() => {
-  if (activeTab.value === 'All Levels') return levelMeta;
-  const key = tabToLevel[activeTab.value];
-  return levelMeta.filter((l) => l.key === key);
-});
+const RESOURCE_TYPES = ['lectures', 'notes', 'pyq'];
+
+/**
+ * A group shows this many rows before it offers to open.
+ *
+ * Without a cap, "All" on Maths 1 is 121 rows — roughly eight screens that the
+ * reader has to scroll past before the doubts board even starts. Six is enough
+ * to show what a group holds and judge whether it is the right one.
+ */
+const PREVIEW_COUNT = 6;
+const expandedGroups = ref({});
 
 const currentLevel = ref(null);
 const currentSubjectCode = ref(null);
-const currentResourceType = ref('notes');
-const openAuthors = ref({});
+const resourceType = ref('all');
 
+// Curated Drive folders that sit alongside the per-item links. Unchanged.
 const driveLinks = {
   foundationPyq: 'https://drive.google.com/drive/folders/1Fq3vpXmmN3moEFa9TdBqkBfkMfjaPyh-',
   diplomaPyq: 'https://drive.google.com/drive/folders/1FnI9uXbnSGqMBRLWyWPD5839R9xXjS5I',
@@ -352,77 +295,11 @@ const driveLinks = {
   },
 };
 
-const currentLevelLabel = computed(() => {
-  if (currentLevel.value === 'foundation') return '🌱 Foundation';
-  if (currentLevel.value === 'diploma') return '📐 Diploma';
-  if (currentLevel.value === 'bs') return '🎓 BS Degree';
-  return 'Subjects';
-});
+const LEVEL_LABELS = { foundation: 'Foundation', diploma: 'Diploma', bs: 'BS Degree' };
+const levelLabel = (key) => LEVEL_LABELS[key] || '';
+const currentLevelLabel = computed(() => levelLabel(currentLevel.value));
 
-const levelSubjects = computed(() => {
-  if (!currentLevel.value) return [];
-  return scData[currentLevel.value] || [];
-});
-
-function subjectMatchesSearch(subject, query) {
-  const q = query.toLowerCase();
-  if (subject.subject.toLowerCase().includes(q)) return true;
-  if (
-    String(subject.code || '')
-      .toLowerCase()
-      .includes(q)
-  )
-    return true;
-  const resources = subject.resources || {};
-  return ['lectures', 'notes', 'pyq'].some((type) =>
-    (resources[type] || []).some((item) =>
-      String(item.title || '')
-        .toLowerCase()
-        .includes(q)
-    )
-  );
-}
-
-const filteredSubjects = computed(() => {
-  const q = search.value.trim().toLowerCase();
-
-  let baseSubjects = [];
-  if (activeTab.value === 'All Levels' && q) {
-    // Collect all subjects from all levels for global search
-    ['foundation', 'diploma', 'bs'].forEach((lvl) => {
-      (scData[lvl] || []).forEach((sub) => {
-        baseSubjects.push({ ...sub, levelKey: lvl });
-      });
-    });
-  } else {
-    // Only current level subjects
-    baseSubjects = levelSubjects.value.map((sub) => ({
-      ...sub,
-      levelKey: currentLevel.value,
-    }));
-  }
-
-  if (!q) return baseSubjects;
-
-  return baseSubjects.filter((subject) => subjectMatchesSearch(subject, q));
-});
-
-const currentSubject = computed(
-  () => levelSubjects.value.find((s) => s.code === currentSubjectCode.value) || null
-);
-
-const filteredResources = computed(() => {
-  if (!currentSubject.value) return [];
-  const source = currentSubject.value.resources?.[currentResourceType.value] || [];
-  const q = search.value.trim().toLowerCase();
-  if (!q) return source;
-  return source.filter((item) =>
-    String(item.title || '')
-      .toLowerCase()
-      .includes(q)
-  );
-});
-
+// ── Title parsing (unchanged) ───────────────────────────────────────────
 function parseAuthor(title) {
   const match = String(title).match(/\(by\s+(.+?)\)\s*$/i);
   return match ? match[1].trim() : 'Unknown';
@@ -445,453 +322,716 @@ function parsePYQYear(title) {
   return yearOnly ? yearOnly[1] : 'Other';
 }
 
-const groupedNotes = computed(() => {
-  if (currentResourceType.value !== 'notes') return [];
-  const map = new Map();
-  filteredResources.value.forEach((item) => {
-    const author = parseAuthor(item.title);
-    if (!map.has(author)) map.set(author, []);
-    map.get(author).push(item);
-  });
-  const groups = Array.from(map.entries())
-    .sort((a, b) => {
-      if (a[0] === 'Unknown') return 1;
-      if (b[0] === 'Unknown') return -1;
-      return a[0].localeCompare(b[0]);
-    })
-    .map(([author, items]) => ({ author, items }));
+// ── Subjects ────────────────────────────────────────────────────────────
+function subjectMatchesSearch(subject, q) {
+  if (subject.subject.toLowerCase().includes(q)) return true;
+  if (
+    String(subject.code || '')
+      .toLowerCase()
+      .includes(q)
+  )
+    return true;
+  const resources = subject.resources || {};
+  return RESOURCE_TYPES.some((type) =>
+    (resources[type] || []).some((item) =>
+      String(item.title || '')
+        .toLowerCase()
+        .includes(q)
+    )
+  );
+}
 
-  if (currentSubject.value) {
-    const subjectCode = currentSubject.value.code;
-    let driveLink = driveLinks.notes[subjectCode];
-    if (
-      !driveLink &&
-      currentSubject.value.subject &&
-      currentSubject.value.subject.toLowerCase().includes('analytics')
-    ) {
-      driveLink = driveLinks.notes['BSMS2002'];
-    }
-    if (driveLink) {
-      groups.unshift({
-        author: 'Google Drive Folder',
-        items: [
-          {
-            title: `Subject Wise Notes - ${currentSubject.value.subject}`,
-            link: driveLink,
-          },
-        ],
-      });
-    }
-  }
+const allSubjects = computed(() =>
+  Object.keys(LEVEL_LABELS).flatMap((lvl) =>
+    (scData[lvl] || []).map((sub) => ({ ...sub, levelKey: lvl }))
+  )
+);
 
-  return groups;
+// A query with no level chosen searches the whole catalogue; once a level is
+// chosen it scopes to that level. Either way the subject grid is the answer.
+const visibleSubjects = computed(() => {
+  const q = query.value;
+  const base = currentLevel.value
+    ? allSubjects.value.filter((s) => s.levelKey === currentLevel.value)
+    : q
+      ? allSubjects.value
+      : [];
+  if (!q) return base;
+  return base.filter((subject) => subjectMatchesSearch(subject, q));
 });
 
-const groupedPyq = computed(() => {
-  if (currentResourceType.value !== 'pyq') return [];
-  const map = new Map();
-  filteredResources.value.forEach((item) => {
-    const year = parsePYQYear(item.title);
-    if (!map.has(year)) map.set(year, []);
-    map.get(year).push(item);
-  });
-  const groups = Array.from(map.entries())
-    .sort((a, b) => {
-      if (a[0] === 'Other') return 1;
-      if (b[0] === 'Other') return -1;
-      return Number(b[0]) - Number(a[0]);
-    })
-    .map(([year, items]) => ({ year, items }));
-
-  if (currentSubject.value) {
-    const subjectCode = currentSubject.value.code;
-    const isFoundation =
-      currentLevel.value === 'foundation' ||
-      (String(subjectCode).startsWith('BS') && String(subjectCode).includes('10'));
-    const isDiploma =
-      currentLevel.value === 'diploma' ||
-      (String(subjectCode).startsWith('BS') && String(subjectCode).includes('20'));
-
-    if (isFoundation) {
-      groups.unshift({
-        year: 'Google Drive Folder',
-        items: [{ title: 'Foundation End term PYQs', link: driveLinks.foundationPyq }],
-      });
-    } else if (isDiploma) {
-      groups.unshift({
-        year: 'Google Drive Folder',
-        items: [{ title: 'Diploma ET PYQs', link: driveLinks.diplomaPyq }],
-      });
-    }
-  }
-
-  return groups;
+const subjectSummary = computed(() => {
+  const n = visibleSubjects.value.length;
+  if (!currentLevel.value && !query.value) return 'Choose a level, or search';
+  return `${n} ${n === 1 ? 'subject' : 'subjects'}`;
 });
 
-function toggleAuthor(index) {
-  openAuthors.value = {
-    ...openAuthors.value,
-    [index]: !openAuthors.value[index],
+const currentSubject = computed(
+  () => allSubjects.value.find((s) => s.code === currentSubjectCode.value) || null
+);
+
+const isCurrentSubject = (subject) => subject.code === currentSubjectCode.value;
+
+// ── Resources ───────────────────────────────────────────────────────────
+function matchingItems(type) {
+  const source = currentSubject.value?.resources?.[type] || [];
+  const q = query.value;
+  if (!q) return source;
+  return source.filter((item) =>
+    String(item.title || '')
+      .toLowerCase()
+      .includes(q)
+  );
+}
+
+const typeCounts = computed(() => {
+  const counts = { all: 0 };
+  RESOURCE_TYPES.forEach((type) => {
+    counts[type] = matchingItems(type).length;
+    counts.all += counts[type];
+  });
+  return counts;
+});
+
+const activeTypeLabel = computed(
+  () => typeMeta.find((t) => t.key === resourceType.value)?.label || 'Resources'
+);
+
+function decorate(item, type, index) {
+  const meta = typeMeta.find((t) => t.key === type);
+  return {
+    key: `${type}-${index}-${item.link}`,
+    title: cleanTitle(item.title),
+    link: item.link,
+    badge: item.badge,
+    typeLabel: meta.label,
+    cta: meta.cta,
   };
 }
 
-function loadLevel(level) {
-  currentLevel.value = level;
-  currentResourceType.value = 'notes';
-  openAuthors.value = {};
+/**
+ * One flat, grouped list — no accordions and no cards inside cards.
+ *
+ * Notes stay grouped by contributor and PYQs by year, because that grouping is
+ * information rather than decoration, but a group is now a labelled run of
+ * rows rather than a collapsible panel the reader has to open before they can
+ * see whether it holds anything. The curated Drive folders lead, flagged, as
+ * they did before.
+ */
+const resultGroups = computed(() => {
+  if (!currentSubject.value) return [];
+  const type = resourceType.value;
+  const groups = [];
+
+  if (type === 'all') {
+    RESOURCE_TYPES.forEach((t) => {
+      const items = matchingItems(t);
+      if (!items.length) return;
+      const meta = typeMeta.find((m) => m.key === t);
+      groups.push({
+        label: meta.label,
+        icon: meta.icon,
+        items: items.map((item, i) => decorate(item, t, i)),
+      });
+    });
+    return withDriveFolders(groups);
+  }
+
+  const items = matchingItems(type);
+
+  if (type === 'notes') {
+    const byAuthor = new Map();
+    items.forEach((item, i) => {
+      const author = parseAuthor(item.title);
+      if (!byAuthor.has(author)) byAuthor.set(author, []);
+      byAuthor.get(author).push(decorate(item, type, i));
+    });
+    Array.from(byAuthor.entries())
+      .sort(([a], [b]) => (a === 'Unknown' ? 1 : b === 'Unknown' ? -1 : a.localeCompare(b)))
+      .forEach(([author, list]) => groups.push({ label: author, icon: User, items: list }));
+    return withDriveFolders(groups);
+  }
+
+  if (type === 'pyq') {
+    const byYear = new Map();
+    items.forEach((item, i) => {
+      const year = parsePYQYear(item.title);
+      if (!byYear.has(year)) byYear.set(year, []);
+      byYear.get(year).push(decorate(item, type, i));
+    });
+    Array.from(byYear.entries())
+      .sort(([a], [b]) => (a === 'Other' ? 1 : b === 'Other' ? -1 : Number(b) - Number(a)))
+      .forEach(([year, list]) => groups.push({ label: year, icon: Calendar, items: list }));
+    return withDriveFolders(groups);
+  }
+
+  if (items.length) {
+    groups.push({ label: '', items: items.map((item, i) => decorate(item, type, i)) });
+  }
+  return groups;
+});
+
+/** Prepends the curated Drive folder for the current subject, where one exists. */
+function withDriveFolders(groups) {
+  const subject = currentSubject.value;
+  if (!subject) return groups;
+  const type = resourceType.value;
+  const items = [];
+
+  if (type === 'all' || type === 'notes') {
+    let link = driveLinks.notes[subject.code];
+    if (!link && subject.subject?.toLowerCase().includes('analytics')) {
+      link = driveLinks.notes.BSMS2002;
+    }
+    if (link) {
+      items.push({
+        key: `drive-notes-${subject.code}`,
+        title: `Subject-wise notes — ${subject.subject}`,
+        link,
+        typeLabel: 'Drive folder',
+        cta: 'Open folder',
+      });
+    }
+  }
+
+  if (type === 'all' || type === 'pyq') {
+    const code = String(subject.code);
+    const isFoundation =
+      subject.levelKey === 'foundation' || (code.startsWith('BS') && code.includes('10'));
+    const isDiploma =
+      subject.levelKey === 'diploma' || (code.startsWith('BS') && code.includes('20'));
+    if (isFoundation) {
+      items.push({
+        key: `drive-pyq-${code}`,
+        title: 'Foundation end-term PYQs',
+        link: driveLinks.foundationPyq,
+        typeLabel: 'Drive folder',
+        cta: 'Open folder',
+      });
+    } else if (isDiploma) {
+      items.push({
+        key: `drive-pyq-${code}`,
+        title: 'Diploma end-term PYQs',
+        link: driveLinks.diplomaPyq,
+        typeLabel: 'Drive folder',
+        cta: 'Open folder',
+      });
+    }
+  }
+
+  if (!items.length) return groups;
+  return [{ label: 'Curated folders', icon: FolderOpen, featured: true, items }, ...groups];
+}
+
+// ── Actions ─────────────────────────────────────────────────────────────
+function shownItems(group) {
+  if (expandedGroups.value[group.label]) return group.items;
+  return group.items.slice(0, PREVIEW_COUNT);
+}
+
+function toggleGroup(label) {
+  expandedGroups.value = { ...expandedGroups.value, [label]: !expandedGroups.value[label] };
+}
+
+function selectFirstSubjectOf(level) {
   const first = (scData[level] || [])[0];
   currentSubjectCode.value = first ? first.code : null;
 }
 
-function selectSubject(subject) {
-  if (subject.levelKey && subject.levelKey !== currentLevel.value) {
-    currentLevel.value = subject.levelKey;
+// Clicking the chosen level again clears it — the chip is the control and its
+// own undo, so there is no separate "Clear" button next to a set of three.
+function toggleLevel(level) {
+  if (currentLevel.value === level) {
+    currentLevel.value = null;
+    currentSubjectCode.value = null;
+  } else {
+    currentLevel.value = level;
+    resourceType.value = 'all';
+    expandedGroups.value = {};
+    selectFirstSubjectOf(level);
   }
-  currentSubjectCode.value = subject.code;
-  currentResourceType.value = 'notes';
-  openAuthors.value = {};
 }
 
-function resetLevel() {
+function selectSubject(subject) {
+  if (subject.levelKey !== currentLevel.value) currentLevel.value = subject.levelKey;
+  currentSubjectCode.value = subject.code;
+  resourceType.value = 'all';
+  expandedGroups.value = {};
+}
+
+function setResourceType(type) {
+  resourceType.value = type;
+  expandedGroups.value = {};
+}
+
+function clearSubject() {
+  currentSubjectCode.value = null;
+}
+
+function clearAll() {
+  search.value = '';
   currentLevel.value = null;
   currentSubjectCode.value = null;
-  currentResourceType.value = 'notes';
-  openAuthors.value = {};
+  resourceType.value = 'all';
 }
 
-watch(activeTab, (newTab) => {
-  if (newTab === 'All Levels') return;
-  const key = tabToLevel[newTab];
-  if (key) loadLevel(key);
-});
-
-watch(filteredSubjects, (subjects) => {
-  if (!currentLevel.value || !subjects.length) return;
-  const hasActive = subjects.some((s) => s.code === currentSubjectCode.value);
-  if (!hasActive) currentSubjectCode.value = subjects[0].code;
+// Keep the selection valid as the query narrows the grid under it, rather than
+// leaving a results panel describing a subject that is no longer listed.
+watch(visibleSubjects, (subjects) => {
+  if (!currentSubjectCode.value || !subjects.length) return;
+  if (!subjects.some((s) => s.code === currentSubjectCode.value)) {
+    currentSubjectCode.value = subjects[0].code;
+    currentLevel.value = currentLevel.value || subjects[0].levelKey;
+  }
 });
 </script>
 
-<style scoped src="./study-shared.css"></style>
-
 <style scoped>
-/* ─── Two-column layout ───────────────────────────────────── */
-.sc-layout {
-  display: grid;
-  grid-template-columns: 280px 1fr;
-  gap: 1.75rem;
-  align-items: start;
+/* ── 1. Search — the single most prominent control on the page ────── */
+/* The section's own top padding is trimmed here rather than in the global
+   .section rule: this is the one section on the site that must start as close
+   to the hero as it can, because it is what the visitor came for. */
+.section.tone-a {
+  padding-top: 3.5rem;
 }
 
-/* ─── Left sidebar ────────────────────────────────────────── */
-.sc-sidebar {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  position: sticky;
-  top: 100px;
+.rb-search {
+  max-width: 640px;
+  margin: 0 auto 3rem;
 }
 
-.sc-sidebar-cards {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.sc-sidebar-card {
-  background: var(--surface);
-  border: 1px solid rgba(212, 160, 23, 0.15);
-  border-radius: 14px;
-  padding: 1.6rem 1.4rem;
-  cursor: pointer;
-  transition: all 0.25s ease;
-  position: relative;
-  overflow: hidden;
-}
-
-.sc-sidebar-card:hover {
-  border-color: rgba(212, 160, 23, 0.4);
-  background: rgba(212, 160, 23, 0.04);
-}
-
-.sc-sidebar-card.active {
-  border-color: var(--accent);
-  background: rgba(212, 160, 23, 0.07);
-  box-shadow: 0 0 0 2px rgba(212, 160, 23, 0.2);
-}
-
-.sc-sidebar-card.active .sc-sidebar-arrow {
+.rb-search-label {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
   color: var(--accent);
-  transform: translateX(3px);
+  margin-bottom: 0.7rem;
+  text-align: center;
 }
 
-.sc-sidebar-card-top {
-  display: flex;
-  gap: 0.75rem;
-  align-items: flex-start;
-  margin-bottom: 1rem;
+.rb-search-field {
+  position: relative;
 }
 
-.sc-sidebar-emoji {
-  font-size: 1.6rem;
-  flex-shrink: 0;
-  line-height: 1;
-  margin-top: 0.1rem;
+.rb-search-input {
+  height: 3.4rem;
+  padding-left: 2.9rem;
+  padding-right: 2.6rem;
+  font-size: 1rem;
 }
 
-.sc-sidebar-meta {
-  flex: 1;
-  min-width: 0;
+.rb-search-input::-webkit-search-cancel-button {
+  display: none;
 }
 
-.sc-sidebar-card .sc-card-title {
-  font-size: 0.95rem;
-  margin-bottom: 0.25rem;
-}
-
-.sc-sidebar-card .sc-card-desc {
-  font-size: 0.75rem;
-  margin-bottom: 0;
-  line-height: 1.5;
-}
-
-.sc-sidebar-arrow {
+.rb-search-icon {
   position: absolute;
-  right: 1rem;
-  bottom: 1rem;
-  color: var(--text3);
-  transition: all 0.2s;
-}
-
-/* ─── Right panel ─────────────────────────────────────────── */
-.sc-panel-wrap {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.sc-panel-search {
-  margin-bottom: 0;
-  flex-shrink: 0;
-}
-
-/* Wrapper that holds strip + resource panel as one fixed box */
-.sc-panel-body {
-  display: flex;
-  flex-direction: column;
-  height: 580px;
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  overflow: hidden;
-}
-
-/* Subject strip: fixed top, no scroll */
-.sc-subject-strip {
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-  border-radius: 0;
-  padding: 1.25rem 1.5rem;
-  flex-shrink: 0;
-}
-
-/* Resource panel: fills remaining height, scrollable */
-.sc-resource-panel {
-  background: var(--surface);
-  padding: 1.5rem 2rem;
-  flex: 1;
-  overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(212, 160, 23, 0.3) transparent;
-}
-
-.sc-resource-panel::-webkit-scrollbar {
-  width: 5px;
-}
-.sc-resource-panel::-webkit-scrollbar-thumb {
-  background: rgba(212, 160, 23, 0.3);
-  border-radius: 99px;
-}
-
-/* ─── Responsive ──────────────────────────────────────────── */
-@media (max-width: 900px) {
-  .sc-layout {
-    grid-template-columns: 1fr;
-  }
-  .sc-sidebar {
-    position: static;
-  }
-  .sc-sidebar-cards {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-.sc-level-card {
-  cursor: pointer;
-  transition: all 0.3s ease;
-  border-color: rgba(212, 160, 23, 0.15) !important;
-}
-
-.sc-level-card:hover {
-  transform: translateY(-6px);
-}
-
-.sc-level-card.active {
-  border-color: var(--accent) !important;
-  box-shadow: 0 0 0 2px rgba(212, 160, 23, 0.3);
-}
-
-.sc-card-emoji {
-  font-size: 1.8rem;
-  margin-bottom: 0.5rem;
-}
-
-.sc-card-desc {
-  font-size: 0.82rem;
-  margin-bottom: 1rem;
-}
-
-.sc-browse-btn {
-  font-size: 0.82rem;
-  padding: 0.5rem 1.1rem;
+  left: 1.05rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--accent);
   pointer-events: none;
 }
 
-.sc-strip-header {
+.rb-search-clear {
+  position: absolute;
+  right: 0.7rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  padding: 0.35rem;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: var(--text2);
+  cursor: pointer;
+  transition: color var(--duration-micro) var(--ease-editorial);
+}
+
+.rb-search-clear:hover {
+  color: var(--text);
+}
+
+.rb-search-hint {
+  margin-top: 0.7rem;
+  text-align: center;
+  font-size: 0.76rem;
+  color: var(--text3);
+}
+
+/* ── Blocks ───────────────────────────────────────────────────────── */
+.rb-block + .rb-block {
+  margin-top: 2.75rem;
+  padding-top: 2.75rem;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.rb-block-head {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.1rem;
+}
+
+.rb-block-title {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
   margin-bottom: 1rem;
 }
 
-.sc-badges-row {
+.rb-block-head .rb-block-title {
+  margin-bottom: 0;
+}
+
+.rb-block-meta {
+  font-size: 0.78rem;
+  color: var(--text2);
+  letter-spacing: 0.04em;
+}
+
+.rb-subject-desc {
+  margin-top: 0.35rem;
+  font-size: 0.85rem;
+  color: var(--text2);
+  max-width: 46rem;
+}
+
+.rb-chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 0.6rem;
 }
 
-.sc-subj-badge {
-  padding: 0.4rem 0.9rem;
-  font-size: 0.82rem;
+.rb-types {
+  margin-bottom: 1.75rem;
 }
 
-.sc-tab-bar {
-  display: flex;
-  gap: 0.5rem;
-  margin: 1.5rem 0 1.25rem;
-  flex-wrap: wrap;
+.rb-chip-count {
+  font-size: 0.7rem;
+  color: var(--text3);
+  font-variant-numeric: tabular-nums;
 }
 
-.sc-tab {
-  padding: 0.45rem 1.1rem;
-  font-size: 0.82rem;
+.sel[aria-pressed='true'] .rb-chip-count {
+  color: var(--accent);
 }
 
-.sc-resource-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.85rem 1rem;
-  background: rgba(212, 160, 23, 0.03);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  text-decoration: none;
-  color: var(--text);
+.rb-note {
   font-size: 0.88rem;
-  transition: all 0.2s;
-  margin-bottom: 0.5rem;
+  color: var(--text2);
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
 }
 
-.sc-resource-item:hover {
-  background: rgba(212, 160, 23, 0.08);
+.rb-note--rest {
+  color: var(--text3);
+  max-width: 44rem;
+  line-height: 1.7;
 }
 
-.sc-badge {
-  font-size: 0.65rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
+/* ── 3. Subject grid ──────────────────────────────────────────────── */
+.rb-subject-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 0.75rem;
+}
+
+/* Not a card: a dense, scannable row. Border and a 1px lift on hover, gold
+   rule and gold code on selection — the same selector language as .sel, laid
+   out as a grid because there are up to nineteen of them. */
+.rb-subject {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  text-align: left;
+  padding: 0.85rem 1rem 0.85rem 1.1rem;
+  background: var(--color-card);
+  border: 1px solid var(--border-card);
+  border-radius: var(--rad);
+  color: var(--text2);
+  font-family: var(--font-body);
+  cursor: pointer;
+  transition:
+    background-color var(--duration-selector) var(--ease-editorial),
+    border-color var(--duration-selector) var(--ease-editorial),
+    color var(--duration-selector) var(--ease-editorial),
+    transform var(--duration-selector) var(--ease-editorial);
+}
+
+.rb-subject::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.85rem;
+  bottom: 0.85rem;
+  width: 2px;
+  border-radius: 0 2px 2px 0;
+  background: transparent;
+  transition: background-color var(--duration-selector) var(--ease-editorial);
+}
+
+.rb-subject:hover {
+  border-color: var(--border-card-hover);
+  color: var(--text);
+  transform: translateY(-1px);
+}
+
+.rb-subject:active {
+  transform: translateY(0) scale(0.99);
+}
+
+.rb-subject:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 3px;
+}
+
+.rb-subject[aria-pressed='true'] {
+  border-color: var(--color-gold);
+  background: rgba(213, 166, 58, 0.08);
+  color: var(--text);
+}
+
+/* The non-colour half of the selected state. */
+.rb-subject[aria-pressed='true']::before {
+  background: var(--color-gold);
+}
+
+.rb-subject-code {
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  background: rgba(212, 160, 23, 0.15);
+  color: var(--text3);
+}
+
+.rb-subject[aria-pressed='true'] .rb-subject-code {
   color: var(--accent);
-  border: 1px solid rgba(212, 160, 23, 0.3);
-  padding: 0.15rem 0.55rem;
-  border-radius: 99px;
 }
 
-.sc-author-card {
-  background: rgba(212, 160, 23, 0.04);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  margin-bottom: 0.75rem;
-  overflow: hidden;
+.rb-subject-name {
+  font-size: 0.88rem;
+  font-weight: 500;
+  line-height: 1.4;
 }
 
-.sc-author-header {
+.rb-subject-level {
+  margin-top: 0.15rem;
+  font-size: 0.66rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text3);
+}
+
+/* ── 5. Results ───────────────────────────────────────────────────── */
+.rb-results {
+  min-height: 320px;
+}
+
+.rb-group + .rb-group {
+  margin-top: 1.75rem;
+}
+
+.rb-group-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text3);
+  padding-bottom: 0.6rem;
+  margin-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.rb-group--featured .rb-group-label {
+  color: var(--accent);
+}
+
+.rb-group-count {
+  font-variant-numeric: tabular-nums;
+  opacity: 0.7;
+}
+
+.rb-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.rb-more {
+  margin-top: 0.6rem;
+}
+
+/* This control's trailing glyph means "expand", not "go", so it rotates
+   instead of taking the global trailing-arrow slide. The .btn.rb-more prefix
+   is what outranks `.btn:hover svg:last-child`. */
+.btn.rb-more .rb-more-chevron {
+  transition: transform var(--duration-link) var(--ease-editorial);
+}
+
+.btn.rb-more:hover .rb-more-chevron {
+  transform: none;
+}
+
+.btn.rb-more .rb-more-chevron--up,
+.btn.rb-more:hover .rb-more-chevron--up {
+  transform: rotate(180deg);
+}
+
+/* A row, not a card — one hairline between entries and nothing nested. */
+.rb-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.85rem 1.15rem;
-  cursor: pointer;
+  gap: 1.25rem;
+  padding: 0.85rem 0.75rem;
+  border-bottom: 1px solid var(--border-subtle);
+  border-radius: var(--rad);
+  color: var(--text);
+  text-decoration: none;
+  transition:
+    background-color var(--duration-card) var(--ease-editorial),
+    color var(--duration-card) var(--ease-editorial);
 }
 
-.sc-author-name {
+.rb-item:hover {
+  background: var(--color-card);
+  color: #fff;
+}
+
+.rb-item:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 2px;
+}
+
+.rb-item-main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  min-width: 0;
+}
+
+.rb-item-title {
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+.rb-item-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.rb-item-type,
+.rb-item-badge {
+  font-size: 0.62rem;
   font-weight: 600;
-  font-size: 0.9rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
-.sc-author-count {
-  font-size: 0.7rem;
+.rb-item-type {
   color: var(--text3);
 }
 
-.sc-author-body {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.35s ease;
-}
-
-.sc-author-body.open {
-  max-height: 2000px;
-}
-
-.sc-author-notes {
-  padding: 0 1rem 1rem;
-}
-
-.sc-year-group {
-  margin-bottom: 1.25rem;
-}
-
-.sc-year-label {
-  font-family: Cinzel, serif;
-  font-weight: 700;
-  font-size: 0.9rem;
+.rb-item-badge {
   color: var(--accent);
-  margin-bottom: 0.5rem;
-  padding-bottom: 0.35rem;
-  border-bottom: 1px solid rgba(212, 160, 23, 0.15);
-  display: flex;
+  border: 1px solid var(--border-subtle);
+  border-radius: 99px;
+  padding: 0.1rem 0.5rem;
+}
+
+.rb-item-cta {
+  display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.4rem;
+  flex: none;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: var(--accent);
 }
 
-.sc-year-count {
-  font-size: 0.7rem;
+.rb-item-cta svg {
+  transition: transform var(--duration-link) var(--ease-editorial);
+}
+
+.rb-item:hover .rb-item-cta svg {
+  transform: translateX(4px);
+}
+
+/* ── Empty states ─────────────────────────────────────────────────── */
+.rb-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  min-height: 320px;
   color: var(--text3);
-  font-weight: 400;
+  text-align: center;
+  font-size: 0.92rem;
+  line-height: 1.7;
 }
 
+.rb-empty span {
+  max-width: 34rem;
+}
+
+.rb-empty--start {
+  min-height: 200px;
+}
+
+/* ── Responsive ───────────────────────────────────────────────────── */
 @media (max-width: 768px) {
-  .sc-sidebar-cards {
+  .rb-search {
+    margin-bottom: 2.5rem;
+  }
+
+  .rb-block + .rb-block {
+    margin-top: 2.25rem;
+    padding-top: 2.25rem;
+  }
+
+  .rb-subject-grid {
     grid-template-columns: 1fr;
   }
 
-  .sc-badges-row {
-    max-height: 200px;
-    overflow-y: auto;
+  /* Stacked, not a scroller: three level chips and four type chips wrap into
+     two tidy rows at 375px, so a horizontal scroller would hide controls for
+     no gain. */
+  .rb-chips {
+    gap: 0.5rem;
+  }
+
+  .rb-item {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.6rem;
+    padding: 0.9rem 0.5rem;
+  }
+
+  .rb-item-cta {
+    font-size: 0.75rem;
+  }
+
+  .rb-results,
+  .rb-empty {
+    min-height: 240px;
   }
 }
 </style>

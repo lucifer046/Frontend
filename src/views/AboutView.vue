@@ -46,7 +46,7 @@
             </p>
             <h3
               style="
-                font-family: Cinzel, serif;
+                font-family: var(--font-display);
                 font-size: 1.5rem;
                 font-weight: 700;
                 margin: 2rem 0 1rem;
@@ -105,7 +105,7 @@
             <div class="section-tag">Our Mission</div>
             <h3
               style="
-                font-family: Cinzel, serif;
+                font-family: var(--font-display);
                 font-size: 1.3rem;
                 font-weight: 700;
                 margin-bottom: 1rem;
@@ -142,7 +142,7 @@
           aria-label="Close magazine"
           @click="closeMagazine"
         >
-          ✕
+          <X :size="18" :stroke-width="2" />
         </button>
         <iframe
           :src="magazineEmbedUrl"
@@ -167,12 +167,19 @@
             v-for="v in values"
             :key="v.title"
           >
-            <div style="font-size: 2.5rem; margin-bottom: 1rem">
-              {{ v.icon }}
+            <div
+              style="
+                color: var(--accent);
+                margin-bottom: 1rem;
+                display: flex;
+                justify-content: center;
+              "
+            >
+              <component :is="v.icon" :size="34" :stroke-width="1.5" />
             </div>
             <h3
               style="
-                font-family: Cinzel, serif;
+                font-family: var(--font-display);
                 font-size: 1.1rem;
                 font-weight: 700;
                 margin-bottom: 0.5rem;
@@ -198,7 +205,7 @@
             <div
               class="stat-number"
               :data-count="s.count"
-              :style="`font-family:Cinzel,serif;font-size:3rem;font-weight:800;background:${s.gradient};-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent`"
+              :style="`font-family: var(--font-display);font-size:3rem;font-weight:800;background:${s.gradient};-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent`"
             >
               0
             </div>
@@ -219,10 +226,12 @@
         </div>
         <div class="grid-2">
           <div class="card-base rs">
-            <div style="font-size: 2rem; margin-bottom: 1rem">🎓</div>
+            <div style="color: var(--accent); margin-bottom: 1rem">
+              <GraduationCap :size="30" :stroke-width="1.6" />
+            </div>
             <h3
               style="
-                font-family: Cinzel, serif;
+                font-family: var(--font-display);
                 font-weight: 700;
                 font-size: 1.1rem;
                 margin-bottom: 0.75rem;
@@ -236,10 +245,12 @@
             </p>
           </div>
           <div class="card-base rs">
-            <div style="font-size: 2rem; margin-bottom: 1rem">🌐</div>
+            <div style="color: var(--accent); margin-bottom: 1rem">
+              <Globe2 :size="30" :stroke-width="1.6" />
+            </div>
             <h3
               style="
-                font-family: Cinzel, serif;
+                font-family: var(--font-display);
                 font-weight: 700;
                 font-size: 1.1rem;
                 margin-bottom: 0.75rem;
@@ -253,10 +264,12 @@
             </p>
           </div>
           <div class="card-base rs">
-            <div style="font-size: 2rem; margin-bottom: 1rem">🚀</div>
+            <div style="color: var(--accent); margin-bottom: 1rem">
+              <Rocket :size="30" :stroke-width="1.6" />
+            </div>
             <h3
               style="
-                font-family: Cinzel, serif;
+                font-family: var(--font-display);
                 font-weight: 700;
                 font-size: 1.1rem;
                 margin-bottom: 0.75rem;
@@ -270,10 +283,12 @@
             </p>
           </div>
           <div class="card-base rs">
-            <div style="font-size: 2rem; margin-bottom: 1rem">🤝</div>
+            <div style="color: var(--accent); margin-bottom: 1rem">
+              <CalendarDays :size="30" :stroke-width="1.6" />
+            </div>
             <h3
               style="
-                font-family: Cinzel, serif;
+                font-family: var(--font-display);
                 font-weight: 700;
                 font-size: 1.1rem;
                 margin-bottom: 0.75rem;
@@ -299,10 +314,19 @@
         </div>
         <div class="grid-2">
           <div class="card-base rc" style="text-align: center" v-for="d in domains" :key="d.title">
-            <div style="font-size: 2.2rem; margin-bottom: 1rem">{{ d.icon }}</div>
+            <div
+              style="
+                color: var(--accent);
+                margin-bottom: 1rem;
+                display: flex;
+                justify-content: center;
+              "
+            >
+              <component :is="d.icon" :size="30" :stroke-width="1.6" />
+            </div>
             <h3
               style="
-                font-family: Cinzel, serif;
+                font-family: var(--font-display);
                 font-size: 1.1rem;
                 font-weight: 700;
                 margin-bottom: 0.5rem;
@@ -329,10 +353,12 @@
             v-for="d in differentiators"
             :key="d.title"
           >
-            <div style="font-size: 2rem; margin-bottom: 1rem">{{ d.icon }}</div>
+            <div style="color: var(--accent); margin-bottom: 1rem">
+              <component :is="d.icon" :size="26" :stroke-width="1.7" />
+            </div>
             <h3
               style="
-                font-family: Cinzel, serif;
+                font-family: var(--font-display);
                 font-size: 1.05rem;
                 font-weight: 700;
                 margin-bottom: 0.5rem;
@@ -349,19 +375,11 @@
     <!-- Our Belief Quote -->
     <section class="section rs">
       <div class="container">
-        <div
-          class="card-base"
-          style="
-            text-align: center;
-            padding: 4rem 3rem;
-            background: linear-gradient(135deg, rgba(212, 160, 23, 0.08), rgba(8, 7, 5, 0.6));
-            border: 1px solid rgba(212, 160, 23, 0.2);
-          "
-        >
+        <div class="card-base" style="text-align: center; padding: 4rem 3rem">
           <div style="font-size: 3rem; margin-bottom: 1.5rem; opacity: 0.6">❝</div>
           <p
             style="
-              font-family: Cinzel, serif;
+              font-family: var(--font-display);
               font-size: 1.4rem;
               font-weight: 600;
               color: var(--text);
@@ -400,15 +418,15 @@
                 gap: 1rem;
                 margin-bottom: 1.5rem;
                 padding-bottom: 1rem;
-                border-bottom: 1px solid rgba(212, 160, 23, 0.15);
+                border-bottom: 1px solid var(--border-subtle);
               "
             >
               <div
                 style="
-                  font-family: Cinzel, serif;
+                  font-family: var(--font-display);
                   font-size: 1.2rem;
                   font-weight: 800;
-                  background: linear-gradient(135deg, #d4a017, #f0c040);
+                  background: linear-gradient(135deg, #d5a63a, #e9c873);
                   -webkit-background-clip: text;
                   background-clip: text;
                   -webkit-text-fill-color: transparent;
@@ -425,7 +443,7 @@
                   padding: 1.25rem;
                   background: rgba(255, 255, 255, 0.03);
                   border-radius: 0.75rem;
-                  border: 1px solid rgba(212, 160, 23, 0.12);
+                  border: 1px solid var(--border-subtle);
                   display: flex;
                   flex-direction: column;
                   gap: 0.75rem;
@@ -436,7 +454,7 @@
                   style="
                     font-size: 0.72rem;
                     letter-spacing: 0.1em;
-                    color: #d4a017;
+                    color: #d5a63a;
                     text-transform: uppercase;
                   "
                 >
@@ -449,16 +467,16 @@
                       width: 52px;
                       height: 52px;
                       border-radius: 50%;
-                      border: 2px solid rgba(212, 160, 23, 0.4);
+                      border: 2px solid var(--border-gold);
                       flex-shrink: 0;
                       background: linear-gradient(135deg, #2a2006, #3d2e08);
                       display: flex;
                       align-items: center;
                       justify-content: center;
-                      font-family: Cinzel, serif;
+                      font-family: var(--font-display);
                       font-weight: 700;
                       font-size: 0.85rem;
-                      color: #d4a017;
+                      color: #d5a63a;
                       letter-spacing: 0.05em;
                     "
                   >
@@ -473,7 +491,7 @@
                   </div>
                   <div
                     style="
-                      font-family: Cinzel, serif;
+                      font-family: var(--font-display);
                       font-weight: 700;
                       font-size: 1rem;
                       color: var(--text);
@@ -497,9 +515,9 @@
                       width: 36px;
                       height: 36px;
                       border-radius: 8px;
-                      background: rgba(212, 160, 23, 0.08);
-                      border: 1px solid rgba(212, 160, 23, 0.2);
-                      color: #d4a017;
+                      background: rgba(213, 166, 58, 0.08);
+                      border: 1px solid var(--border-card);
+                      color: #d5a63a;
                       text-decoration: none;
                       transition: background 0.2s;
                     "
@@ -535,9 +553,9 @@
                       width: 36px;
                       height: 36px;
                       border-radius: 8px;
-                      background: rgba(212, 160, 23, 0.08);
-                      border: 1px solid rgba(212, 160, 23, 0.2);
-                      color: #d4a017;
+                      background: rgba(213, 166, 58, 0.08);
+                      border: 1px solid var(--border-card);
+                      color: #d5a63a;
                       text-decoration: none;
                       transition: background 0.2s;
                     "
@@ -594,8 +612,8 @@
                         bottom: calc(100% + 6px);
                         left: 50%;
                         transform: translateX(-50%);
-                        background: #1a1500;
-                        border: 1px solid rgba(212, 160, 23, 0.2);
+                        background: var(--color-card-raised);
+                        border: 1px solid var(--border-card);
                         color: rgba(255, 255, 255, 0.5);
                         font-size: 0.65rem;
                         white-space: nowrap;
@@ -623,9 +641,9 @@
                       width: 36px;
                       height: 36px;
                       border-radius: 8px;
-                      background: rgba(212, 160, 23, 0.08);
-                      border: 1px solid rgba(212, 160, 23, 0.2);
-                      color: #d4a017;
+                      background: rgba(213, 166, 58, 0.08);
+                      border: 1px solid var(--border-card);
+                      color: #d5a63a;
                       text-decoration: none;
                       transition: background 0.2s;
                     "
@@ -686,8 +704,8 @@
                         bottom: calc(100% + 6px);
                         left: 50%;
                         transform: translateX(-50%);
-                        background: #1a1500;
-                        border: 1px solid rgba(212, 160, 23, 0.2);
+                        background: var(--color-card-raised);
+                        border: 1px solid var(--border-card);
                         color: rgba(255, 255, 255, 0.5);
                         font-size: 0.65rem;
                         white-space: nowrap;
@@ -707,15 +725,7 @@
           </div>
         </div>
 
-        <div
-          class="card-base"
-          style="
-            text-align: center;
-            margin-top: 2rem;
-            padding: 2rem;
-            background: rgba(212, 160, 23, 0.05);
-          "
-        >
+        <div class="card-base" style="text-align: center; margin-top: 2rem; padding: 2rem">
           <p class="desc" style="margin: 0; font-style: italic">
             Each year adds a new chapter to Sundarbans House. With every leader and every member,
             the community continues to grow stronger, more impactful, and more inspiring.
@@ -729,7 +739,7 @@
       class="cta-section rs"
       style="
         padding: 5rem 0;
-        background: linear-gradient(135deg, rgba(212, 160, 23, 0.06), rgba(8, 7, 5, 0.95));
+        background: linear-gradient(135deg, rgba(213, 166, 58, 0.06), rgba(5, 6, 5, 0.95));
       "
     >
       <div class="container">
@@ -754,6 +764,22 @@
 import { onBeforeUnmount, ref } from 'vue';
 import { useScrollReveal, useCounters } from '../composables/useAnimations.js';
 import PageHero from '../components/PageHero.vue';
+import {
+  X,
+  GraduationCap,
+  Sparkles,
+  Rocket,
+  Code2,
+  Palette,
+  TrendingUp,
+  Handshake,
+  Home,
+  Wrench,
+  Target,
+  Globe2,
+  Crown,
+  PartyPopper,
+} from 'lucide-vue-next';
 const magazinePreview =
   'https://res.cloudinary.com/l59gy0g2/image/upload/f_auto,q_auto:good,w_1000,c_limit/v1785911353/sundarbans/src/assets/delta-diaries-preview.webp';
 useScrollReveal();
@@ -784,17 +810,17 @@ onBeforeUnmount(() => {
 
 const values = [
   {
-    icon: '🎓',
+    icon: GraduationCap,
     title: 'Academic Excellence',
     desc: 'Committed to fostering a culture of learning, peer mentorship and high academic achievement.',
   },
   {
-    icon: '🌟',
+    icon: Sparkles,
     title: 'Community Spirit',
     desc: 'Building lasting connections across the nation, celebrating diversity and collective growth.',
   },
   {
-    icon: '🚀',
+    icon: Rocket,
     title: 'Growth Mindset',
     desc: 'Empowering every student to reach their full potential through innovation and resilience.',
   },
@@ -804,7 +830,7 @@ const stats = [
   {
     count: 5170,
     label: 'Active Members',
-    gradient: 'linear-gradient(135deg,#d4a017,#f0c040)',
+    gradient: 'linear-gradient(135deg,#d5a63a,#e9c873)',
   },
   {
     count: 500,
@@ -819,28 +845,28 @@ const stats = [
   {
     count: 3,
     label: 'Active Communities',
-    gradient: 'linear-gradient(135deg,#d4a017,#8b6914)',
+    gradient: 'linear-gradient(135deg,#d5a63a,#a97c22)',
   },
 ];
 
 const domains = [
   {
-    icon: '💻',
+    icon: Code2,
     title: 'Tech & Development',
     desc: 'Build real projects, contribute to open source, and sharpen your engineering skills with fellow developers.',
   },
   {
-    icon: '🎨',
+    icon: Palette,
     title: 'Design & Creativity',
     desc: 'Explore UI/UX, graphic design, and creative storytelling — build a portfolio that stands out.',
   },
   {
-    icon: '📈',
+    icon: TrendingUp,
     title: 'Finance & Entrepreneurship',
     desc: 'Develop business acumen, explore startups, and learn financial thinking with like-minded peers.',
   },
   {
-    icon: '🤝',
+    icon: Handshake,
     title: 'Community & Welfare',
     desc: 'Drive inclusion, support fellow students, and lead initiatives that strengthen the entire community.',
   },
@@ -848,32 +874,32 @@ const domains = [
 
 const differentiators = [
   {
-    icon: '🏡',
+    icon: Home,
     title: 'Strong Community Culture',
     desc: "We believe in 'no student left behind' — a supportive ecosystem where collaboration and guidance are always present.",
   },
   {
-    icon: '🛠️',
+    icon: Wrench,
     title: 'Skill-Driven Growth',
     desc: 'We emphasize practical skills over theory, preparing students for real-world challenges from day one.',
   },
   {
-    icon: '🎯',
+    icon: Target,
     title: 'Events That Matter',
     desc: 'Our events are designed to provide real value — helping students learn, network, and grow meaningfully.',
   },
   {
-    icon: '🌍',
+    icon: Globe2,
     title: 'Diversity & Inclusion',
     desc: 'Students from across India come together to form a vibrant and inclusive community that celebrates every background.',
   },
   {
-    icon: '👑',
+    icon: Crown,
     title: 'Leadership & Growth',
     desc: 'Students lead as organizers, coordinators, and team leads — building essential real-world leadership skills.',
   },
   {
-    icon: '🎉',
+    icon: PartyPopper,
     title: 'Beyond Academics',
     desc: 'From celebrations to competitions, we ensure students enjoy a fun, engaging, and memorable journey.',
   },
@@ -1002,7 +1028,7 @@ span:hover > .sc-tip {
 .magazine-entry h2 {
   margin: 0;
   color: var(--text);
-  font-family: Cinzel, serif;
+  font-family: var(--font-display);
   font-size: clamp(1.5rem, 4vw, 2.25rem);
   text-align: center;
 }
@@ -1023,7 +1049,7 @@ span:hover > .sc-tip {
 }
 
 .magazine-preview:focus-visible {
-  outline: 3px solid #d4a017;
+  outline: 3px solid #d5a63a;
   outline-offset: 5px;
 }
 
@@ -1058,7 +1084,7 @@ span:hover > .sc-tip {
 }
 
 .magazine-close:focus-visible {
-  outline: 3px solid #d4a017;
+  outline: 3px solid #d5a63a;
   outline-offset: 3px;
 }
 

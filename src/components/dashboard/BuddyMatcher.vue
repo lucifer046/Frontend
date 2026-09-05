@@ -76,9 +76,12 @@
       </div>
       <div class="buddy-connect-row">
         <button class="btn btn-outline" :disabled="connectSent" @click="connectBuddy">
-          {{ connectSent ? 'Sent!' : '💬 Connect' }}
+          <template v-if="connectSent">Sent!</template>
+          <template v-else><MessageCircle :size="15" :stroke-width="1.9" /> Connect</template>
         </button>
-        <button class="btn btn-ghost" @click="findBuddy">🔀 Shuffle</button>
+        <button class="btn btn-ghost" @click="findBuddy">
+          <Shuffle :size="15" :stroke-width="1.9" /> Shuffle
+        </button>
         <span class="buddy-sent-msg" :class="{ show: connectSent }">✓ Request sent!</span>
       </div>
     </div>
@@ -87,6 +90,7 @@
 
 <script setup>
 import { ref, reactive } from 'vue';
+import { MessageCircle, Shuffle } from 'lucide-vue-next';
 
 const props = defineProps({
   pool: { type: Array, default: null },

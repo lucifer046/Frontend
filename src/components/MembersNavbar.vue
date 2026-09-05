@@ -2,7 +2,7 @@
   <header class="members-navbar" :class="{ scrolled: navScrolled }" id="navbar">
     <div class="nav-inner">
       <router-link to="/" class="nav-brand">
-        <div class="nav-brand-icon">🌿</div>
+        <div class="nav-brand-icon"><TreePine :size="18" :stroke-width="1.8" /></div>
         <span class="nav-brand-name">Sundarbans</span>
       </router-link>
 
@@ -27,6 +27,7 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { TreePine } from 'lucide-vue-next';
 
 const props = defineProps({
   memberEmail: { type: String, default: '' },
@@ -49,11 +50,11 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll));
 <style scoped>
 /* CSS custom properties scoped to this component */
 .members-navbar {
-  --black: #060808;
-  --deep: #0a0f0a;
-  --forest: #131d13;
-  --panel: rgba(15, 22, 15, 0.85);
-  --border: rgba(201, 168, 76, 0.15);
+  --black: var(--color-bg-black);
+  --deep: var(--color-bg-forest);
+  --forest: var(--color-card);
+  --panel: var(--color-card);
+  --border: var(--border-subtle);
   --border-soft: rgba(255, 255, 255, 0.07);
   --gold: #c9a84c;
   --gold-light: #e8c97a;
@@ -65,8 +66,7 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll));
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(6, 8, 8, 0.9);
-  backdrop-filter: blur(24px);
+  background: rgba(6, 8, 8, 0.95);
   border-bottom: 1px solid var(--border-soft);
   padding: 0 60px;
   height: 72px;
@@ -75,12 +75,12 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll));
   transition: border-color 0.3s;
 }
 .members-navbar.scrolled {
-  border-color: rgba(201, 168, 76, 0.2);
+  border-color: var(--border-card);
 }
 
 .nav-inner {
   width: 100%;
-  max-width: 1300px;
+  max-width: var(--content-max-width);
   margin: 0 auto;
   display: flex;
   align-items: center;
@@ -99,7 +99,7 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll));
   border-radius: 7px;
   display: grid;
   place-items: center;
-  font-size: 16px;
+  color: var(--gold);
   background: var(--gold-dim);
 }
 .nav-brand-name {
@@ -108,7 +108,7 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll));
   letter-spacing: 0.25em;
   text-transform: uppercase;
   color: var(--gold);
-  font-family: 'Outfit', sans-serif;
+  font-family: var(--font-body);
 }
 .nav-links {
   display: flex;
@@ -126,7 +126,7 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll));
     color 0.2s,
     background 0.2s;
   letter-spacing: 0.03em;
-  font-family: 'Outfit', sans-serif;
+  font-family: var(--font-body);
 }
 .nav-link:hover {
   color: var(--cream);
@@ -169,7 +169,7 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll));
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-family: 'Outfit', sans-serif;
+  font-family: var(--font-body);
 }
 .logout-btn {
   padding: 9px 20px;
@@ -177,7 +177,7 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll));
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 6px;
   color: var(--muted);
-  font-family: 'Outfit', sans-serif;
+  font-family: var(--font-body);
   font-size: 12px;
   font-weight: 500;
   letter-spacing: 0.1em;

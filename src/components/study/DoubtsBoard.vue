@@ -1,5 +1,5 @@
 <template>
-  <section class="section rs" id="doubtBoard">
+  <section class="section tone-b rs" id="doubt-board">
     <div class="container">
       <div class="sec-hdr">
         <div class="section-tag">Community</div>
@@ -7,78 +7,16 @@
         <p class="sec-sub">Community-answered doubts. Ask anonymously, learn together.</p>
       </div>
 
-      <div
-        style="
-          display: flex;
-          gap: 0.6rem;
-          flex-wrap: wrap;
-          justify-content: center;
-          margin-bottom: 2.5rem;
-        "
-      >
+      <div class="db-filters" role="group" aria-label="Filter doubts by subject">
         <button
-          class="db-filter"
-          :class="{ active: dbCurrentFilter === 'all' }"
-          @click="setDbFilter('all')"
+          v-for="filter in visibleFilters"
+          :key="filter.key"
+          type="button"
+          class="sel"
+          :aria-pressed="dbCurrentFilter === filter.key"
+          @click="setDbFilter(filter.key)"
         >
-          All Subjects
-        </button>
-        <button
-          class="db-filter"
-          :class="{ active: dbCurrentFilter === 'Math' }"
-          @click="setDbFilter('Math')"
-        >
-          Mathematics
-        </button>
-        <button
-          class="db-filter"
-          :class="{ active: dbCurrentFilter === 'Stats' }"
-          @click="setDbFilter('Stats')"
-        >
-          Statistics
-        </button>
-        <button
-          class="db-filter"
-          :class="{ active: dbCurrentFilter === 'Python' }"
-          @click="setDbFilter('Python')"
-        >
-          Python
-        </button>
-        <button
-          class="db-filter"
-          :class="{ active: dbCurrentFilter === 'DBMS' }"
-          @click="setDbFilter('DBMS')"
-        >
-          DBMS
-        </button>
-        <button
-          class="db-filter"
-          :class="{ active: dbCurrentFilter === 'DSA' }"
-          @click="setDbFilter('DSA')"
-        >
-          DSA
-        </button>
-        <button
-          class="db-filter"
-          :class="{ active: dbCurrentFilter === 'ML' }"
-          @click="setDbFilter('ML')"
-        >
-          Machine Learning
-        </button>
-        <button
-          v-if="myDoubtsCount > 0"
-          class="db-filter"
-          :class="{ active: dbCurrentFilter === 'my-doubts' }"
-          @click="setDbFilter('my-doubts')"
-        >
-          My Doubts ({{ myDoubtsCount }})
-        </button>
-        <button
-          class="db-filter"
-          :class="{ active: dbCurrentFilter === 'answer-doubts' }"
-          @click="setDbFilter('answer-doubts')"
-        >
-          Answer Doubts
+          {{ filter.label }}
         </button>
       </div>
 
@@ -99,8 +37,8 @@
                 placeholder="Write an answer for the community..."
               ></textarea>
               <button
-                class="submit-btn"
-                style="margin-top: 0.55rem; padding: 0.4rem 0.9rem"
+                type="button"
+                class="btn btn--outline btn--sm db-post"
                 @click="postAnswer(d.id)"
               >
                 Post Answer
@@ -109,11 +47,16 @@
             <div class="db-footer">
               <span>{{ d.time }}</span>
               <button
-                class="db-upvote"
+                type="button"
+                class="sel db-upvote"
+                :aria-pressed="Boolean(dbVoted[d.id])"
                 :disabled="Boolean(dbVoted[d.id])"
                 @click="upvoteDoubt(d.id)"
               >
-                {{ dbVoted[d.id] ? '✓ Voted' : `👍 ${d.upvotes + (dbVoted[d.id] ? 1 : 0)}` }}
+                <template v-if="dbVoted[d.id]">✓ Voted</template>
+                <template v-else
+                  ><ThumbsUp :size="13" :stroke-width="1.9" /> {{ d.upvotes }}</template
+                >
               </button>
             </div>
           </div>
@@ -129,7 +72,7 @@
       >
         <h3
           style="
-            font-family: Cinzel, serif;
+            font-family: var(--font-display);
             font-weight: 700;
             font-size: 1.4rem;
             margin-bottom: 1rem;
@@ -154,10 +97,10 @@
           href="https://forms.gle/vZox3LpVrXti74UH7"
           target="_blank"
           rel="noopener noreferrer"
-          class="submit-btn"
-          style="display: inline-block; text-decoration: none"
+          class="btn btn--primary"
         >
           Open Doubts Form
+          <ArrowRight :size="16" :stroke-width="2" aria-hidden="true" />
         </a>
       </div>
     </div>
@@ -166,6 +109,7 @@
 
 <script setup>
 import { computed, onMounted, reactive, ref } from 'vue';
+import { ThumbsUp, ArrowRight } from 'lucide-vue-next';
 
 // The page-level search box lives in the resource browser; the board filters
 // against the same query, so the view passes it down.
@@ -177,6 +121,21 @@ const DB_JSON_PATH = '/data/doubts.json';
 const DB_STUDENT_KEY = 'sb_student_doubts_v1';
 const DB_VOTED_KEY = 'sb_voted_doubts_v1';
 const DB_ANSWERS_KEY = 'sb_doubt_answers_v1';
+
+// The filter row, as data. "My Doubts" only appears once the visitor has
+// actually asked something, which is why the list is filtered rather than
+// written out nine times in the template.
+const FILTERS = [
+  { key: 'all', label: 'All Subjects' },
+  { key: 'Math', label: 'Mathematics' },
+  { key: 'Stats', label: 'Statistics' },
+  { key: 'Python', label: 'Python' },
+  { key: 'DBMS', label: 'DBMS' },
+  { key: 'DSA', label: 'DSA' },
+  { key: 'ML', label: 'Machine Learning' },
+  { key: 'my-doubts', label: 'My Doubts', onlyWithOwnDoubts: true },
+  { key: 'answer-doubts', label: 'Answer Doubts' },
+];
 
 const dbCurrentFilter = ref('all');
 const dbDoubts = ref([]);
@@ -261,6 +220,13 @@ function hydrateDoubt(d, index = 0, prefix = 'plh') {
 }
 
 const myDoubtsCount = computed(() => dbDoubts.value.filter((d) => d.isStudent).length);
+
+const visibleFilters = computed(() =>
+  FILTERS.filter((f) => !f.onlyWithOwnDoubts || myDoubtsCount.value > 0).map((f) => ({
+    ...f,
+    label: f.key === 'my-doubts' ? `My Doubts (${myDoubtsCount.value})` : f.label,
+  }))
+);
 
 const filteredDoubts = computed(() => {
   const active = normalizeSubject(dbCurrentFilter.value);
@@ -386,32 +352,19 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-/* Restated rather than pulled in from study-shared.css: this section uses two
-   of that file's thirteen rules, and a scoped `src` import re-stamps all
-   thirteen with this component's scope id, shipping eleven dead ones. The
-   selectors below are the .db- arms of the shared pill-button base and active
-   rules, so specificity and cascade position are unchanged. */
-.db-filter,
-.db-upvote {
-  background: none;
-  border: 1px solid var(--border);
-  color: var(--text2);
-  border-radius: 99px;
-  font-family: inherit;
-  cursor: pointer;
-  transition: all 0.2s;
+/* The filter row and the upvote toggle are both .sel now — the global
+   selector tier — so this file no longer restates a pill button of its own.
+   What is left here is only what is genuinely local to the board. */
+.db-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  justify-content: center;
+  margin-bottom: 2.5rem;
 }
 
-.db-filter.active {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: #000;
-  font-weight: 700;
-}
-
-.db-filter {
-  padding: 0.4rem 1rem;
-  font-size: 0.8rem;
+.db-post {
+  margin-top: 0.55rem;
 }
 
 .db-scroll-box {
@@ -423,24 +376,24 @@ onMounted(async () => {
   flex-direction: column;
   gap: 1rem;
   border: 1px solid var(--border);
-  border-radius: 16px;
+  border-radius: var(--rad2);
   padding: 1.25rem;
   scrollbar-width: thin;
-  scrollbar-color: rgba(212, 160, 23, 0.3) transparent;
+  scrollbar-color: rgba(213, 166, 58, 0.3) transparent;
 }
 
 .db-scroll-box::-webkit-scrollbar {
   width: 5px;
 }
 .db-scroll-box::-webkit-scrollbar-thumb {
-  background: rgba(212, 160, 23, 0.3);
+  background: rgba(213, 166, 58, 0.3);
   border-radius: 99px;
 }
 
 .db-card {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 14px;
+  border-radius: var(--rad2);
   padding: 1.25rem 1.5rem;
 }
 
@@ -450,9 +403,9 @@ onMounted(async () => {
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  background: rgba(212, 160, 23, 0.1);
+  background: rgba(213, 166, 58, 0.1);
   color: var(--accent);
-  border: 1px solid rgba(212, 160, 23, 0.25);
+  border: 1px solid var(--border-card);
   padding: 0.15rem 0.55rem;
   border-radius: 99px;
   margin-bottom: 0.75rem;
@@ -471,7 +424,7 @@ onMounted(async () => {
   line-height: 1.6;
   margin-bottom: 0.75rem;
   padding-left: 0.75rem;
-  border-left: 2px solid rgba(212, 160, 23, 0.25);
+  border-left: 2px solid var(--border-card);
 }
 
 .db-footer {
@@ -483,18 +436,19 @@ onMounted(async () => {
 }
 
 .db-upvote {
-  padding: 0.25rem 0.65rem;
+  padding: 0.3rem 0.75rem;
   font-size: 0.75rem;
 }
 
+/* Voted is a terminal state, not a hover target. */
 .db-upvote:disabled {
-  border-color: var(--accent);
-  color: var(--accent);
+  cursor: default;
+  transform: none;
 }
 
 .db-input {
   width: 100%;
-  background: rgba(212, 160, 23, 0.04);
+  background: rgba(213, 166, 58, 0.04);
   border: 1px solid var(--border);
   border-radius: 10px;
   padding: 0.75rem 1rem;
