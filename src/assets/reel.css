@@ -1,0 +1,398 @@
+/* ===== THE PAST EVENTS FILM REEL =====
+   Imported by PastEventsReel.vue itself, so any page that mounts the
+   component gets the whole thing: geometry, loop, hover and the reduced
+   motion fallback. Nothing about the reel lives in a page stylesheet, which
+   is what lets the Events page and the homepage share one implementation
+   rather than two that drift apart.
+
+   Geometry lives in four custom properties declared on `.reel`, so a
+   breakpoint or a variant restates the composition in one place and the
+   frame that lifts on hover can undo the plane's rotation by negating them.
+
+     --reel-rz   the slash across the page
+     --reel-rx   the tilt into depth that bends the slash into a curve
+     --reel-w    poster width
+     --reel-perf height of the sprocket band above and below each frame
+     --reel-h    height of the window the strip runs through
+
+   Two variants, one identity. `.reel--archive` is the full-scale version on
+   the Events page; `.reel--compact` is the homepage teaser: same strip, same
+   loop, same interactions, smaller frames and a gentler bend so it reads as
+   one moment in the page rather than the page's subject. */
+.reel {
+  position: relative;
+  z-index: 2;
+  --reel-rz: -8deg;
+  --reel-rx: 18deg;
+  --reel-w: 300px;
+  --reel-perf: 26px;
+  --reel-h: clamp(26rem, 56vw, 52rem);
+}
+
+.reel--compact {
+  --reel-rz: -6deg;
+  --reel-rx: 14deg;
+  --reel-w: 230px;
+  --reel-perf: 20px;
+  --reel-h: clamp(23rem, 39vw, 38rem);
+}
+
+/* The window. Everything the strip does happens inside this box, which is why
+   a reel wider and taller than the viewport can never push the page sideways.
+   The perspective is declared here, on the untransformed ancestor, so every
+   descendant shares one vanishing point. */
+.reel-stage {
+  position: relative;
+  height: var(--reel-h);
+  overflow: hidden;
+  perspective: 1500px;
+  perspective-origin: 50% 46%;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 14%, #000 86%, transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0, #000 14%, #000 86%, transparent 100%);
+}
+
+.reel-plane {
+  position: absolute;
+  inset: 0 -12%;
+  display: flex;
+  align-items: center;
+  transform: rotateZ(var(--reel-rz)) rotateX(var(--reel-rx));
+  transform-style: preserve-3d;
+}
+
+.reel-strip {
+  width: max-content;
+  border-top: 1px solid rgba(170, 125, 35, 0.3);
+  border-bottom: 1px solid rgba(170, 125, 35, 0.3);
+  background: linear-gradient(180deg, #040605, #080b09 50%, #040605);
+  transform-style: preserve-3d;
+}
+
+/* The loop. Two identical halves, a slide of exactly half the width, linear
+   and infinite: the frame under any pixel at the end of a cycle is the frame
+   that was already there, so the restart is invisible. */
+.reel-track {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: max-content;
+  transform-style: preserve-3d;
+  animation: reel-scroll var(--reel-duration, 90s) linear infinite;
+  will-change: transform;
+}
+
+@keyframes reel-scroll {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+/* Two reasons to stop: someone is reading a frame, or the reel is nowhere
+   near the viewport. The second matters now that the homepage carries one:
+   a strip scrolling under the fold is work nobody asked for. */
+.reel--held .reel-track,
+.reel--idle .reel-track {
+  animation-play-state: paused;
+}
+
+.reel-frame {
+  position: relative;
+  flex: 0 0 auto;
+  width: var(--reel-w);
+  padding-block: var(--reel-perf);
+  border-right: 1px solid rgba(170, 125, 35, 0.16);
+  transform-style: preserve-3d;
+}
+
+/* Sprocket holes. They belong to the frame rather than the window, so they
+   travel with the film the way real perforations do. */
+.reel-frame::before,
+.reel-frame::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 7px;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(241, 232, 208, 0.14) 0 9px,
+    transparent 9px 26px
+  );
+}
+
+.reel-frame::before {
+  top: calc((var(--reel-perf) - 7px) / 2);
+}
+
+.reel-frame::after {
+  bottom: calc((var(--reel-perf) - 7px) / 2);
+}
+
+.reel-frame.is-active {
+  z-index: 5;
+}
+
+.reel-poster {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0 0.55rem;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  transform-style: preserve-3d;
+  transition:
+    transform var(--duration-card) var(--ease-editorial),
+    filter var(--duration-card) var(--ease-editorial);
+}
+
+/* The lift. It comes forward off the film plane and undoes the plane's two
+   rotations, so the held frame squares up to the reader while every frame
+   around it stays in the reel. */
+.reel-frame.is-active .reel-poster {
+  transform: translateZ(70px) rotateX(calc(-1 * var(--reel-rx))) rotateZ(calc(-1 * var(--reel-rz)))
+    scale(1.02);
+}
+
+.reel--held .reel-frame:not(.is-active) .reel-poster {
+  filter: brightness(0.55) saturate(0.85);
+}
+
+.reel-poster:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 4px;
+}
+
+.reel-poster-img {
+  position: relative;
+  display: block;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border: 1px solid rgba(170, 125, 35, 0.25);
+  border-radius: 4px;
+  background: var(--color-card);
+  box-shadow: var(--shadow-sm);
+}
+
+.reel-poster-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.reel-frame.is-active .reel-poster-img {
+  border-color: var(--color-gold);
+  box-shadow: var(--shadow-lg);
+}
+
+/* The three things every moving frame states: type, name, date. */
+.reel-poster-meta {
+  display: block;
+  padding: 0.75rem 0.1rem 0;
+}
+
+.reel-poster-cat {
+  display: block;
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-gold);
+  margin-bottom: 0.35rem;
+}
+
+.reel-poster-title {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--text);
+}
+
+.reel-poster-date {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 0.4rem;
+  font-size: 0.8rem;
+  color: var(--text2);
+}
+
+/* The reveal.
+   An overlay on the poster itself, so the frame never leaves the strip. */
+.reel-detail {
+  position: absolute;
+  inset: 0 0.55rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 0.4rem;
+  padding: 1rem;
+  border-radius: 4px;
+  background: linear-gradient(
+    180deg,
+    rgba(5, 6, 5, 0.35) 0%,
+    rgba(5, 6, 5, 0.88) 45%,
+    rgba(5, 6, 5, 0.97) 100%
+  );
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--duration-card) var(--ease-editorial);
+}
+
+.reel-frame.is-active .reel-detail {
+  opacity: 1;
+}
+
+.reel-detail-cat {
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-gold);
+}
+
+.reel-detail-title {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--text);
+}
+
+.reel-detail-desc {
+  font-size: 0.82rem;
+  line-height: 1.65;
+  color: var(--text2);
+}
+
+.reel-detail-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 0.9rem;
+  margin-top: 0.35rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid rgba(170, 125, 35, 0.28);
+}
+
+.reel-detail-fact {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.78rem;
+  color: var(--color-cream-muted);
+}
+
+/* The hint sits in the page container, not at the viewport edge, so it lines
+   up with the section heading above rather than with the full-bleed strip. */
+.reel-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem 2rem;
+  margin-top: 1.75rem;
+}
+
+.reel-hint {
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  color: var(--text3);
+  margin: 0;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1200px) {
+  .reel {
+    --reel-rz: -6deg;
+    --reel-rx: 14deg;
+    --reel-w: 250px;
+    --reel-perf: 22px;
+  }
+
+  .reel--compact {
+    --reel-rz: -5deg;
+    --reel-rx: 12deg;
+    --reel-w: 205px;
+    --reel-perf: 18px;
+  }
+}
+
+@media (max-width: 768px) {
+  .reel,
+  .reel--compact {
+    --reel-rz: -4deg;
+    --reel-rx: 9deg;
+    --reel-w: 190px;
+    --reel-perf: 16px;
+    --reel-h: 24rem;
+  }
+
+  .reel-frame.is-active .reel-poster {
+    transform: translateZ(40px) rotateX(calc(-1 * var(--reel-rx)))
+      rotateZ(calc(-1 * var(--reel-rz))) scale(1.02);
+  }
+
+  .reel-detail-desc {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .reel,
+  .reel--compact {
+    --reel-w: 160px;
+    --reel-h: 21.5rem;
+  }
+}
+
+/* ===== REDUCED MOTION =====
+   No travel. The strip becomes a flat, hand-scrollable row of the archive in
+   order, the clones drop out, and hover or focus still opens a frame's
+   details, so nothing is reachable only through movement. */
+@media (prefers-reduced-motion: reduce) {
+  .reel-stage {
+    height: auto;
+    overflow-x: auto;
+    overflow-y: hidden;
+    perspective: none;
+    padding-block: 1rem;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+
+  .reel-plane {
+    position: static;
+    inset: auto;
+    transform: none;
+  }
+
+  .reel-track {
+    animation: none;
+  }
+
+  .reel-frame.is-clone {
+    display: none;
+  }
+
+  .reel-frame.is-active .reel-poster {
+    transform: none;
+  }
+
+  .reel--held .reel-frame:not(.is-active) .reel-poster {
+    filter: none;
+  }
+}

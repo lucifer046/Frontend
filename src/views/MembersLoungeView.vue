@@ -1,455 +1,437 @@
 <template>
-  <div class="members-lounge-page">
-    <!-- PAGE LOADER -->
-    <transition name="fade-slow">
-      <div id="page-loader" v-if="pageLoading">
-        <div class="loader-monogram">S</div>
-        <div class="loader-tagline">Members Lounge</div>
-        <div class="loader-bar"><div class="loader-fill"></div></div>
-      </div>
-    </transition>
+  <!-- ══════════════════════════════════════════════════════════════════════
+       THE LOUNGE · SUNDARBANS HOUSE, PRIVATE EDITION
 
-    <div class="grain"></div>
+       The public site is the front door. This is the inside of the House, so
+       it is built the way a private magazine is built: oversized type, an
+       asymmetric opening spread, two darks alternating band by band, and a
+       photograph shown large rather than as a thumbnail. Cards appear only
+       where content genuinely needs a contained surface.
+       ══════════════════════════════════════════════════════════════════ -->
+  <div class="portal portal--tabbed lounge">
+    <PortalNav :display-name="displayName" :email="email" :initials="initials" @logout="logout" />
 
-    <!-- NAVBAR -->
-    <MembersNavbar :member-email="memberEmail" @logout="logout" />
+    <!-- ══ 01 · THE OPENING SPREAD ═══════════════════════════════════════
+         Type on the left, the House crest on the right, the day across the
+         bottom. Nothing is centred and nothing is boxed. -->
+    <section class="p-tone-a hero">
+      <span class="p-mark p-mark--right hero__mark" aria-hidden="true">House</span>
 
-    <!-- ═══════════════ HERO ═══════════════ -->
-    <section class="hero">
-      <div class="hero-bg-grid"></div>
-      <div class="hero-orb hero-orb-1"></div>
-      <div class="hero-orb hero-orb-2"></div>
-      <div class="hero-orb hero-orb-3"></div>
-
-      <div class="hero-content">
-        <div class="hero-badge">
-          <span class="badge-dot"></span>
-          Exclusive Members Lounge
-          <span class="badge-dot badge-dot-r"></span>
-        </div>
-
-        <h1 class="hero-greeting">
-          Welcome Back,<br />
-          <em>{{ memberRoll }}</em>
-        </h1>
-
-        <p class="hero-sub">Grow Together. Lead Together. Build Together.</p>
-
-        <div class="hero-stats">
-          <div class="stat">
-            <div class="stat-val">{{ todayEventName }}</div>
-            <div class="stat-lbl">Today</div>
-          </div>
-          <div class="stat-sep"></div>
-          <div class="stat">
-            <div class="stat-val countdown-val">{{ countdownText }}</div>
-            <div class="stat-lbl">Reading Lounge</div>
-          </div>
-          <div class="stat-sep"></div>
-          <div class="stat">
-            <div class="stat-val">5</div>
-            <div class="stat-lbl">Events / Week</div>
-          </div>
-        </div>
-
-        <div class="hero-cta-row">
-          <a href="#events" class="cta-primary" @click.prevent="smoothScroll('#events')"
-            >View Schedule</a
-          >
-          <a href="#lounge" class="cta-secondary" @click.prevent="smoothScroll('#lounge')"
-            >Reading Rooms</a
-          >
-          <a href="#community" class="cta-secondary" @click.prevent="smoothScroll('#community')"
-            >WhatsApp</a
-          >
-        </div>
-      </div>
-
-      <div class="hero-scroll-hint">
-        <div class="scroll-line"></div>
-        <span>Scroll</span>
-      </div>
-    </section>
-
-    <div class="divider"></div>
-
-    <!-- ═══════════════ EVENTS ═══════════════ -->
-    <section id="events">
-      <div class="container">
-        <div class="reveal" v-observe>
-          <div class="section-label">Weekly Schedule</div>
-          <h2 class="section-title">Live Events</h2>
-          <p class="section-desc">
-            Five curated sessions every week — technical, cultural, and everything in between.
+      <div class="p-shell hero__inner">
+        <div class="hero__copy">
+          <p class="p-eyebrow">Your place in the House</p>
+          <h1 class="p-display hero__title">
+            Welcome back,
+            <em>{{ firstName }}</em>
+          </h1>
+          <p class="hero__lede">
+            The House is moving. Find your next conversation, session, room or challenge.
           </p>
         </div>
 
-        <div class="events-grid">
-          <div
-            v-for="(ev, index) in events"
-            :key="index"
-            class="event-card"
-            :class="{ 'today-event': ev.isToday, 'past-event': ev.isPast }"
-            v-observe
-            :style="{ transitionDelay: `${index * 0.09}s` }"
+        <!-- The crest, given room. Three hairline orbits and the mark: the
+             same geometry the public site uses, at private-edition scale. -->
+        <div class="hero__crest" aria-hidden="true">
+          <span class="p-orbit hero__orbit"></span>
+          <img class="hero__crest-img" :src="brand.crest" alt="" width="220" height="220" />
+          <span class="hero__crest-label">Sundarbans House<br />Private Lounge</span>
+        </div>
+      </div>
+
+      <!-- ── Today at the House ─────────────────────────────────────────
+           Three facts read off the clock and the House calendar. Set as a
+           strip of type on a rule, not as three metric boxes. -->
+      <div class="p-shell today">
+        <h2 class="today__label">Today at the House</h2>
+        <dl class="today__row">
+          <div class="today__item">
+            <dt>Next event</dt>
+            <dd>
+              <span class="today__value">{{
+                nextEvent ? nextEvent.title : 'No session scheduled'
+              }}</span>
+              <span class="today__sub">{{
+                nextEvent ? nextEventWhen : 'The week resumes on Monday'
+              }}</span>
+            </dd>
+          </div>
+          <div class="today__item">
+            <dt>Reading</dt>
+            <dd>
+              <span class="today__value">Night Owl</span>
+              <span class="today__sub">
+                <template v-if="isNightOwlTime">Rooms are open now</template>
+                <template v-else>9:30 PM, opens in {{ countdownText }}</template>
+              </span>
+            </dd>
+          </div>
+          <div class="today__item">
+            <dt>Community</dt>
+            <dd>
+              <span class="today__value">Regional groups open</span>
+              <span class="today__sub">{{ regionCount }} regions, plus the main House group</span>
+            </dd>
+          </div>
+        </dl>
+      </div>
+
+      <!-- ── House member ───────────────────────────────────────────────
+           An identity strip, not a profile card. Only fields the app can
+           actually fill are printed; the standing appears solely when this
+           member is on the board. -->
+      <div class="p-shell ident">
+        <span class="ident__avatar" aria-hidden="true">{{ initials }}</span>
+        <div class="ident__block">
+          <span class="ident__role">House member</span>
+          <span class="ident__name">{{ displayName }}</span>
+        </div>
+        <div class="ident__block">
+          <span class="ident__role">Signed in as</span>
+          <span class="ident__value">{{ email }}</span>
+        </div>
+        <div class="ident__block">
+          <span class="ident__role">House</span>
+          <span class="ident__value">Sundarbans, IIT Madras BS</span>
+        </div>
+        <div v-if="myStanding" class="ident__block">
+          <span class="ident__role">Standing</span>
+          <span class="ident__value">No. {{ myStanding.rank }}, {{ myStanding.pts }} points</span>
+        </div>
+      </div>
+
+      <!-- ── The House today ────────────────────────────────────────────
+           Four ways further in. Typographic columns divided by hairlines,
+           so the row reads as a contents page rather than a widget grid. -->
+      <nav class="p-shell doors" aria-label="Where to go next">
+        <button
+          v-for="(door, i) in doors"
+          :key="door.id"
+          v-reveal
+          type="button"
+          class="door"
+          :style="{ transitionDelay: `${i * 90}ms` }"
+          @click="goTo(door.anchor)"
+        >
+          <component
+            :is="door.icon"
+            class="door__icon"
+            :size="18"
+            :stroke-width="1.6"
+            aria-hidden="true"
+          />
+          <span class="door__title">{{ door.title }}</span>
+          <span class="door__fact">{{ door.fact }}</span>
+          <span class="door__when">{{ door.when }}</span>
+          <span class="door__action">
+            {{ door.action }}
+            <ArrowRight class="p-arrow" :size="14" :stroke-width="1.8" aria-hidden="true" />
+          </span>
+        </button>
+      </nav>
+    </section>
+
+    <div class="p-seam" role="presentation"></div>
+
+    <!-- ══ 02 · EVENTS ═══════════════════════════════════════════════════ -->
+    <section id="events" class="p-tone-b band band--events">
+      <span class="p-mark p-mark--left band__mark" aria-hidden="true">Events</span>
+
+      <div class="p-shell">
+        <header class="band__head" v-reveal>
+          <p class="p-index">02</p>
+          <p class="p-eyebrow">This week at the House</p>
+          <h2 class="p-display p-display--sm">Events</h2>
+          <p class="p-lede">Conversations, sessions, challenges and nights worth showing up for.</p>
+        </header>
+
+        <ol class="cal">
+          <li
+            v-for="ev in events"
+            :key="ev.day"
+            v-reveal
+            class="cal__row"
+            :class="{ 'is-today': ev.isToday, 'is-done': ev.isPast }"
           >
-            <div class="event-card-top">
-              <span class="event-day-badge">{{ ev.dayLabel }}</span>
-              <span class="event-icon"
-                ><component :is="ev.icon" :size="18" :stroke-width="1.7"
-              /></span>
+            <div class="cal__day">
+              <span class="cal__day-name">{{ ev.dayLabel }}</span>
+              <span v-if="ev.isToday && !ev.isPast" class="p-live">
+                <span class="p-live__dot"></span>Live today
+              </span>
             </div>
-            <h3>{{ ev.title }}</h3>
-            <p>{{ ev.desc }}</p>
-            <div class="event-card-footer">
-              <div class="event-time">
-                <svg
-                  width="12"
-                  height="12"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                >
-                  <circle cx="12" cy="12" r="10" />
-                  <path d="M12 6v6l4 2" />
-                </svg>
-                {{ ev.time }}
-              </div>
+
+            <div class="cal__body">
+              <h3 class="cal__title">{{ ev.title }}</h3>
+              <p class="cal__desc">{{ ev.desc }}</p>
+            </div>
+
+            <div class="cal__side">
+              <span class="cal__time">{{ ev.time }}</span>
               <a
                 :href="ev.gmeetLink"
                 target="_blank"
                 rel="noopener"
-                class="join-btn"
-                :class="{ 'btn-disabled': ev.isPast }"
-                @click="ev.isPast ? $event.preventDefault() : null"
+                class="p-btn p-btn--small"
+                :class="[
+                  ev.isToday && !ev.isPast ? 'p-btn--primary' : 'p-btn--ghost',
+                  { 'is-disabled': ev.isPast },
+                ]"
+                :aria-disabled="ev.isPast ? 'true' : undefined"
               >
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M15 10l5 5-5 5" />
-                  <path d="M4 4v7a4 4 0 0 0 4 4h12" />
-                </svg>
-                {{ ev.isPast ? 'Session Ended' : 'Join GMeet' }}
+                {{ ev.isPast ? 'Ended' : 'Join' }}
+                <ArrowRight
+                  v-if="!ev.isPast"
+                  class="p-arrow"
+                  :size="13"
+                  :stroke-width="1.8"
+                  aria-hidden="true"
+                />
               </a>
             </div>
-            <div v-if="ev.isToday" class="today-tag">
-              <span class="today-dot"></span> Live Today
-            </div>
-          </div>
-        </div>
+          </li>
+        </ol>
       </div>
     </section>
 
-    <div class="divider"></div>
+    <div class="p-seam" role="presentation"></div>
 
-    <!-- ═══════════════ NIGHT OWL ═══════════════ -->
-    <section id="lounge" class="night-section">
-      <div class="container">
-        <div class="reveal" v-observe>
-          <div class="section-label">Night Owl</div>
-          <h2 class="section-title">
-            Reading Lounge
-            <span class="title-aside">9:30 PM · Every Night</span>
-          </h2>
-          <p class="section-desc">
-            A quiet hour for the curious. Pick a room, bring your book, read alongside your house.
-          </p>
-        </div>
+    <!-- ══ 03 · READING LOUNGE ═══════════════════════════════════════════
+         A library inside the House: the rooms are set as type, and the pick
+         of the week is laid out the way a review page lays out a book. -->
+    <section id="reading" class="p-tone-a band band--reading">
+      <span class="p-mark p-mark--right band__mark" aria-hidden="true">Reading</span>
 
-        <div class="reading-grid">
-          <div class="reading-card" v-observe>
-            <div class="reading-card-header">
-              <span class="reading-icon"><BookOpen :size="30" :stroke-width="1.6" /></span>
-              <div class="room-live-chip">
-                <span class="room-dot"></span>
-                {{ isNightOwlTime ? 'Live Now' : 'Tonight' }}
-              </div>
-            </div>
-            <h3>English Room</h3>
-            <div class="reading-meta">
-              <span class="meta-tag">{{ currentEnglishGenre }}</span>
-              <span class="meta-sep">·</span>
-              <span class="meta-text">60 min session</span>
-            </div>
-            <p>
-              A quiet, focused reading session. No discussion — just the company of readers and the
-              page.
+      <div class="p-shell">
+        <header class="band__head band__head--split" v-reveal>
+          <div>
+            <p class="p-index">03</p>
+            <p class="p-eyebrow">Night Owl</p>
+            <h2 class="p-display p-display--sm">
+              Reading<br />
+              Lounge
+            </h2>
+          </div>
+          <div class="band__head-aside">
+            <p class="p-lede">
+              A quiet hour for the curious. Pick a room, bring your book and read alongside your
+              House.
             </p>
-            <div class="reading-card-footer">
-              <div class="reading-members">
-                <div class="member-dots">
-                  <div class="mdot" style="background: #c9a84c"></div>
-                  <div class="mdot" style="background: #8bc8a8"></div>
-                  <div class="mdot" style="background: #a8b8e8"></div>
-                </div>
-                <span>{{ englishRoomCount }} reading</span>
-              </div>
-              <a :href="NIGHT_OWL_LINKS.english" target="_blank" rel="noopener" class="join-btn"
-                >Enter Room</a
-              >
-            </div>
+            <p class="p-aside">
+              <template v-if="isNightOwlTime">Rooms are open now</template>
+              <template v-else>9:30 PM, every night</template>
+            </p>
           </div>
+        </header>
 
-          <div class="reading-card" v-observe style="transition-delay: 0.1s">
-            <div class="reading-card-header">
-              <span class="reading-icon"><BookMarked :size="30" :stroke-width="1.6" /></span>
-              <div class="room-live-chip">
-                <span class="room-dot"></span>
-                {{ isNightOwlTime ? 'Live Now' : 'Tonight' }}
-              </div>
-            </div>
-            <h3>Hindi Room</h3>
-            <div class="reading-meta">
-              <span class="meta-tag">{{ currentHindiGenre }}</span>
-              <span class="meta-sep">·</span>
-              <span class="meta-text">60 min session</span>
-            </div>
-            <p>Hindi sahitya ke saath ek shant shaam. Apni pasandida kitaab lekar aayein.</p>
-            <div class="reading-card-footer">
-              <div class="reading-members">
-                <div class="member-dots">
-                  <div class="mdot" style="background: #e8c97a"></div>
-                  <div class="mdot" style="background: #c87878"></div>
-                  <div class="mdot" style="background: #78c878"></div>
-                </div>
-                <span>{{ hindiRoomCount }} reading</span>
-              </div>
-              <a :href="NIGHT_OWL_LINKS.hindi" target="_blank" rel="noopener" class="join-btn"
-                >Enter Room</a
-              >
-            </div>
-          </div>
+        <div class="reading">
+          <ol class="rooms">
+            <li v-for="room in readingRooms" :key="room.id" v-reveal class="room">
+              <component
+                :is="room.icon"
+                class="room__icon"
+                :size="20"
+                :stroke-width="1.5"
+                aria-hidden="true"
+              />
+              <h3 class="room__name">{{ room.name }}</h3>
+              <p class="room__desc">{{ room.desc }}</p>
+              <p class="room__meta">{{ room.genre }}, 60 minute session</p>
+              <a :href="room.link" target="_blank" rel="noopener" class="room__enter">
+                Enter room
+                <ArrowRight class="p-arrow" :size="13" :stroke-width="1.8" aria-hidden="true" />
+              </a>
+            </li>
+          </ol>
 
-          <div class="reading-card reading-pick-card" v-observe style="transition-delay: 0.2s">
-            <div class="pick-label">House Pick of the Week</div>
-            <div class="pick-book">
-              <div class="book-spine">
-                <span>{{ houseBookPick.title }}</span>
+          <article v-reveal class="pick">
+            <p class="pick__label">House pick of the week</p>
+            <div class="pick__body">
+              <div class="pick__cover" aria-hidden="true">
+                <span class="pick__cover-rule"></span>
+                <span class="pick__cover-title">{{ houseBookPick.title }}</span>
+                <span class="pick__cover-author">{{ houseBookPick.author }}</span>
               </div>
-              <div class="book-info">
-                <div class="book-title">{{ houseBookPick.title }}</div>
-                <div class="book-author">— {{ houseBookPick.author }}</div>
-                <div class="book-desc">{{ houseBookPick.desc }}</div>
-                <div class="book-tags">
-                  <span v-for="tag in houseBookPick.tags" :key="tag" class="book-tag">{{
-                    tag
-                  }}</span>
-                </div>
+              <div class="pick__text">
+                <h3 class="pick__title">{{ houseBookPick.title }}</h3>
+                <p class="pick__author">{{ houseBookPick.author }}</p>
+                <p class="pick__desc">{{ houseBookPick.desc }}</p>
+                <ul class="pick__tags">
+                  <li v-for="tag in houseBookPick.tags" :key="tag">{{ tag }}</li>
+                </ul>
               </div>
             </div>
-          </div>
+          </article>
         </div>
       </div>
     </section>
 
-    <div class="divider"></div>
+    <div class="p-seam" role="presentation"></div>
 
-    <!-- ═══════════════ WHATSAPP COMMUNITY ═══════════════ -->
-    <section id="community">
-      <div class="container">
-        <div class="reveal" v-observe>
-          <div class="section-label">Stay Connected</div>
-          <h2 class="section-title">WhatsApp Groups</h2>
-          <p class="section-desc">
-            Join the main Sundarbans house group or find your regional group below. Fill the form to
-            get added.
+    <!-- ══ 04 · COMMUNITY ════════════════════════════════════════════════
+         WhatsApp is where the House actually talks. The main group gets a
+         feature panel; the regions get a grid of compact cards rather than
+         one full-width row each, which is what made the old list read like a
+         spreadsheet. Green appears only on the mark and the join action. -->
+    <section id="community" class="p-tone-b band band--community">
+      <div class="p-shell">
+        <header class="band__head" v-reveal>
+          <p class="p-index">04</p>
+          <p class="p-eyebrow">Stay connected</p>
+          <h2 class="p-display p-display--sm">
+            The House<br />
+            is social
+          </h2>
+          <p class="p-lede">
+            Find your regional circle and stay connected with the House beyond the website.
           </p>
-        </div>
+        </header>
 
-        <!-- Main Group -->
-        <div class="wa-main-card reveal" v-observe>
-          <div class="wa-main-left">
-            <div class="wa-icon-wrap">
-              <svg class="wa-icon" viewBox="0 0 24 24" fill="currentColor">
-                <path
-                  d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"
-                />
-                <path
-                  d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.122 1.532 5.852L.057 23.155a.75.75 0 0 0 .918.918l5.303-1.475A11.953 11.953 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22a9.956 9.956 0 0 1-5.193-1.453l-.372-.22-3.148.875.875-3.148-.22-.372A9.956 9.956 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"
-                />
-              </svg>
-            </div>
-            <div>
-              <div class="wa-main-label">Main House Group</div>
-              <h3 class="wa-main-title">Sundarbans House</h3>
-              <p class="wa-main-desc">
-                Official sign-up for the main Sundarbans house group. Announcements, events, and
-                everything in between.
-              </p>
-            </div>
-          </div>
-          <a
-            href="https://docs.google.com/forms/d/e/1FAIpQLSdP9gY3ET4EylNi771CaXQ8ihmsqEdjbat7rvSDZAsu2j0a9Q/viewform"
-            target="_blank"
-            rel="noopener"
-            class="wa-join-btn wa-join-main"
-          >
-            <svg viewBox="0 0 24 24" fill="currentColor">
-              <path
-                d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"
-              />
-              <path
-                d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.122 1.532 5.852L.057 23.155a.75.75 0 0 0 .918.918l5.303-1.475A11.953 11.953 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22a9.956 9.956 0 0 1-5.193-1.453l-.372-.22-3.148.875.875-3.148-.22-.372A9.956 9.956 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"
-              />
-            </svg>
-            Join Main Group
-          </a>
-        </div>
-
-        <!-- Regional Groups -->
-        <div class="wa-regions-header reveal" v-observe>
-          <div class="section-label" style="margin-bottom: 0">Regional Groups</div>
-        </div>
-
-        <div class="whatsapp-grid">
-          <div
-            class="whatsapp-card"
-            v-observe
-            :style="{ transitionDelay: `${index * 0.07}s` }"
-            v-for="(region, index) in waRegions"
-            :key="region.id"
-          >
-            <div class="wa-card-top">
-              <div class="wa-icon-wrap wa-icon-region">
-                <svg class="wa-icon" viewBox="0 0 24 24" fill="currentColor">
-                  <path
-                    d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"
-                  />
-                  <path
-                    d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.122 1.532 5.852L.057 23.155a.75.75 0 0 0 .918.918l5.303-1.475A11.953 11.953 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22a9.956 9.956 0 0 1-5.193-1.453l-.372-.22-3.148.875.875-3.148-.22-.372A9.956 9.956 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"
-                  />
-                </svg>
-              </div>
-              <span class="wa-region-badge">{{ region.id.toUpperCase() }}</span>
-            </div>
-            <h3 class="wa-title">{{ region.name }}</h3>
-            <div v-if="region.coordinator" class="wa-coordinator">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                <circle cx="12" cy="7" r="4" />
-              </svg>
-              {{ region.coordinator }}
-            </div>
-            <a :href="region.form" target="_blank" rel="noopener" class="wa-join-btn">
-              <svg viewBox="0 0 24 24" fill="currentColor">
-                <path
-                  d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"
-                />
-                <path
-                  d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.122 1.532 5.852L.057 23.155a.75.75 0 0 0 .918.918l5.303-1.475A11.953 11.953 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22a9.956 9.956 0 0 1-5.193-1.453l-.372-.22-3.148.875.875-3.148-.22-.372A9.956 9.956 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"
-                />
-              </svg>
-              Sign Up
+        <!-- The primary entry point: one horizontal panel, alongside a
+             photograph from the House archive. -->
+        <div class="social" v-reveal>
+          <div class="social__main">
+            <p class="social__label">
+              <WhatsAppMark class="wa-mark" />
+              Main House group
+            </p>
+            <h3 class="social__title">Sundarbans House</h3>
+            <p class="social__desc">
+              Announcements, events and everything happening across the House.
+            </p>
+            <a
+              href="https://docs.google.com/forms/d/e/1FAIpQLSdP9gY3ET4EylNi771CaXQ8ihmsqEdjbat7rvSDZAsu2j0a9Q/viewform"
+              target="_blank"
+              rel="noopener"
+              class="p-btn p-btn--primary"
+            >
+              Join main group
+              <ArrowRight class="p-arrow" :size="14" :stroke-width="1.8" aria-hidden="true" />
             </a>
           </div>
+
+          <figure class="social__photo p-photo p-photo--frame">
+            <img
+              :src="houseMoments[0].src"
+              :alt="houseMoments[0].caption"
+              loading="lazy"
+              decoding="async"
+            />
+            <figcaption class="p-photo__caption">{{ houseMoments[0].caption }}</figcaption>
+          </figure>
         </div>
+
+        <!-- ── Regional groups ──────────────────────────────────────────
+             A card per coordinator, so a region with two Regional
+             Coordinators shows both without either name being dropped. The
+             whole card is the link: one large, obvious hit area instead of a
+             small tap target at the end of a long row. -->
+        <h3 class="rg__heading" v-reveal>Regional groups</h3>
+        <ul class="rg-grid">
+          <li v-for="group in regionalGroups" :key="group.key" v-reveal class="rg-cell">
+            <a :href="group.form" target="_blank" rel="noopener" class="rg">
+              <span class="rg__top">
+                <WhatsAppMark class="rg__mark" />
+                <span class="rg__code">{{ group.code }}</span>
+              </span>
+
+              <span class="rg__city">{{ group.region }}</span>
+
+              <span v-if="group.coordinator" class="rg__person">{{ group.coordinator }}</span>
+              <span v-else class="rg__person rg__person--none">Coordinator to be announced</span>
+              <span v-if="group.role" class="rg__role">{{ group.role }}</span>
+
+              <span class="rg__join">
+                Join
+                <ArrowRight class="p-arrow" :size="14" :stroke-width="1.9" aria-hidden="true" />
+              </span>
+            </a>
+          </li>
+        </ul>
       </div>
     </section>
 
-    <div class="divider"></div>
+    <div class="p-seam" role="presentation"></div>
 
-    <!-- ═══════════════ LEADERBOARD ═══════════════ -->
-    <section id="leaderboard">
-      <div class="container">
-        <div class="reveal" v-observe>
-          <div class="section-label">Recognition</div>
-          <h2 class="section-title">Top Performers</h2>
-          <p class="section-desc">
-            Rankings reset monthly. Earn points by attending sessions, winning challenges, and
-            contributing to the house.
-          </p>
-        </div>
+    <!-- ══ 05 · HOUSE RECOGNITION ════════════════════════════════════════ -->
+    <section id="recognition" class="p-tone-a band band--recognition">
+      <span class="p-mark p-mark--left band__mark" aria-hidden="true">Rank</span>
 
-        <div class="leaderboard-wrap">
-          <div class="podium" v-observe>
-            <div class="podium-slot podium-2" v-if="leaderboard[1]">
-              <div class="podium-avatar silver-av">{{ leaderboard[1].name.charAt(0) }}</div>
-              <div class="podium-name">{{ leaderboard[1].name.split(' ')[0] }}</div>
-              <div class="podium-pts">{{ leaderboard[1].pts }}<span>pts</span></div>
-              <div class="podium-block podium-block-2">2</div>
-            </div>
-            <div class="podium-slot podium-1" v-if="leaderboard[0]">
-              <div class="podium-crown"><Crown :size="22" :stroke-width="1.7" /></div>
-              <div class="podium-avatar gold-av">{{ leaderboard[0].name.charAt(0) }}</div>
-              <div class="podium-name">{{ leaderboard[0].name.split(' ')[0] }}</div>
-              <div class="podium-pts">{{ leaderboard[0].pts }}<span>pts</span></div>
-              <div class="podium-block podium-block-1">1</div>
-            </div>
-            <div class="podium-slot podium-3" v-if="leaderboard[2]">
-              <div class="podium-avatar bronze-av">{{ leaderboard[2].name.charAt(0) }}</div>
-              <div class="podium-name">{{ leaderboard[2].name.split(' ')[0] }}</div>
-              <div class="podium-pts">{{ leaderboard[2].pts }}<span>pts</span></div>
-              <div class="podium-block podium-block-3">3</div>
-            </div>
-          </div>
+      <div class="p-shell">
+        <header class="band__head" v-reveal>
+          <p class="p-index">05</p>
+          <p class="p-eyebrow">House recognition</p>
+          <h2 class="p-display p-display--sm">Top performers</h2>
+          <p class="p-lede">Showing up matters. So does what you bring to the House.</p>
+        </header>
 
-          <ul class="leaderboard-list">
-            <li
-              v-for="(member, index) in leaderboard"
-              :key="member.roll"
-              class="leaderboard-item"
-              v-observe
-              :style="{ transitionDelay: `${index * 0.07}s` }"
-              :class="{ 'is-you': member.roll === memberEmail }"
-            >
-              <div class="lb-rank" :class="getMedalClass(index)">
-                <Medal v-if="index < 3" :size="15" :stroke-width="1.8" />
-                <span v-else>{{ index + 1 }}</span>
-              </div>
-              <div
-                class="lb-avatar"
-                :style="{ background: memberColors[index % memberColors.length] }"
-              >
-                {{ member.name.charAt(0) }}
-              </div>
-              <div class="lb-info">
-                <div class="lb-name">
-                  {{ member.name }}
-                  <span v-if="member.roll === memberEmail" class="you-tag">you</span>
-                </div>
-                <div class="lb-roll">{{ member.roll }}</div>
-              </div>
-              <div class="lb-right">
-                <div class="lb-bar-wrap">
-                  <div
-                    class="lb-bar"
-                    :style="{ width: (member.pts / leaderboard[0].pts) * 100 + '%' }"
-                  ></div>
-                </div>
-                <div class="lb-pts-row">
-                  <span class="lb-pts">{{ member.pts }}</span>
-                  <span class="lb-pts-lbl">pts</span>
-                </div>
-              </div>
-            </li>
-          </ul>
+        <ol v-if="podium.length" class="podium" v-reveal>
+          <li
+            v-for="seat in podium"
+            :key="seat.roll"
+            class="podium__seat"
+            :class="`is-${seat.place}`"
+          >
+            <span class="podium__rank">{{ seat.rank }}</span>
+            <span class="podium__avatar" aria-hidden="true">{{ seat.name.charAt(0) }}</span>
+            <span class="podium__name">{{ seat.name }}</span>
+            <span class="podium__pts">{{ seat.pts }}<small>points</small></span>
+          </li>
+        </ol>
 
-          <div class="lb-footer-note">
-            Points awarded for event attendance, challenge completions, and community contributions.
-            Rankings refresh on the 1st of each month.
-          </div>
-        </div>
+        <h3 class="rank__label" v-reveal>House rankings</h3>
+        <ol class="rank">
+          <li
+            v-for="member in board"
+            :key="member.roll"
+            v-reveal
+            class="rank__row"
+            :class="{ 'is-you': member.roll === email }"
+          >
+            <span class="rank__no">{{ String(member.rank).padStart(2, '0') }}</span>
+            <span class="rank__avatar" aria-hidden="true">{{ member.name.charAt(0) }}</span>
+            <span class="rank__who">
+              <span class="rank__name">
+                {{ member.name }}
+                <span v-if="member.roll === email" class="rank__you">You</span>
+              </span>
+              <span class="rank__mail">{{ member.roll }}</span>
+            </span>
+            <span class="rank__pts">{{ member.pts }}<small>points</small></span>
+          </li>
+        </ol>
       </div>
     </section>
+
+    <PortalFooter @logout="logout" />
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import {
+  ArrowRight,
   BookOpen,
   BookMarked,
-  Crown,
-  Medal,
   Brain,
-  HelpCircle,
+  CalendarDays,
   Drama,
   Dumbbell,
+  HelpCircle,
+  MessagesSquare,
   Mic2,
+  Trophy,
 } from 'lucide-vue-next';
-import MembersNavbar from '../components/MembersNavbar.vue';
+import PortalNav from '../components/portal/PortalNav.vue';
+import PortalFooter from '../components/portal/PortalFooter.vue';
+import WhatsAppMark from '../components/portal/WhatsAppMark.vue';
+import { brand } from '../components/navigation/navigation.config.js';
+import { houseMoments } from '../data/portalImagery.js';
+import { lowerHouse, sortByRegion } from '../data/council.js';
+import { usePortalMember, vReveal } from '../composables/usePortalMember.js';
+import '../assets/portal.css';
 
 const router = useRouter();
+const { email, displayName, firstName, initials, requireAuth, logout } = usePortalMember();
 
 // ── GMEET LINKS — replace placeholders with real recurring links ───────────
 const NIGHT_OWL_LINKS = {
@@ -464,11 +446,7 @@ const GMEET_LINKS = {
   sunday: 'https://meet.google.com/placeholder-talk',
 };
 
-// ── STATE ─────────────────────────────────────────────────────────────────
-const pageLoading = ref(true);
-const memberEmail = ref('');
-const memberRoll = ref('');
-const countdownText = ref('—');
+const countdownText = ref('00:00:00');
 let countdownInterval = null;
 
 // ── EVENTS ────────────────────────────────────────────────────────────────
@@ -479,7 +457,7 @@ const events = ref([
     dayLabel: 'Monday',
     icon: Brain,
     title: 'Technical Session',
-    desc: 'Advanced DSA, system design, and competitive programming with live mentors.',
+    desc: 'Advanced DSA, system design and competitive programming with live mentors.',
     time: '8:00 PM IST',
     gmeetLink: GMEET_LINKS.monday,
     isToday: dayIndex === 1,
@@ -490,7 +468,7 @@ const events = ref([
     dayLabel: 'Tuesday',
     icon: HelpCircle,
     title: 'Doubt Session',
-    desc: 'Live mentor Q&A. Bring your questions, leave with clarity. No question is too small.',
+    desc: 'Live mentor questions and answers. Bring what you are stuck on, leave with clarity.',
     time: '8:00 PM IST',
     gmeetLink: GMEET_LINKS.tuesday,
     isToday: dayIndex === 2,
@@ -501,7 +479,7 @@ const events = ref([
     dayLabel: 'Thursday',
     icon: Drama,
     title: 'Cultural Night',
-    desc: 'Debate nights, open mic, talent showcase. Express yourself with your Sundarbans family.',
+    desc: 'Debate nights, open mic and talent showcases. Say something, sing something, show up.',
     time: '8:00 PM IST',
     gmeetLink: GMEET_LINKS.thursday,
     isToday: dayIndex === 4,
@@ -511,8 +489,8 @@ const events = ref([
     day: 5,
     dayLabel: 'Friday',
     icon: Dumbbell,
-    title: 'Sports & Fitness',
-    desc: 'House matches, fitness challenges, and friendly competitions. Stay active, stay sharp.',
+    title: 'Sports and Fitness',
+    desc: 'House matches, fitness challenges and friendly competition. Stay active, stay sharp.',
     time: '8:00 PM IST',
     gmeetLink: GMEET_LINKS.friday,
     isToday: dayIndex === 5,
@@ -523,7 +501,7 @@ const events = ref([
     dayLabel: 'Sunday',
     icon: Mic2,
     title: 'Talk with Senior',
-    desc: 'Career guidance, strategy sessions, and real stories from seniors who have been there.',
+    desc: 'Career guidance, strategy sessions and real stories from seniors who have been there.',
     time: '8:00 PM IST',
     gmeetLink: GMEET_LINKS.sunday,
     isToday: dayIndex === 0,
@@ -536,9 +514,25 @@ events.value.forEach((ev) => {
   if (ev.isToday && new Date().getHours() >= 22) ev.isPast = true;
 });
 
-const todayEventName = computed(() => {
-  const ev = events.value.find((e) => e.isToday);
-  return ev ? ev.title.split(' ')[0] : 'Rest Day';
+/**
+ * The nearest session still to come: tonight's if it has not finished,
+ * otherwise the next weekday on the calendar. Read from the same five events
+ * against today's date, never invented.
+ */
+const nextEvent = computed(() => {
+  const upcoming = [...events.value]
+    .map((ev) => ({ ev, away: (ev.day - dayIndex + 7) % 7 }))
+    .filter(({ ev, away }) => !(away === 0 && ev.isPast))
+    .sort((a, b) => a.away - b.away);
+  return upcoming.length ? upcoming[0].ev : null;
+});
+
+const nextEventWhen = computed(() => {
+  const ev = nextEvent.value;
+  if (!ev) return '';
+  const away = (ev.day - dayIndex + 7) % 7;
+  const when = away === 0 ? 'Tonight' : away === 1 ? 'Tomorrow' : ev.dayLabel;
+  return `${when}, ${ev.time}`;
 });
 
 // ── NIGHT OWL ────────────────────────────────────────────────────────────
@@ -550,17 +544,34 @@ const ENGLISH_GENRES = ['Fiction', 'Sci-Fi', 'Non-Fiction', 'Mystery', 'Biograph
 const HINDI_GENRES = ['Kahani', 'Kavita', 'Upanyas', 'Sahitya', 'Natak'];
 const currentEnglishGenre = ENGLISH_GENRES[new Date().getDay() % ENGLISH_GENRES.length];
 const currentHindiGenre = HINDI_GENRES[new Date().getDay() % HINDI_GENRES.length];
-const englishRoomCount = ref(Math.floor(Math.random() * 12) + 4);
-const hindiRoomCount = ref(Math.floor(Math.random() * 8) + 2);
+
+const readingRooms = [
+  {
+    id: 'english',
+    name: 'English Room',
+    icon: BookOpen,
+    genre: currentEnglishGenre,
+    desc: 'Fiction, essays and everything worth reading slowly.',
+    link: NIGHT_OWL_LINKS.english,
+  },
+  {
+    id: 'hindi',
+    name: 'Hindi Room',
+    icon: BookMarked,
+    genre: currentHindiGenre,
+    desc: 'Kahani, kavita and conversation after dark.',
+    link: NIGHT_OWL_LINKS.hindi,
+  },
+];
 
 const houseBookPick = {
   title: 'Sapiens',
   author: 'Yuval Noah Harari',
-  desc: 'A brief history of humankind — from foragers to rulers of the planet.',
+  desc: 'A brief history of humankind, from foragers to rulers of the planet.',
   tags: ['Non-Fiction', 'History', 'Anthropology'],
 };
 
-// ── LEADERBOARD ───────────────────────────────────────────────────────────
+// ── RECOGNITION ───────────────────────────────────────────────────────────
 const leaderboard = [
   { name: 'Aditi Sharma', roll: '23f1000052@ds.study.iitm.ac.in', pts: 120 },
   { name: 'Rohan Verma', roll: '22f1000119@ds.study.iitm.ac.in', pts: 110 },
@@ -568,10 +579,65 @@ const leaderboard = [
   { name: 'Dev Patel', roll: '23f2000114@ds.study.iitm.ac.in', pts: 98 },
   { name: 'Priya Nair', roll: '24f2000050@ds.study.iitm.ac.in', pts: 91 },
 ];
-const memberColors = ['#c9a84c', '#8bc8a8', '#a8b8e8', '#c87878', '#78b878'];
-function getMedalClass(i) {
-  return ['gold', 'silver', 'bronze'][i] || '';
-}
+
+const board = computed(() => leaderboard.map((member, i) => ({ ...member, rank: i + 1 })));
+
+/** Second, first, third: the reading order of a podium, left to right. */
+const podium = computed(() => {
+  const places = ['first', 'second', 'third'];
+  const top = board.value.slice(0, 3).map((member, i) => ({ ...member, place: places[i] }));
+  if (top.length < 3) return top;
+  return [top[1], top[0], top[2]];
+});
+
+/** Only rendered when this member is genuinely on the board. */
+const myStanding = computed(
+  () => board.value.find((member) => member.roll === email.value) || null
+);
+
+// ── THE HOUSE TODAY ───────────────────────────────────────────────────────
+const doors = computed(() => [
+  {
+    id: 'event',
+    icon: CalendarDays,
+    title: 'Next event',
+    fact: nextEvent.value ? nextEvent.value.title : 'No session scheduled',
+    when: nextEvent.value ? nextEventWhen.value : 'The week resumes on Monday',
+    action: 'See the week',
+    anchor: '#events',
+  },
+  {
+    id: 'reading',
+    icon: BookOpen,
+    title: 'Reading lounge',
+    fact: isNightOwlTime.value ? 'Rooms are open' : 'Night Owl at 9:30 PM',
+    when: `${readingRooms.length} rooms, English and Hindi`,
+    action: 'Pick a room',
+    anchor: '#reading',
+  },
+  {
+    id: 'community',
+    icon: MessagesSquare,
+    title: 'Community',
+    fact: `${regionCount} regional groups`,
+    when: 'Plus the main House group',
+    action: 'Find your people',
+    anchor: '#community',
+  },
+  {
+    id: 'recognition',
+    icon: Trophy,
+    title: 'Recognition',
+    fact: myStanding.value
+      ? `You are No. ${myStanding.value.rank}`
+      : `${board.value.length} on the board`,
+    when: myStanding.value
+      ? `${myStanding.value.pts} points this month`
+      : 'The board refreshes monthly',
+    action: 'See the rankings',
+    anchor: '#recognition',
+  },
+]);
 
 // ── COUNTDOWN ────────────────────────────────────────────────────────────
 function updateCountdown() {
@@ -586,1467 +652,990 @@ function updateCountdown() {
   countdownText.value = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
 }
 
-function smoothScroll(hash) {
-  const el = document.querySelector(hash);
-  if (el) el.scrollIntoView({ behavior: 'smooth' });
+/** Doors navigate through the router so the hash lands in history like a link. */
+function goTo(anchor) {
+  router.push(`/lounge${anchor}`);
 }
-
-function logout() {
-  const p = document.querySelector('.members-lounge-page');
-  if (p) {
-    p.style.opacity = '0';
-    p.style.transition = 'opacity 0.5s';
-  }
-  setTimeout(() => {
-    localStorage.removeItem('sundarbans_auth_token');
-    router.push('/login');
-  }, 500);
-}
-
-// ── SCROLL REVEAL ────────────────────────────────────────────────────────
-const vObserve = {
-  mounted(el) {
-    const obs = new IntersectionObserver(
-      (entries, o) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
-            o.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.08, rootMargin: '0px 0px -30px 0px' }
-    );
-    obs.observe(el);
-  },
-};
 
 onMounted(() => {
-  const token = localStorage.getItem('sundarbans_auth_token');
-  if (!token) {
-    router.push('/login');
-    return;
-  }
-  memberEmail.value = token;
-  memberRoll.value = token.split('@')[0] || token;
+  if (!requireAuth()) return;
   updateCountdown();
   countdownInterval = setInterval(updateCountdown, 1000);
-  setTimeout(() => {
-    pageLoading.value = false;
-  }, 1400);
-  const p = document.querySelector('.members-lounge-page');
-  if (p) {
-    p.style.opacity = '0';
-    p.style.transition = 'opacity 0.6s';
-    setTimeout(() => {
-      p.style.opacity = '1';
-    }, 100);
-  }
 });
 
 onUnmounted(() => {
   if (countdownInterval) clearInterval(countdownInterval);
 });
 
-// ── WHATSAPP REGIONS ─────────────────────────────────────────────────────
-const waRegions = [
-  {
-    id: 'chd',
-    name: 'Chandigarh',
-    form: 'https://forms.gle/roBd62dYk6829eYCA',
-    coordinator: 'Aakash Rawal',
-  },
-  {
-    id: 'hyd',
-    name: 'Hyderabad',
-    form: 'https://forms.gle/d8QRQ5eXooDHL8Db6',
-    coordinator: 'Dishi Gupta',
-  },
-  {
-    id: 'lko',
-    name: 'Lucknow',
-    form: 'https://forms.gle/poriXvnwuENkmiKF8',
-    coordinator: 'Kartik Singh',
-  },
-  {
-    id: 'kol',
-    name: 'Kolkata',
-    form: 'https://forms.gle/z6qnTg58cvjjNtxP6',
-    coordinator: 'Chanan Shaw',
-  },
-  {
-    id: 'pat',
-    name: 'Patna',
-    form: 'https://forms.gle/jK7W2USVNEj9ifi17',
-    coordinator: 'Nivash Kumar',
-  },
-  {
-    id: 'del',
-    name: 'Delhi',
-    form: 'https://forms.gle/2gagK33ZhBzsqGz67',
-    coordinator: 'Divy Prakash & Laksh Wadhawan',
-  },
-  { id: 'mum', name: 'Mumbai', form: 'https://shorturl.at/EfRDc', coordinator: 'Rushabh Kapse' },
-  { id: 'che', name: 'Chennai', form: 'https://forms.gle/uYzCs5WwngKm4zHH8', coordinator: null },
-  { id: 'blr', name: 'Bengaluru', form: 'https://forms.gle/G2qfFnE4hRPj682B9', coordinator: null },
-];
+// ── WHATSAPP GROUPS ──────────────────────────────────────────────────────
+// Two facts, kept apart on purpose. The sign-up link belongs to the portal;
+// who coordinates a region belongs to the House roster. The roster is
+// `src/data/council.js`, the same source the Teams and Leaderboard pages
+// render, so a change of Regional Coordinator reaches all three at once and
+// this view never keeps its own copy of a name.
+const REGION_FORMS = {
+  Bengaluru: 'https://forms.gle/G2qfFnE4hRPj682B9',
+  Chandigarh: 'https://forms.gle/roBd62dYk6829eYCA',
+  Chennai: 'https://forms.gle/uYzCs5WwngKm4zHH8',
+  Delhi: 'https://forms.gle/2gagK33ZhBzsqGz67',
+  Hyderabad: 'https://forms.gle/d8QRQ5eXooDHL8Db6',
+  Kolkata: 'https://forms.gle/z6qnTg58cvjjNtxP6',
+  Lucknow: 'https://forms.gle/poriXvnwuENkmiKF8',
+  Mumbai: 'https://shorturl.at/EfRDc',
+  Patna: 'https://forms.gle/jK7W2USVNEj9ifi17',
+};
+
+/** The three-letter label on each card. */
+const REGION_CODES = {
+  Bengaluru: 'BLR',
+  Chandigarh: 'CHD',
+  Chennai: 'CHE',
+  Delhi: 'DEL',
+  Hyderabad: 'HYD',
+  Kolkata: 'KOL',
+  Lucknow: 'LKO',
+  Mumbai: 'MUM',
+  Patna: 'PAT',
+};
+
+/** Regions in alphabetical order, which is also the order of the cards. */
+const REGION_NAMES = Object.keys(REGION_FORMS).sort((a, b) => a.localeCompare(b, 'en'));
+
+/**
+ * One card per coordinator, so Mumbai's two Regional Coordinators each get
+ * their own card and neither overwrites the other. A region the roster has no
+ * coordinator for still renders, because its group link exists and dropping
+ * the card would remove a way in; it simply says so rather than borrowing a
+ * name from somewhere else.
+ */
+const regionalGroups = REGION_NAMES.flatMap((region) => {
+  const base = { region, code: REGION_CODES[region], form: REGION_FORMS[region] };
+  const coordinators = sortByRegion(lowerHouse.filter((member) => member.region === region));
+  if (!coordinators.length) return [{ ...base, key: region, coordinator: null, role: null }];
+  return coordinators.map((member) => ({
+    ...base,
+    key: member.id,
+    coordinator: member.name,
+    role: member.role,
+  }));
+});
+
+/** Distinct regions, which is what the hero strip and the doors count. */
+const regionCount = REGION_NAMES.length;
 </script>
 
 <style scoped>
-.members-lounge-page {
-  --black: var(--color-bg-black);
-  --deep: var(--color-bg-forest);
-  --panel: var(--color-card);
-  --border: var(--border-subtle);
-  --border-soft: rgba(255, 255, 255, 0.065);
-  --gold: #c9a84c;
-  --gold-light: #e8c97a;
-  --gold-dim: rgba(201, 168, 76, 0.1);
-  --cream: #f0ebe0;
-  --muted: rgba(240, 235, 224, 0.45);
-  --subtle: rgba(240, 235, 224, 0.1);
-  --radius: 14px;
-  --radius-lg: 20px;
-
-  background: var(--black);
-  color: var(--cream);
-  font-family: var(--font-body);
-  min-height: 100vh;
-  overflow-x: hidden;
-  position: relative;
-  width: 100%;
-}
-
-/* LOADER */
-#page-loader {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  background: var(--black);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  gap: 20px;
-}
-.fade-slow-leave-active {
-  transition: opacity 0.9s ease;
-}
-.fade-slow-leave-to {
-  opacity: 0;
-}
-.loader-monogram {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 72px;
-  font-weight: 300;
-  color: var(--gold);
-  line-height: 1;
-  animation: mono-pulse 1.6s ease-in-out infinite;
-}
-@keyframes mono-pulse {
-  0%,
-  100% {
-    opacity: 0.6;
-    text-shadow: 0 0 30px rgba(201, 168, 76, 0.2);
-  }
-  50% {
-    opacity: 1;
-    text-shadow: 0 0 60px rgba(201, 168, 76, 0.6);
-  }
-}
-.loader-tagline {
-  font-size: 10px;
-  letter-spacing: 0.4em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-.loader-bar {
-  width: 140px;
-  height: 1px;
-  background: var(--border-soft);
-  position: relative;
-  overflow: hidden;
-}
-.loader-fill {
-  position: absolute;
-  inset-y: 0;
-  left: 0;
-  width: 0;
-  height: 100%;
-  background: linear-gradient(to right, var(--gold), var(--gold-light));
-  animation: load-fill 1.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-@keyframes load-fill {
-  to {
-    width: 100%;
-  }
-}
-
-/* GRAIN */
-.grain {
-  position: fixed;
-  inset: -200%;
-  width: 400%;
-  height: 400%;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E");
-  opacity: 0.03;
-  pointer-events: none;
-  z-index: 1;
-  animation: grain-drift 8s steps(10) infinite;
-}
-@keyframes grain-drift {
-  0%,
-  100% {
-    transform: translate(0, 0);
-  }
-  10% {
-    transform: translate(-2%, -3%);
-  }
-  20% {
-    transform: translate(-5%, 2%);
-  }
-  30% {
-    transform: translate(3%, -4%);
-  }
-  40% {
-    transform: translate(-4%, 5%);
-  }
-  50% {
-    transform: translate(-1%, -2%);
-  }
-  60% {
-    transform: translate(4%, 3%);
-  }
-  70% {
-    transform: translate(3%, 1%);
-  }
-  80% {
-    transform: translate(-3%, 4%);
-  }
-  90% {
-    transform: translate(2%, -3%);
-  }
-}
-
-/* HERO */
+/* ══ THE OPENING SPREAD ══════════════════════════════════════════════════ */
 .hero {
   position: relative;
-  min-height: 92vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   overflow: hidden;
-  padding: 120px 60px 100px;
+  padding-bottom: clamp(3rem, 6vw, 5rem);
 }
-.hero-bg-grid {
-  position: absolute;
+.hero__mark {
+  top: clamp(3rem, 8vw, 7rem);
+}
+.hero__inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 0.65fr);
+  align-items: center;
+  gap: clamp(2rem, 5vw, 4rem);
+  padding-block: clamp(3.5rem, 9vh, 7rem) clamp(2.5rem, 6vh, 4.5rem);
+}
+.hero__title {
+  margin-top: 1.25rem;
+}
+/* The name is set one step below the greeting: a long roll number or a long
+   surname then has room on its own line instead of being broken mid-word,
+   and the two lines read as a greeting rather than as one shout. */
+.hero__title em {
+  margin-top: 0.08em;
+  font-size: clamp(2.25rem, 1rem + 4.4vw, 5.25rem);
+  overflow-wrap: break-word;
+}
+.hero__lede {
+  margin-top: clamp(1.5rem, 3vw, 2rem);
+  max-width: 34ch;
+  font-size: clamp(1rem, 0.95rem + 0.35vw, 1.25rem);
+  line-height: 1.55;
+  color: var(--p-ink-muted);
+}
+
+.hero__crest {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  width: min(100%, 24rem);
+  justify-self: end;
+}
+.hero__orbit {
   inset: 0;
-  pointer-events: none;
-  background-image:
-    linear-gradient(rgba(201, 168, 76, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(201, 168, 76, 0.04) 1px, transparent 1px);
-  background-size: 60px 60px;
-  mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black, transparent);
 }
-.hero-orb {
-  position: absolute;
+.hero__crest-img {
+  width: 46%;
+  height: auto;
   border-radius: 50%;
-  pointer-events: none;
-  filter: blur(120px);
+  opacity: 0.92;
 }
-.hero-orb-1 {
-  width: 700px;
-  height: 700px;
-  background: radial-gradient(circle, rgba(35, 80, 35, 0.28), transparent 70%);
-  top: -250px;
-  left: -200px;
-  animation: orb-drift 16s ease-in-out infinite;
-}
-.hero-orb-2 {
-  width: 500px;
-  height: 500px;
-  background: radial-gradient(circle, rgba(201, 168, 76, 0.1), transparent 70%);
-  bottom: -100px;
-  right: -150px;
-  animation: orb-drift 11s ease-in-out infinite 4s;
-}
-.hero-orb-3 {
-  width: 300px;
-  height: 300px;
-  background: radial-gradient(circle, rgba(60, 120, 60, 0.15), transparent 70%);
-  top: 40%;
-  right: 15%;
-  animation: orb-drift 9s ease-in-out infinite 2s;
-}
-@keyframes orb-drift {
-  0%,
-  100% {
-    transform: translate(0, 0) scale(1);
-  }
-  33% {
-    transform: translate(-30px, 25px) scale(1.07);
-  }
-  66% {
-    transform: translate(25px, -20px) scale(0.94);
-  }
-}
-
-.hero-content {
-  position: relative;
-  z-index: 2;
+.hero__crest-label {
+  position: absolute;
+  bottom: 6%;
+  font-size: 0.5625rem;
+  letter-spacing: 0.34em;
+  line-height: 1.9;
   text-align: center;
-  max-width: 820px;
-}
-
-.hero-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  padding: 9px 24px;
-  background: var(--gold-dim);
-  border: 1px solid var(--border);
-  border-radius: 100px;
-  font-size: 10px;
-  letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: var(--gold);
-  margin-bottom: 40px;
-  animation: hero-reveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
-}
-.badge-dot {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: #4caf50;
-  box-shadow: 0 0 8px #4caf50;
-  animation: badge-pulse 2.2s ease-in-out infinite;
-}
-.badge-dot-r {
-  animation-delay: 1.1s;
-}
-@keyframes badge-pulse {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.3;
-  }
+  color: var(--p-gold-deep);
 }
 
-.hero-greeting {
-  font-family: 'Cormorant Garamond', serif;
-  font-weight: 300;
-  font-size: clamp(44px, 6.5vw, 88px);
-  line-height: 1.06;
-  color: var(--cream);
-  margin: 0;
-  animation: hero-reveal 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.35s both;
-}
-.hero-greeting em {
-  font-style: italic;
-  background: linear-gradient(130deg, var(--gold) 0%, var(--gold-light) 60%, var(--gold) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  background-size: 200% 100%;
-  animation: gold-shimmer 4s linear infinite;
-}
-@keyframes gold-shimmer {
-  0% {
-    background-position: 100% 0;
-  }
-  100% {
-    background-position: -100% 0;
-  }
-}
-
-.hero-sub {
-  margin-top: 22px;
-  font-size: 15px;
-  font-weight: 300;
-  letter-spacing: 0.05em;
-  color: var(--muted);
-  animation: hero-reveal 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.5s both;
-}
-
-.hero-stats {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 48px;
-  margin-top: 60px;
-  animation: hero-reveal 1s cubic-bezier(0.16, 1, 0.3, 1) 0.65s both;
-}
-.stat {
-  text-align: center;
-}
-.stat-val {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 38px;
-  font-weight: 300;
-  color: var(--gold-light);
-  line-height: 1;
-}
-.countdown-val {
-  font-size: 28px;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 0.05em;
-}
-.stat-lbl {
-  font-size: 10px;
-  letter-spacing: 0.22em;
+/* ── Today at the House ─────────────────────────────────────────────────── */
+.today__label,
+.doors + .today__label {
+  font-size: 0.625rem;
+  letter-spacing: 0.34em;
   text-transform: uppercase;
-  color: var(--muted);
-  margin-top: 8px;
+  color: var(--p-ink-faint);
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--p-line);
 }
-.stat-sep {
-  width: 1px;
-  height: 52px;
-  background: linear-gradient(to bottom, transparent, var(--border), transparent);
-}
-
-.hero-cta-row {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  margin-top: 52px;
-  animation: hero-reveal 1s cubic-bezier(0.16, 1, 0.3, 1) 0.8s both;
-}
-.cta-primary {
-  padding: 14px 36px;
-  background: var(--gold);
-  color: var(--black);
-  border-radius: 100px;
-  font-family: var(--font-body);
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  text-decoration: none;
-  transition: all 0.25s;
-  box-shadow: var(--shadow-sm);
-}
-.cta-primary:hover {
-  background: var(--gold-light);
-  box-shadow: var(--shadow-md);
-  transform: translateY(-1px);
-}
-.cta-secondary {
-  padding: 14px 28px;
-  background: transparent;
-  border: 1px solid var(--border);
-  border-radius: 100px;
-  font-size: 13px;
-  font-weight: 400;
-  letter-spacing: 0.06em;
-  color: var(--muted);
-  text-decoration: none;
-  transition: all 0.25s;
-}
-.cta-secondary:hover {
-  border-color: var(--gold);
-  color: var(--gold);
-}
-
-.hero-scroll-hint {
-  position: absolute;
-  bottom: 40px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  opacity: 0.4;
-  animation: hero-reveal 1s cubic-bezier(0.16, 1, 0.3, 1) 1.2s both;
-}
-.scroll-line {
-  width: 1px;
-  height: 48px;
-  background: linear-gradient(to bottom, var(--gold), transparent);
-  animation: scroll-pulse 2.4s ease-in-out infinite;
-}
-@keyframes scroll-pulse {
-  0%,
-  100% {
-    opacity: 0.3;
-  }
-  50% {
-    opacity: 1;
-  }
-}
-.hero-scroll-hint span {
-  font-size: 9px;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: var(--gold);
-}
-
-@keyframes hero-reveal {
-  from {
-    opacity: 0;
-    transform: translateY(28px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* LAYOUT
-   The lounge keeps its own, wider gutter and taller bands — it is a members
-   area, not an editorial page. Both are now floors rather than fixed values,
-   so the desktop figures below 1600px are unchanged to the pixel while a
-   large display opens them along with the rest of the site. */
-.container {
-  max-width: var(--content-max-width);
-  margin: 0 auto;
-  padding-inline: max(var(--content-gutter), 3.75rem);
-}
-section {
-  padding: max(var(--section-pad), 6.875rem) 0;
-}
-.divider {
-  height: 1px;
-  background: linear-gradient(to right, transparent, var(--border), transparent);
-  margin-inline: max(var(--content-gutter), 3.75rem);
-}
-.section-label {
-  font-size: 10px;
-  letter-spacing: 0.38em;
-  text-transform: uppercase;
-  color: var(--gold);
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-bottom: 18px;
-}
-.section-label::before {
-  content: '';
-  display: block;
-  width: 28px;
-  height: 1px;
-  background: var(--gold);
-}
-.section-title {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(36px, 4vw, 54px);
-  font-weight: 300;
-  line-height: 1.1;
-  margin: 0 0 12px;
-}
-.section-desc {
-  font-size: 14px;
-  color: var(--muted);
-  font-weight: 300;
-  max-width: 520px;
-  line-height: 1.7;
-  margin: 0 0 52px;
-}
-
-/* EVENT CARDS */
-.events-grid {
+.today__row {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-  gap: 18px;
-}
-.event-card {
-  background: var(--panel);
-  border: 1px solid var(--border-soft);
-  border-radius: var(--radius-lg);
-  padding: 30px 28px;
-  position: relative;
-  overflow: hidden;
-  backdrop-filter: blur(16px);
-  opacity: 0;
-  transform: translateY(32px);
-  display: flex;
-  flex-direction: column;
-}
-.event-card.visible {
-  opacity: 1;
-  transform: translateY(0);
-  transition:
-    opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 0.65s cubic-bezier(0.16, 1, 0.3, 1),
-    border-color 0.3s,
-    box-shadow 0.3s;
-}
-.event-card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(140deg, var(--gold-dim), transparent 60%);
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-.event-card:hover {
-  border-color: var(--border);
-  box-shadow: 0 24px 56px rgba(0, 0, 0, 0.45);
-}
-.event-card:hover::before {
-  opacity: 1;
-}
-.event-card.today-event {
-  border-color: var(--border-card);
-  box-shadow:
-    0 0 0 1px rgba(201, 168, 76, 0.1),
-    0 0 48px rgba(201, 168, 76, 0.07);
-}
-.event-card.past-event {
-  opacity: 0.5 !important;
-}
-.event-card-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 18px;
-}
-.event-day-badge {
-  font-size: 10px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--gold);
-  background: var(--gold-dim);
-  border: 1px solid var(--border);
-  padding: 4px 12px;
-  border-radius: 100px;
-}
-.event-icon {
-  display: flex;
-  color: var(--gold);
-}
-.event-card h3 {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 22px;
-  font-weight: 400;
-  margin: 0 0 10px;
-  line-height: 1.2;
-}
-.event-card p {
-  font-size: 13px;
-  color: var(--muted);
-  line-height: 1.65;
-  margin: 0;
-  flex: 1;
-}
-.event-card-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-top: 24px;
-  flex-wrap: wrap;
-}
-.event-time {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 11px;
-  color: var(--muted);
-  letter-spacing: 0.04em;
-}
-
-.join-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 9px 20px;
-  background: transparent;
-  border: 1px solid var(--border);
-  border-radius: 100px;
-  font-family: var(--font-body);
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--gold);
-  cursor: pointer;
-  transition: all 0.22s;
-  text-decoration: none;
-  white-space: nowrap;
-}
-.join-btn:hover {
-  background: var(--gold);
-  color: var(--black);
-  border-color: var(--gold);
-  box-shadow: var(--shadow-sm);
-}
-.join-btn svg {
-  width: 12px;
-  height: 12px;
-}
-.join-btn.btn-disabled {
-  opacity: 0.35;
-  pointer-events: none;
-}
-
-.today-tag {
-  position: absolute;
-  top: 14px;
-  right: 14px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 12px;
-  background: rgba(201, 168, 76, 0.12);
-  border: 1px solid var(--border-card);
-  border-radius: 100px;
-  font-size: 9px;
-  font-weight: 600;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--gold);
-}
-.today-dot {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: #5cdd6c;
-  box-shadow: 0 0 6px #5cdd6c;
-  animation: badge-pulse 1.8s ease-in-out infinite;
-}
-
-/* NIGHT OWL */
-.night-section {
-  background: linear-gradient(180deg, transparent, rgba(15, 25, 15, 0.4), transparent);
-}
-.title-aside {
-  display: block;
-  font-family: var(--font-body);
-  font-size: 14px;
-  color: var(--muted);
-  font-weight: 300;
-  letter-spacing: 0.05em;
-  margin-top: 6px;
-}
-.reading-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 18px;
-}
-.reading-card {
-  background: var(--panel);
-  border: 1px solid var(--border-soft);
-  border-radius: var(--radius-lg);
-  padding: 36px 32px;
-  position: relative;
-  overflow: hidden;
-  transition:
-    border-color 0.3s,
-    box-shadow 0.3s;
-  opacity: 0;
-  transform: translateY(30px);
-  display: flex;
-  flex-direction: column;
-}
-.reading-card.visible {
-  opacity: 1;
-  transform: translateY(0);
-  transition:
-    opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 0.65s cubic-bezier(0.16, 1, 0.3, 1),
-    border-color 0.3s;
-}
-.reading-card:hover {
-  border-color: var(--border);
-  box-shadow: 0 24px 56px rgba(0, 0, 0, 0.35);
-}
-.reading-card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 20px;
-}
-.reading-icon {
-  display: flex;
-  color: var(--gold);
-}
-.room-live-chip {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 10px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--muted);
-  padding: 4px 10px;
-  border: 1px solid var(--border-soft);
-  border-radius: 100px;
-}
-.room-dot {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: #5cdd6c;
-  box-shadow: 0 0 6px #5cdd6c;
-  animation: badge-pulse 2s ease-in-out infinite;
-}
-.reading-card h3 {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 28px;
-  font-weight: 300;
-  margin: 0 0 10px;
-}
-.reading-meta {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 14px;
-}
-.meta-tag {
-  font-size: 10px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--gold);
-  background: var(--gold-dim);
-  border: 1px solid var(--border);
-  padding: 3px 10px;
-  border-radius: 100px;
-}
-.meta-sep {
-  color: var(--muted);
-  font-size: 10px;
-}
-.meta-text {
-  font-size: 11px;
-  color: var(--muted);
-}
-.reading-card p {
-  font-size: 13px;
-  color: var(--muted);
-  line-height: 1.65;
-  margin: 0;
-  flex: 1;
-}
-.reading-card-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: 28px;
-  gap: 12px;
-}
-.reading-members {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 11px;
-  color: var(--muted);
-}
-.member-dots {
-  display: flex;
-}
-.mdot {
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  border: 1.5px solid var(--black);
-  margin-right: -5px;
-  opacity: 0.85;
-}
-
-.reading-pick-card {
-  background: linear-gradient(145deg, rgba(20, 28, 20, 0.95), rgba(12, 18, 12, 0.88));
-  border-color: var(--border-subtle);
-}
-.pick-label {
-  font-size: 9px;
-  letter-spacing: 0.35em;
-  text-transform: uppercase;
-  color: var(--gold);
-  margin-bottom: 28px;
-}
-.pick-book {
-  display: flex;
-  gap: 24px;
-  align-items: flex-start;
-  flex: 1;
-}
-.book-spine {
-  width: 36px;
-  min-height: 160px;
-  background: linear-gradient(180deg, var(--gold), rgba(201, 168, 76, 0.5));
-  border-radius: 3px 0 0 3px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  box-shadow:
-    3px 0 12px rgba(0, 0, 0, 0.4),
-    inset -2px 0 4px rgba(0, 0, 0, 0.2);
-}
-.book-spine span {
-  writing-mode: vertical-rl;
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 10px;
-  color: var(--black);
-  letter-spacing: 0.1em;
-  font-weight: 600;
-  transform: rotate(180deg);
-  white-space: nowrap;
-  overflow: hidden;
-  max-height: 140px;
-  text-overflow: ellipsis;
-}
-.book-info {
-  flex: 1;
-}
-.book-title {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 22px;
-  font-weight: 400;
-  line-height: 1.2;
-  margin-bottom: 4px;
-}
-.book-author {
-  font-size: 12px;
-  color: var(--muted);
-  margin-bottom: 12px;
-  font-style: italic;
-}
-.book-desc {
-  font-size: 12px;
-  color: var(--muted);
-  line-height: 1.65;
-  margin-bottom: 18px;
-}
-.book-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-.book-tag {
-  font-size: 9px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--gold);
-  border: 1px solid var(--border);
-  padding: 3px 8px;
-  border-radius: 4px;
-}
-
-/* LEADERBOARD */
-.leaderboard-wrap {
-  display: flex;
-  flex-direction: column;
-  gap: 40px;
-}
-.podium {
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  gap: 12px;
-  opacity: 0;
-  transform: translateY(24px);
-}
-.podium.visible {
-  opacity: 1;
-  transform: translateY(0);
-  transition:
-    opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.podium-slot {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-}
-.podium-crown {
-  font-size: 20px;
-  color: var(--gold);
-  animation: crown-float 3s ease-in-out infinite;
-}
-@keyframes crown-float {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-5px);
-  }
-}
-.podium-avatar {
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 22px;
-  font-weight: 400;
-  border: 2px solid var(--border);
-}
-.gold-av {
-  background: rgba(201, 168, 76, 0.18);
-  border-color: var(--gold);
-  color: var(--gold-light);
-}
-.silver-av {
-  background: rgba(168, 184, 200, 0.12);
-  border-color: #a8b8c8;
-  color: #c0cedd;
-}
-.bronze-av {
-  background: rgba(200, 160, 112, 0.12);
-  border-color: #c8a070;
-  color: #ddb87a;
-}
-.podium-name {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--cream);
-}
-.podium-pts {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 20px;
-  color: var(--gold-light);
-}
-.podium-pts span {
-  font-size: 11px;
-  color: var(--muted);
-  margin-left: 2px;
-}
-.podium-block {
-  width: 100px;
-  display: grid;
-  place-items: center;
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 16px;
-  font-weight: 300;
-  border-radius: 6px 6px 0 0;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-bottom: none;
-}
-.podium-block-1 {
-  height: 80px;
-  background: linear-gradient(180deg, rgba(201, 168, 76, 0.25), rgba(201, 168, 76, 0.08));
-  border-color: var(--border-card);
-  color: var(--gold);
-}
-.podium-block-2 {
-  height: 56px;
-  background: rgba(168, 184, 200, 0.1);
-  border-color: rgba(168, 184, 200, 0.15);
-  color: #a8b8c8;
-}
-.podium-block-3 {
-  height: 42px;
-  background: rgba(200, 160, 112, 0.1);
-  border-color: rgba(200, 160, 112, 0.15);
-  color: #c8a070;
-}
-
-.leaderboard-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.leaderboard-item {
-  display: flex;
-  align-items: center;
-  gap: 18px;
-  padding: 18px 24px;
-  border-radius: var(--radius);
-  border: 1px solid transparent;
-  transition:
-    background 0.22s,
-    border-color 0.22s;
-  opacity: 0;
-  transform: translateX(-20px);
-}
-.leaderboard-item.visible {
-  opacity: 1;
-  transform: translateX(0);
-  transition:
-    opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
-    background 0.22s,
-    border-color 0.22s;
-}
-.leaderboard-item:hover {
-  background: var(--gold-dim);
-  border-color: var(--border);
-}
-.leaderboard-item.is-you {
-  background: rgba(201, 168, 76, 0.06);
-  border-color: var(--border);
-}
-
-.lb-rank {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 20px;
-  min-width: 32px;
-  text-align: center;
-  color: var(--muted);
-}
-.lb-rank.gold {
-  color: var(--gold);
-}
-.lb-rank.silver {
-  color: #a8b8c8;
-}
-.lb-rank.bronze {
-  color: #c8a070;
-}
-.lb-avatar {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 16px;
-  color: var(--black);
-  flex-shrink: 0;
-}
-.lb-info {
-  flex: 1;
-  min-width: 0;
-}
-.lb-name {
-  font-size: 15px;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.lb-roll {
-  font-size: 11px;
-  color: var(--muted);
-  margin-top: 2px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.you-tag {
-  font-size: 9px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--black);
-  background: var(--gold);
-  padding: 2px 7px;
-  border-radius: 100px;
-}
-.lb-right {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 6px;
-  min-width: 130px;
-}
-.lb-bar-wrap {
-  width: 120px;
-  height: 2px;
-  background: var(--border-soft);
-  border-radius: 2px;
-  overflow: hidden;
-}
-.lb-bar {
-  height: 100%;
-  background: linear-gradient(to right, var(--gold), var(--gold-light));
-  border-radius: 2px;
-}
-.lb-pts-row {
-  display: flex;
-  align-items: baseline;
-  gap: 4px;
-}
-.lb-pts {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 24px;
-  font-weight: 300;
-  color: var(--gold-light);
-}
-.lb-pts-lbl {
-  font-size: 10px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-.lb-footer-note {
-  font-size: 12px;
-  color: var(--muted);
-  line-height: 1.65;
-  text-align: center;
-  padding-top: 16px;
-  border-top: 1px solid var(--border-soft);
-}
-
-/* SCROLL REVEAL */
-.reveal {
-  opacity: 0;
-  transform: translateY(24px);
-  transition: none;
-}
-.reveal.visible {
-  opacity: 1;
-  transform: translateY(0);
-  transition:
-    opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-/* WHATSAPP COMMUNITY */
-.wa-main-card {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 32px;
-  background: var(--panel);
-  border: 1px solid rgba(37, 211, 102, 0.18);
-  border-radius: var(--radius-lg);
-  padding: 36px 40px;
-  margin-bottom: 52px;
-  position: relative;
-  overflow: hidden;
-  flex-wrap: wrap;
-}
-.wa-main-card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(120deg, rgba(37, 211, 102, 0.05), transparent 55%);
-  pointer-events: none;
-}
-.wa-main-left {
-  display: flex;
-  align-items: flex-start;
-  gap: 24px;
-  flex: 1;
-  min-width: 0;
-}
-.wa-main-label {
-  font-size: 9px;
-  letter-spacing: 0.35em;
-  text-transform: uppercase;
-  color: #25d366;
-  margin-bottom: 6px;
-}
-.wa-main-title {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 32px;
-  font-weight: 300;
-  margin: 0 0 8px;
-  line-height: 1.1;
-}
-.wa-main-desc {
-  font-size: 13px;
-  color: var(--muted);
-  line-height: 1.65;
-  margin: 0;
-  max-width: 480px;
-}
-
-.wa-regions-header {
-  margin-bottom: 24px;
-}
-
-.whatsapp-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
-}
-.whatsapp-card {
-  background: var(--panel);
-  border: 1px solid var(--border-soft);
-  border-radius: var(--radius);
-  padding: 24px 22px;
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-  opacity: 0;
-  transform: translateY(24px);
-  transition:
-    border-color 0.3s,
-    box-shadow 0.3s;
-}
-.whatsapp-card.visible {
-  opacity: 1;
-  transform: translateY(0);
-  transition:
-    opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 0.55s cubic-bezier(0.16, 1, 0.3, 1),
-    border-color 0.3s,
-    box-shadow 0.3s;
-}
-.whatsapp-card:hover {
-  border-color: rgba(37, 211, 102, 0.2);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
-}
-
-.wa-card-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
-}
-.wa-icon-wrap {
-  width: 38px;
-  height: 38px;
-  border-radius: 10px;
-  background: rgba(37, 211, 102, 0.1);
-  border: 1px solid rgba(37, 211, 102, 0.18);
-  display: grid;
-  place-items: center;
-  flex-shrink: 0;
-}
-.wa-icon-region {
-  background: rgba(37, 211, 102, 0.08);
-  border-color: rgba(37, 211, 102, 0.14);
-}
-.wa-icon {
-  width: 18px;
-  height: 18px;
-  color: #25d366;
-}
-.wa-region-badge {
-  font-size: 9px;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: 1.75rem clamp(2rem, 5vw, 4rem);
+  padding-block: clamp(1.75rem, 3vw, 2.25rem);
+}
+.today__item dt {
+  font-size: 0.625rem;
   letter-spacing: 0.28em;
   text-transform: uppercase;
-  color: var(--muted);
-  padding: 3px 10px;
-  border: 1px solid var(--border-soft);
-  border-radius: 100px;
+  color: var(--p-gold-deep);
 }
-
-.wa-title {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 22px;
-  font-weight: 300;
-  margin: 0 0 8px;
-  line-height: 1.2;
-  color: var(--cream);
-}
-.wa-coordinator {
+.today__item dd {
+  margin: 0.75rem 0 0;
   display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 11px;
-  color: var(--muted);
-  margin-bottom: 20px;
-  flex: 1;
+  flex-direction: column;
+  gap: 0.35rem;
 }
-.wa-coordinator svg {
-  width: 13px;
-  height: 13px;
-  flex-shrink: 0;
-  opacity: 0.6;
+.today__value {
+  font-family: var(--font-display);
+  font-size: clamp(1.375rem, 1.2rem + 0.6vw, 1.75rem);
+  line-height: 1.1;
+  color: var(--p-ink);
+}
+.today__sub {
+  font-size: 0.8125rem;
+  color: var(--p-ink-faint);
+  font-variant-numeric: tabular-nums;
 }
 
-.wa-join-btn {
+/* ── The identity strip ─────────────────────────────────────────────────── */
+.ident {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem clamp(1.5rem, 4vw, 3.5rem);
+  padding-block: clamp(1.25rem, 2.5vw, 1.75rem);
+  border-top: 1px solid var(--p-line);
+  border-bottom: 1px solid var(--p-line);
+}
+.ident__avatar {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  flex: none;
+  border-radius: 50%;
+  border: 1px solid var(--p-line-strong);
+  color: var(--p-gold-light);
+  font-family: var(--font-display);
+  font-size: 0.9375rem;
+}
+.ident__block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  min-width: 0;
+}
+.ident__role {
+  font-size: 0.5625rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--p-gold-deep);
+}
+.ident__name {
+  font-family: var(--font-display);
+  font-size: 1.0625rem;
+  color: var(--p-ink);
+}
+.ident__value {
+  font-size: 0.8125rem;
+  color: var(--p-ink-muted);
+  overflow-wrap: anywhere;
+}
+
+/* ── The four doors ─────────────────────────────────────────────────────
+   Columns divided by hairlines, never four boxes. The whole column is the
+   hit area, and only the rule and the arrow respond. */
+.doors {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  padding-top: clamp(2rem, 4vw, 3rem);
+}
+.door {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.4rem;
+  min-width: 0;
+  padding: 0.25rem clamp(1rem, 2.5vw, 2rem) 0.5rem 0;
+  background: none;
+  border: 0;
+  text-align: left;
+  font-family: var(--font-body);
+  color: inherit;
+  cursor: pointer;
+}
+.door + .door {
+  padding-left: clamp(1rem, 2.5vw, 2rem);
+  border-left: 1px solid var(--p-line);
+}
+.door::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -0.5rem;
+  width: 100%;
+  height: 1px;
+  background: var(--p-gold);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--duration-button, 520ms) var(--p-ease);
+}
+.door:hover::after,
+.door:focus-visible::after {
+  transform: scaleX(1);
+}
+.door__icon {
+  color: var(--p-gold);
+  margin-bottom: 0.75rem;
+}
+.door__title {
+  font-size: 0.625rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--p-ink-faint);
+}
+.door__fact {
+  font-family: var(--font-display);
+  font-size: clamp(1.125rem, 1rem + 0.5vw, 1.5rem);
+  line-height: 1.15;
+  color: var(--p-ink);
+}
+.door__when {
+  font-size: 0.8125rem;
+  color: var(--p-ink-muted);
+}
+.door__action {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 9px 18px;
-  background: rgba(37, 211, 102, 0.08);
-  border: 1px solid rgba(37, 211, 102, 0.2);
-  border-radius: 100px;
-  font-family: var(--font-body);
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.14em;
+  gap: 0.4rem;
+  margin-top: 1rem;
+  font-size: 0.6875rem;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: #25d366;
-  cursor: pointer;
-  transition: all 0.22s;
-  text-decoration: none;
-  align-self: flex-start;
+  color: var(--p-gold);
+}
+.door__action svg {
+  transition: transform var(--duration-link, 340ms) var(--p-ease);
+}
+.door:hover .door__action svg {
+  transform: translateX(4px);
+}
+
+/* ══ BANDS ═══════════════════════════════════════════════════════════════ */
+.band {
+  position: relative;
+  overflow: hidden;
+  padding-block: var(--p-band);
+  scroll-margin-top: 5rem;
+}
+.band__mark {
+  top: clamp(1rem, 3vw, 3rem);
+}
+.band__head {
+  position: relative;
+  z-index: 1;
+  max-width: 52rem;
+  margin-bottom: clamp(2.5rem, 5vw, 4rem);
+}
+.band__head .p-eyebrow {
+  margin-top: 0.75rem;
+}
+.band__head .p-display {
+  margin-top: 1rem;
+}
+.band__head .p-lede {
+  margin-top: 1.25rem;
+}
+/* Where the section has a second thought, it sits beside the title rather
+   than under it. */
+.band__head--split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr);
+  align-items: end;
+  gap: clamp(1.5rem, 4vw, 4rem);
+  max-width: none;
+}
+.band__head-aside {
+  padding-bottom: 0.5rem;
+}
+.band__head-aside .p-lede {
+  margin-top: 0;
+}
+
+/* ── Events ─────────────────────────────────────────────────────────────── */
+.cal {
+  position: relative;
+  z-index: 1;
+  list-style: none;
+  border-top: 1px solid var(--p-line);
+}
+.cal__row {
+  display: grid;
+  grid-template-columns: 10rem minmax(0, 1fr) auto;
+  align-items: start;
+  gap: clamp(1rem, 3vw, 3rem);
+  padding-block: clamp(1.5rem, 2.5vw, 2.25rem);
+  border-bottom: 1px solid var(--p-line);
+  transition: background-color var(--duration-card, 620ms) var(--p-ease);
+}
+.cal__row:hover {
+  background: rgba(213, 166, 58, 0.025);
+}
+/* Tonight's row is the only one given weight: a gold edge and a raised
+   ground, not a different component. */
+.cal__row.is-today {
+  background: var(--p-surface);
+  box-shadow: inset 2px 0 0 var(--p-gold);
+  padding-inline: clamp(1rem, 2vw, 1.75rem);
+}
+.cal__row.is-done {
+  opacity: 0.5;
+}
+.cal__day {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.cal__day-name {
+  font-size: 0.75rem;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--p-ink-faint);
+}
+.cal__row.is-today .cal__day-name {
+  color: var(--p-gold-light);
+}
+.cal__title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(1.375rem, 1.1rem + 1vw, 2rem);
+  line-height: 1.1;
+  color: var(--p-ink);
+}
+.cal__desc {
+  margin-top: 0.6rem;
+  max-width: 56ch;
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  color: var(--p-ink-muted);
+}
+.cal__side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.85rem;
+}
+.cal__time {
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  color: var(--p-ink-faint);
+  font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
-.wa-join-btn svg {
-  width: 13px;
-  height: 13px;
-  flex-shrink: 0;
+
+/* ── Reading ────────────────────────────────────────────────────────────── */
+.reading {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  gap: clamp(2rem, 5vw, 4.5rem);
+  align-items: start;
 }
-.wa-join-btn:hover {
-  background: #25d366;
-  color: var(--black);
-  border-color: #25d366;
-  box-shadow: 0 4px 18px rgba(37, 211, 102, 0.28);
+.rooms {
+  list-style: none;
+  border-top: 1px solid var(--p-line);
+}
+.room {
+  padding-block: clamp(1.75rem, 3vw, 2.5rem);
+  border-bottom: 1px solid var(--p-line);
+}
+.room__icon {
+  color: var(--p-gold);
+}
+.room__name {
+  margin-top: 1rem;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(1.75rem, 1.3rem + 1.8vw, 2.75rem);
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  color: var(--p-ink);
+}
+.room__desc {
+  margin-top: 0.9rem;
+  max-width: 40ch;
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  color: var(--p-ink-muted);
+}
+.room__meta {
+  margin-top: 0.75rem;
+  font-size: 0.6875rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--p-gold-deep);
+}
+.room__enter {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1.25rem;
+  font-size: 0.6875rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--p-ink-muted);
+  text-decoration: none;
+  transition: color var(--duration-link, 340ms) var(--p-ease);
+}
+.room__enter svg {
+  transition: transform var(--duration-link, 340ms) var(--p-ease);
+}
+.room__enter:hover {
+  color: var(--p-gold-light);
+}
+.room__enter:hover svg {
+  transform: translateX(4px);
+}
+
+/* The pick is an editorial recommendation, so it is set like one. */
+.pick {
+  padding: clamp(1.5rem, 3vw, 2.25rem);
+  background: var(--p-surface);
+  border: 1px solid var(--p-line-card);
+  border-radius: var(--p-radius);
+}
+.pick__label {
+  font-size: 0.625rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--p-gold);
+}
+.pick__body {
+  display: grid;
+  grid-template-columns: 9rem minmax(0, 1fr);
+  gap: clamp(1.25rem, 3vw, 2rem);
+  margin-top: 1.75rem;
+}
+.pick__cover {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  aspect-ratio: 2 / 3;
+  padding: 1.1rem 1rem;
+  background: linear-gradient(158deg, #0c120e, #060907 60%, #030504);
+  border: 1px solid var(--p-line-card);
+  border-left: 3px solid var(--p-gold-deep);
+  border-radius: 2px 5px 5px 2px;
+  box-shadow: var(--shadow-md);
+}
+.pick__cover-rule {
+  position: absolute;
+  top: 1.1rem;
+  left: 1rem;
+  width: 1.75rem;
+  height: 1px;
+  background: var(--p-gold-deep);
+}
+.pick__cover-title {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  line-height: 1.05;
+  color: var(--p-ink);
+}
+.pick__cover-author {
+  font-size: 0.5625rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--p-ink-faint);
+}
+.pick__title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(1.75rem, 1.4rem + 1vw, 2.25rem);
+  line-height: 1.05;
+  color: var(--p-ink);
+}
+.pick__author {
+  margin-top: 0.5rem;
+  font-size: 0.8125rem;
+  color: var(--p-gold-light);
+}
+.pick__desc {
+  margin-top: 1rem;
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  color: var(--p-ink-muted);
+}
+.pick__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 1.5rem;
+  list-style: none;
+}
+.pick__tags li {
+  padding: 0.3rem 0.65rem;
+  border: 1px solid var(--p-line);
+  border-radius: 2px;
+  font-size: 0.5625rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--p-ink-faint);
+}
+
+/* ── Community ──────────────────────────────────────────────────────────── */
+.wa-mark {
+  width: 15px;
+  height: 15px;
+  flex: none;
+  color: var(--p-live);
+}
+.social {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  align-items: center;
+  gap: clamp(2rem, 5vw, 4rem);
+}
+.social__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--p-ink-soft);
+}
+.social__title {
+  margin-top: 1rem;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(1.75rem, 1.3rem + 1.8vw, 2.75rem);
+  line-height: 1.05;
+  color: var(--p-ink);
+}
+.social__desc {
+  margin-top: 0.85rem;
+  max-width: 44ch;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--p-ink-soft);
+}
+.social__main .p-btn {
+  margin-top: 1.75rem;
+}
+/* The photograph runs past the text block on one side, so the pair reads as
+   a spread rather than as two equal columns. */
+.social__photo {
+  aspect-ratio: 16 / 10;
+  margin-top: clamp(1rem, 3vw, 2.5rem);
+}
+
+.rg__heading,
+.rank__label {
+  margin: clamp(2.5rem, 5vw, 4rem) 0 1.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--p-ink-soft);
+}
+
+/* ── The regional grid ──────────────────────────────────────────────────
+   Explicit column counts rather than auto-fill: the card has a natural
+   reading width, and letting it stretch across a 1900px shell is exactly
+   what made the old row layout feel like a spreadsheet. */
+.rg-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(0.75rem, 1.5vw, 1.125rem);
+  list-style: none;
+}
+@media (min-width: 560px) {
+  .rg-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (min-width: 900px) {
+  .rg-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (min-width: 1600px) {
+  .rg-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* The whole card is the link: one large hit area instead of a small one at
+   the end of a row. Compact by design, and the same height across a row. */
+.rg {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 1.375rem 1.375rem 1.25rem;
+  background: var(--p-surface);
+  border: 1px solid var(--p-line-card);
+  border-radius: var(--p-radius);
+  text-decoration: none;
+  color: inherit;
+  transition:
+    border-color var(--duration-button, 520ms) var(--p-ease),
+    background-color var(--duration-button, 520ms) var(--p-ease),
+    transform var(--duration-button, 520ms) var(--p-ease);
+}
+.rg:hover {
+  border-color: var(--p-line-strong);
+  background: var(--p-surface-raised);
+  transform: translateY(-3px);
+}
+.rg__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.125rem;
+}
+/* The single piece of green on the card, and the only thing that moves. */
+.rg__mark {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  color: var(--p-live);
+  opacity: 0.8;
+  transition:
+    opacity var(--duration-button, 520ms) var(--p-ease),
+    transform var(--duration-button, 520ms) var(--p-ease);
+}
+.rg:hover .rg__mark {
+  opacity: 1;
   transform: translateY(-1px);
 }
-.wa-join-main {
-  padding: 12px 28px;
-  font-size: 11px;
-  flex-shrink: 0;
+.rg__code {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  color: var(--p-gold);
 }
 
-@media (max-width: 1100px) {
-  .whatsapp-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
+/* City first and largest: the thing a member scans for. */
+.rg__city {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  line-height: 1.15;
+  letter-spacing: 0;
+  color: var(--p-ink);
 }
-@media (max-width: 860px) {
-  .whatsapp-grid {
-    grid-template-columns: 1fr 1fr;
-  }
-  .wa-main-card {
-    flex-direction: column;
-    align-items: flex-start;
-  }
+/* Chillax, near-full contrast, no tracking. A coordinator's name is
+   information, not decoration, so it is set to be read. */
+.rg__person {
+  margin-top: 0.5rem;
+  font-size: 0.9375rem;
+  line-height: 1.45;
+  color: var(--p-ink-soft);
 }
-@media (max-width: 500px) {
-  .whatsapp-grid {
-    grid-template-columns: 1fr;
+.rg__person--none {
+  color: var(--p-ink-faint);
+  font-style: italic;
+}
+.rg__role {
+  margin-top: 0.2rem;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  color: var(--p-ink-muted);
+}
+.rg__join {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-top: auto;
+  padding-top: 1.25rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--p-gold-light);
+}
+.rg__join svg {
+  transition: transform var(--duration-link, 340ms) var(--p-ease);
+}
+.rg:hover .rg__join svg {
+  transform: translateX(4px);
+}
+.rg:focus-visible {
+  outline: 2px solid var(--p-gold);
+  outline-offset: 3px;
+}
+
+/* ── Recognition ────────────────────────────────────────────────────────── */
+.podium {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: end;
+  gap: clamp(0.75rem, 2vw, 1.5rem);
+  list-style: none;
+}
+/* The seats differ in height and in metal, never in glow. */
+.podium__seat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.65rem;
+  padding: clamp(1.5rem, 3vw, 2.25rem) 1rem;
+  background: var(--p-surface);
+  border: 1px solid var(--p-line);
+  border-radius: var(--p-radius);
+  text-align: center;
+}
+.podium__seat.is-first {
+  border-color: var(--p-line-strong);
+  padding-block: clamp(2.25rem, 5vw, 3.5rem);
+  background: linear-gradient(180deg, rgba(213, 166, 58, 0.06), transparent 62%), var(--p-surface);
+}
+.podium__rank {
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  letter-spacing: 0.24em;
+  color: var(--p-ink-faint);
+}
+.podium__avatar {
+  display: grid;
+  place-items: center;
+  width: 3.25rem;
+  height: 3.25rem;
+  border-radius: 50%;
+  border: 1px solid var(--p-line);
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  color: var(--p-ink);
+}
+.podium__seat.is-first .podium__avatar {
+  width: 4.25rem;
+  height: 4.25rem;
+  font-size: 1.75rem;
+  border-color: var(--p-gold);
+  color: var(--p-gold-light);
+}
+.podium__seat.is-second .podium__avatar {
+  border-color: rgba(195, 199, 201, 0.42);
+  color: var(--p-silver);
+}
+.podium__seat.is-third .podium__avatar {
+  border-color: rgba(185, 129, 73, 0.42);
+  color: var(--p-bronze);
+}
+.podium__name {
+  font-family: var(--font-display);
+  font-size: clamp(1.0625rem, 0.95rem + 0.5vw, 1.375rem);
+  color: var(--p-ink);
+}
+.podium__pts {
+  font-size: 1rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--p-gold-light);
+}
+.podium__pts small,
+.rank__pts small {
+  margin-left: 0.35rem;
+  font-size: 0.5625rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--p-ink-faint);
+}
+
+.rank {
+  list-style: none;
+  border-top: 1px solid var(--p-line);
+}
+.rank__row {
+  display: grid;
+  grid-template-columns: 3rem 2.5rem minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1rem;
+  padding-block: 1rem;
+  border-bottom: 1px solid var(--p-line);
+}
+.rank__row.is-you {
+  box-shadow: inset 2px 0 0 var(--p-gold);
+  padding-inline: 0.9rem;
+  background: rgba(213, 166, 58, 0.03);
+}
+.rank__no {
+  font-family: var(--font-display);
+  font-size: 0.9375rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--p-ink-faint);
+}
+.rank__avatar {
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  border: 1px solid var(--p-line);
+  font-family: var(--font-display);
+  font-size: 0.9375rem;
+  color: var(--p-ink-muted);
+}
+.rank__who {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+.rank__name {
+  font-size: 1rem;
+  color: var(--p-ink);
+}
+.rank__you {
+  margin-left: 0.6rem;
+  font-size: 0.5625rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--p-gold);
+}
+.rank__mail {
+  font-size: 0.75rem;
+  color: var(--p-ink-faint);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.rank__pts {
+  font-variant-numeric: tabular-nums;
+  font-size: 1.0625rem;
+  color: var(--p-ink);
+  text-align: right;
+  min-width: 6rem;
+}
+
+/* ══ RESPONSIVE ══════════════════════════════════════════════════════════
+   The composition simplifies in three steps and never collapses into a
+   stack of identical cards. */
+@media (max-width: 1180px) {
+  .hero__inner {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .hero__crest {
+    justify-self: start;
+    width: min(100%, 17rem);
+    order: -1;
+  }
+  .doors {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 2.5rem;
+  }
+  .door:nth-child(3) {
+    padding-left: 0;
+    border-left: 0;
+  }
+  .reading,
+  .social,
+  .band__head--split {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .band__head--split {
+    align-items: start;
   }
 }
 
-/* RESPONSIVE */
-@media (max-width: 1100px) {
-  .reading-grid {
-    grid-template-columns: 1fr 1fr;
+@media (max-width: 760px) {
+  .hero__crest {
+    width: min(60%, 12rem);
   }
-  .reading-pick-card {
-    grid-column: 1 / -1;
+  .doors {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 0;
   }
-}
-@media (max-width: 900px) {
-  .container {
-    padding: 0 24px;
+  .door {
+    padding: 1.5rem 0;
+    border-top: 1px solid var(--p-line);
   }
-  .hero {
-    padding: 90px 24px 80px;
+  .door + .door {
+    padding-left: 0;
+    border-left: 0;
   }
-  section {
-    padding: 76px 0;
-  }
-  .divider {
-    margin: 0 24px;
-  }
-  .hero-stats {
-    gap: 24px;
-    flex-wrap: wrap;
-  }
-  .stat-sep {
+  .door::after {
     display: none;
   }
-  .reading-grid {
-    grid-template-columns: 1fr;
+  .cal__row,
+  .cal__row.is-today {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.85rem;
+    padding-inline: 0;
+  }
+  .cal__row.is-today {
+    padding-inline: 0.9rem;
+  }
+  .cal__day {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .cal__side {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+  .pick__body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .pick__cover {
+    max-width: 9rem;
   }
   .podium {
-    display: none;
+    grid-template-columns: minmax(0, 1fr);
   }
-}
-@media (max-width: 600px) {
-  .events-grid {
-    grid-template-columns: 1fr;
+  /* Stacked, the first seat leads instead of sitting in the middle. */
+  .podium__seat.is-first {
+    order: -1;
   }
-  .hero-cta-row {
-    flex-direction: column;
+  .rank__row {
+    grid-template-columns: 2.5rem 2.5rem minmax(0, 1fr);
+    row-gap: 0.4rem;
   }
-  .hero-greeting {
-    font-size: 38px;
+  .rank__pts {
+    grid-column: 3;
+    text-align: left;
+    min-width: 0;
   }
 }
 </style>

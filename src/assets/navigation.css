@@ -71,36 +71,36 @@
   }
 }
 
-/* ===== PAGE TRANSITION =====
-   Turning a page, not sliding a carousel: the outgoing view drifts a short
-   way against the reading direction as it leaves, the incoming one arrives
-   from the other side. Small distances, mode="out-in", so the two never
-   overlap and no scroll position is fought over. */
-.page-turn-enter-active {
-  transition:
-    opacity var(--nav-page-in) var(--ease-nav-reveal),
-    transform var(--nav-page-in) var(--ease-nav-reveal);
+/* ===== PAGE ENTRANCE =====
+   A CSS animation on the routed wrapper, not a Vue <transition>.
+
+   The previous implementation paired `mode="out-in"` with class-driven
+   enter/leave states. Vue drives those from requestAnimationFrame, so a tab
+   that is not being painted never finished the leave, never mounted the
+   destination, and left the route blank until a manual reload. An animation
+   has no such dependency: it is a no-op when frames are unavailable, and the
+   element's resting state is the visible one, so the worst case is a page
+   that appears without animating rather than a page that never appears.
+
+   Opacity only, deliberately. A transform here would make the wrapper a
+   containing block for every `position: fixed` descendant for the length of
+   the animation, which would drag the portal's background canvas and the
+   confetti layer sideways on each navigation. */
+.page-swap {
+  animation: page-enter var(--nav-page-in) var(--ease-nav-reveal);
 }
 
-.page-turn-leave-active {
-  transition:
-    opacity var(--nav-page-out) var(--ease-nav),
-    transform var(--nav-page-out) var(--ease-nav);
-}
-
-.page-turn-enter-from {
-  opacity: 0;
-  transform: translate3d(14px, 0, 0);
-}
-
-.page-turn-leave-to {
-  opacity: 0;
-  transform: translate3d(-12px, 0, 0);
+@keyframes page-enter {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .page-turn-enter-from,
-  .page-turn-leave-to {
-    transform: none;
+  .page-swap {
+    animation: none;
   }
 }

@@ -5,24 +5,71 @@
     "year": 2026,
     "programme": "IIT Madras BS Programme"
   },
-
   "housePoints": {
     "total": 918,
     "categories": [
-      { "name": "Academic", "icon": "academic", "points": 312, "max": 400, "color": "#e8c97a" },
-      { "name": "Cultural", "icon": "cultural", "points": 198, "max": 400, "color": "#b07ae0" },
-      { "name": "Sports", "icon": "sports", "points": 241, "max": 400, "color": "#4caf50" },
-      { "name": "Community", "icon": "community", "points": 167, "max": 400, "color": "#7ab0e0" }
+      {
+        "name": "Academic",
+        "icon": "academic",
+        "points": 312,
+        "max": 400,
+        "color": "#e9c873"
+      },
+      {
+        "name": "Cultural",
+        "icon": "cultural",
+        "points": 198,
+        "max": 400,
+        "color": "#b98149"
+      },
+      {
+        "name": "Sports",
+        "icon": "sports",
+        "points": 241,
+        "max": 400,
+        "color": "#7f8a7e"
+      },
+      {
+        "name": "Community",
+        "icon": "community",
+        "points": 167,
+        "max": 400,
+        "color": "#a97c22"
+      }
     ]
   },
-
   "moods": {
     "options": [
-      { "key": "happy", "emoji": "😄", "label": "Thriving", "color": "#4caf50" },
-      { "key": "chill", "emoji": "😌", "label": "Chill", "color": "#7ab0e0" },
-      { "key": "grind", "emoji": "😤", "label": "Grind", "color": "#c9a84c" },
-      { "key": "meh", "emoji": "😔", "label": "Meh", "color": "#b07ae0" },
-      { "key": "chaos", "emoji": "🤯", "label": "Chaos", "color": "#e07070" }
+      {
+        "key": "happy",
+        "label": "Thriving",
+        "color": "#e9c873",
+        "icon": "sunrise"
+      },
+      {
+        "key": "chill",
+        "label": "Chill",
+        "color": "#7f8a7e",
+        "icon": "coffee"
+      },
+      {
+        "key": "grind",
+        "label": "Grind",
+        "color": "#d5a63a",
+        "icon": "zap"
+      },
+      {
+        "key": "meh",
+        "label": "Meh",
+        "color": "#6f6a5c",
+        "icon": "cloud"
+      },
+      {
+        "key": "chaos",
+        "label": "Chaos",
+        "color": "#b98149",
+        "icon": "tornado"
+      }
     ],
     "seedTally": {
       "happy": 12,
@@ -32,45 +79,78 @@
       "chaos": 7
     }
   },
-
   "confessions": {
     "seed": [
       {
         "id": 1,
         "text": "I've submitted 4 assignments as drafts thinking they were submitted. Found out during grade review. Might cry.",
         "offsetMs": 7200000,
-        "reactions": { "heart": 24, "laugh": 12, "wow": 31 }
+        "reactions": {
+          "heart": 24,
+          "laugh": 12,
+          "wow": 31
+        }
       },
       {
         "id": 2,
         "text": "Started a 6-week course 3 days before the quiz and got 90%. I operate purely on chaos energy.",
         "offsetMs": 18000000,
-        "reactions": { "heart": 18, "laugh": 67, "wow": 9 }
+        "reactions": {
+          "heart": 18,
+          "laugh": 67,
+          "wow": 9
+        }
       },
       {
         "id": 3,
         "text": "I genuinely look forward to Monday technical sessions more than anything else this week. Not cringe, just facts.",
         "offsetMs": 86400000,
-        "reactions": { "heart": 88, "laugh": 4, "wow": 11 }
+        "reactions": {
+          "heart": 88,
+          "laugh": 4,
+          "wow": 11
+        }
       }
     ],
     "reactions": [
-      { "key": "heart", "emoji": "❤️" },
-      { "key": "laugh", "emoji": "😂" },
-      { "key": "wow", "emoji": "😮" }
+      {
+        "key": "heart",
+        "icon": "heart"
+      },
+      {
+        "key": "laugh",
+        "icon": "laugh"
+      },
+      {
+        "key": "wow",
+        "icon": "sparkles"
+      }
     ]
   },
-
   "pomodoro": {
     "phases": [
-      { "key": "focus", "label": "Focus", "seconds": 1500, "tabLabel": "Focus 25" },
-      { "key": "short", "label": "Short Break", "seconds": 300, "tabLabel": "Break 5" },
-      { "key": "long", "label": "Long Break", "seconds": 900, "tabLabel": "Long 15" }
+      {
+        "key": "focus",
+        "label": "Focus",
+        "seconds": 1500,
+        "tabLabel": "Focus 25"
+      },
+      {
+        "key": "short",
+        "label": "Short Break",
+        "seconds": 300,
+        "tabLabel": "Break 5"
+      },
+      {
+        "key": "long",
+        "label": "Long Break",
+        "seconds": 900,
+        "tabLabel": "Long 15"
+      }
     ],
     "seedStudiers": ["Aditi S.", "Rohan V.", "Dev P.", "Mehak S."],
     "maxSessions": 4
   },
-
   "studyBuddies": [
     {
       "name": "Aditi Sharma",
@@ -113,7 +193,6 @@
       "tags": ["Visual Learner", "Diagram Lover", "Calm Energy"]
     }
   ],
-
   "buddyOptions": {
     "subjects": [
       "Mathematics (MAT1001)",
@@ -139,7 +218,6 @@
       "Mock Tests"
     ]
   },
-
   "dailyChallenge": {
     "title": "Longest Substring Without Repeating Characters",
     "difficulty": "Medium",
@@ -147,22 +225,47 @@
     "pointsWithHint": 15,
     "description": "Given a string s, find the length of the longest substring without repeating characters.",
     "examples": [
-      { "input": "\"abcabcbb\"", "output": "3", "note": "substring \"abc\"" },
-      { "input": "\"bbbbb\"", "output": "1", "note": "substring \"b\"" },
-      { "input": "\"pwwkew\"", "output": "3", "note": "substring \"wke\"" }
+      {
+        "input": "\"abcabcbb\"",
+        "output": "3",
+        "note": "substring \"abc\""
+      },
+      {
+        "input": "\"bbbbb\"",
+        "output": "1",
+        "note": "substring \"b\""
+      },
+      {
+        "input": "\"pwwkew\"",
+        "output": "3",
+        "note": "substring \"wke\""
+      }
     ],
     "starterCode": "def lengthOfLongestSubstring(s: str) -> int:\n    # Your solution here\n    pass",
     "hint": "Use a sliding window with a hash set. Advance the right pointer; when you hit a duplicate, shrink from the left until it is removed. Track the maximum window size.",
     "seedSolvers": [
-      { "name": "Aditi Sharma", "time": "08:42 AM", "points": 25, "me": false },
-      { "name": "Dev Patel", "time": "09:15 AM", "points": 25, "me": false },
-      { "name": "Rohan Verma", "time": "10:03 AM", "points": 20, "me": false }
+      {
+        "name": "Aditi Sharma",
+        "time": "08:42 AM",
+        "points": 25,
+        "me": false
+      },
+      {
+        "name": "Dev Patel",
+        "time": "09:15 AM",
+        "points": 25,
+        "me": false
+      },
+      {
+        "name": "Rohan Verma",
+        "time": "10:03 AM",
+        "points": 20,
+        "me": false
+      }
     ]
   },
-
   "meme": {
     "winner": {
-      "emoji": "😭📚",
       "caption": "When the exam is tomorrow and you just found the syllabus",
       "author": "anon_23f",
       "fireVotes": 147,
@@ -171,7 +274,6 @@
     "candidates": [
       {
         "id": 1,
-        "emoji": "📖😭",
         "title": "When you realise Stats has calculus in it",
         "author": "anon_24f",
         "fire": 34,
@@ -179,7 +281,6 @@
       },
       {
         "id": 2,
-        "emoji": "🐱💻",
         "title": "My laptop at 1AM during submission week",
         "author": "anon_22f",
         "fire": 28,
@@ -187,7 +288,6 @@
       },
       {
         "id": 3,
-        "emoji": "🧠✨",
         "title": "Brain 10 mins before vs during an exam",
         "author": "anon_23f",
         "fire": 61,

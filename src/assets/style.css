@@ -34,7 +34,12 @@
   /* ── Ink & metal ──────────────────────────────────────────────────── */
   --color-cream: #f1e8d0;
   --color-cream-muted: #c7bda3;
-  --color-cream-faint: #6e6248;
+  /* Tertiary ink: metadata, captions, footer fine print. Lifted from #6e6248,
+     which measured 3.2 to 3.5:1 on the page tones and failed AA for body text
+     before any extension touched it. Same hue and saturation, enough lightness
+     to clear 4.5:1 on every ground the site uses (worst case 4.8:1 on the
+     raised card). */
+  --color-cream-faint: #8e7e5d;
   --color-gold: #d5a63a;
   --color-gold-light: #e9c873;
   --color-gold-muted: #a97c22; /* antique gold — crest ring, quiet rules */
@@ -255,9 +260,16 @@ body {
   background: var(--bg);
   color: var(--text);
   line-height: 1.7;
-  overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
+/* `overflow-x` is declared on <html> only, deliberately.
+   Setting it on <body> as well makes body a scroll container in its own right
+   (an overflow value other than `visible` on one axis forces `auto` on the
+   other). Body then never actually scrolls — the document does — so any
+   `position: sticky` header inside it pins to a box that is itself moving up
+   the page, and the header scrolls away. The horizontal clipping the site
+   wants is already provided by <html> above, which is the real document
+   scroller and therefore a correct containing block for sticky. */
 
 /* ===== GLOBAL BUTTON SYSTEM =====
    Every control on the site — navigation, hero, cards, forms, footer, community

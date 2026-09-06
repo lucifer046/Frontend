@@ -3,6 +3,15 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- One theme, stated three ways. "color-scheme" tells the engine the page
+         is already dark, which is what stops Chrome's own auto-dark from
+         running and makes native controls render dark. "theme-color" tints the
+         browser and OS chrome to match. "darkreader-lock" is Dark Reader's own
+         documented opt-out for sites that ship their own dark theme: it asks
+         the extension to stand down rather than blocking it. -->
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#050605" />
+    <meta name="darkreader-lock" />
     <title>Sundarbans House | IIT Madras BS</title>
     <link
       rel="icon"

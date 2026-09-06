@@ -1,5 +1,5 @@
 <template>
-  <div class="app-shell" :class="{ 'app-shell--railed': !isLoungeRoute }">
+  <div class="app-shell" :class="{ 'app-shell--railed': !isPortalRoute }">
     <!-- PRELOADER
          An institutional title card, not a spinner. The crest is on screen from
          the first frame and does not move again: the only motion is the legend
@@ -65,6 +65,7 @@
         <div class="search-input-row">
           <Search :size="18" :stroke-width="2" />
           <input
+            id="searchInput"
             type="text"
             v-model="searchQuery"
             @input="filterSearch"
@@ -111,7 +112,7 @@
     <!-- BACK TO TOP -->
     <button
       id="backToTop"
-      :class="{ visible: showBackToTop }"
+      :class="{ visible: showBackToTop, 'is-portal': isPortalRoute }"
       @click="scrollTop"
       aria-label="Back to top"
     >
@@ -121,15 +122,33 @@
     <!-- PRIMARY NAVIGATION — vertical rail (desktop) / drawer (mobile) -->
     <VerticalNavigation />
 
-    <!-- ROUTER VIEW with transition -->
-    <router-view v-slot="{ Component }">
-      <transition name="page-turn" mode="out-in">
+    <!-- ROUTER VIEW
+         Deliberately NOT wrapped in <transition mode="out-in">.
+
+         That combination made mounting the destination conditional on the
+         outgoing view finishing its animation, and Vue drives both halves of a
+         transition from requestAnimationFrame: it removes `*-enter-from` and
+         arms the end-detection inside `nextFrame`. When no animation frames
+         are delivered (a backgrounded or occluded tab, a heavily janked one),
+         the leave never resolves, the incoming component is never created, and
+         the route renders nothing at all until a reload, which works only
+         because a fresh load has no outgoing view to wait for.
+
+         So the swap is now plain: the destination mounts with the navigation,
+         and the entrance is a CSS animation on the wrapper. If frames are
+         starved the animation simply does not play and the page is readable
+         anyway, because the resting state is the visible one.
+
+         The key is the path, not the full path, so moving between hash
+         anchors on one route does not replay the entrance. -->
+    <router-view v-slot="{ Component, route }">
+      <div :key="route.path" class="page-swap">
         <component :is="Component" />
-      </transition>
+      </div>
     </router-view>
 
     <!-- GLOBAL FOOTER -->
-    <AppFooter v-if="!isLoungeRoute" />
+    <AppFooter v-if="!isPortalRoute" />
   </div>
 </template>
 
@@ -158,9 +177,10 @@ import { isRailHiddenFor } from './components/navigation/navigation.config.js';
 
 const route = useRoute();
 
-// One source of truth with the navigation config: the members area ships its
-// own header, so neither the rail nor the reserved gutter applies there.
-const isLoungeRoute = computed(() => isRailHiddenFor(route.path));
+// One source of truth with the navigation config: the member portal — its
+// entrance and both rooms — ships its own header and footer, so neither the
+// rail, the reserved gutter nor the public footer applies there.
+const isPortalRoute = computed(() => isRailHiddenFor(route.path));
 
 // --- PRELOADER ---
 const loading = ref(true);

@@ -1,28 +1,15 @@
 <template>
-  <div class="widget w-5" id="widget-streak">
-    <div
-      class="widget-glow"
-      style="
-        width: 300px;
-        height: 300px;
-        background: radial-gradient(circle, rgba(255, 140, 0, 0.28), transparent);
-        top: -120px;
-        left: -100px;
-      "
-    ></div>
-
-    <div class="widget-label">Daily Habit</div>
+  <!-- YOUR RHYTHM. A personal ritual, not a game and not a fitness app:
+       one count that matters, two that give it context, and the week laid
+       out as seven marks. -->
+  <div class="widget" id="widget-streak">
+    <div class="widget-label">Your rhythm</div>
     <div class="widget-title">Study Streak</div>
+    <p class="widget-note">Small sessions become habits. Keep your rhythm moving.</p>
 
-    <!-- Flame + counter -->
-    <div class="streak-flame-wrap">
-      <div class="streak-flame">
-        <Flame :size="flameSize" :stroke-width="1.5" />
-      </div>
-      <div>
-        <div class="streak-number">{{ streak }}</div>
-        <div class="streak-label">Day Streak</div>
-      </div>
+    <div class="streak-count">
+      <span class="streak-number">{{ streak }}</span>
+      <span class="streak-label">{{ streak === 1 ? 'day' : 'days' }} running</span>
     </div>
 
     <div class="streak-stat-row">
@@ -36,40 +23,34 @@
       </div>
     </div>
 
-    <!-- 7-day history grid -->
-    <div class="streak-days-grid">
+    <div class="streak-week">
       <div
         v-for="(day, i) in weekDays"
         :key="i"
         class="streak-day"
-        :class="{ done: day.done, empty: !day.done, 'today-slot': day.isToday }"
+        :class="{ done: day.done, 'today-slot': day.isToday }"
       >
-        <span class="streak-day-name">{{ day.name }}</span>
-        <span class="streak-day-icon">
-          <Flame v-if="day.done" :size="14" :stroke-width="1.8" />
-          <template v-else>·</template>
-        </span>
+        <span class="streak-day-name">{{ day.name.charAt(0) }}</span>
+        <span
+          class="streak-day-mark"
+          :title="`${day.name}${day.done ? ', checked in' : ''}`"
+        ></span>
       </div>
     </div>
 
-    <!-- Check-in action -->
     <div class="streak-checkin-row">
       <button class="btn btn-gold" ref="streakBtnRef" :disabled="checkedToday" @click="doCheckin">
-        {{ checkedToday ? 'Checked In ✓' : 'Check In Today' }}
+        {{ checkedToday ? 'Checked in' : 'Check in today' }}
+        <ArrowRight v-if="!checkedToday" :size="13" :stroke-width="1.8" aria-hidden="true" />
       </button>
-      <span class="streak-checked-msg" :class="{ show: checkedToday }">✓ Checked in!</span>
-    </div>
-
-    <!-- Best streak badge -->
-    <div class="streak-best">
-      Best streak: <span>{{ best }}</span> days
+      <span class="streak-checked-msg" :class="{ show: checkedToday }">Today is marked</span>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
-import { Flame } from 'lucide-vue-next';
+import { ref, computed } from 'vue';
+import { ArrowRight } from 'lucide-vue-next';
 import { save, load } from '../../composables/useLocalStorage.js';
 
 const emit = defineEmits(['confetti']);
@@ -85,15 +66,6 @@ const streakBtnRef = ref(null);
 
 const checkedToday = computed(() => last.value === TODAY);
 const completedThisWeek = computed(() => weekDays.value.filter((day) => day.done).length);
-
-const flameSize = computed(() => {
-  const n = streak.value;
-  if (n === 0) return 64;
-  if (n < 3) return 78;
-  if (n < 7) return 94;
-  if (n < 14) return 112;
-  return 130;
-});
 
 const weekDays = computed(() => {
   const days = [];

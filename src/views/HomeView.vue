@@ -209,6 +209,29 @@
       </div>
     </section>
 
+    <!-- MEMORIES / PAST EVENTS
+         The bridge in the homepage's story: after what the House offers,
+         before where to go next. Same component and same data as the Events
+         page archive, in its compact variant, with a route to the full one. -->
+    <section class="section rs home-memories" id="home-memories">
+      <div class="container">
+        <div class="sec-hdr">
+          <div class="section-tag">Memories</div>
+          <h2 class="section-title-xl">From the <span class="tg">House</span></h2>
+          <p class="sec-sub">Some moments become part of the House long after the event is over.</p>
+        </div>
+      </div>
+
+      <PastEventsReel :events="pastEventList" variant="compact">
+        <template #action>
+          <router-link to="/events" class="btn btn--outline btn--sm">
+            View All Events
+            <ArrowRight :size="15" :stroke-width="2" aria-hidden="true" />
+          </router-link>
+        </template>
+      </PastEventsReel>
+    </section>
+
     <!-- CTA / ACADEMIC -->
     <section class="section cta-section rs" id="home-academics">
       <div class="container">
@@ -279,11 +302,18 @@ import {
   Zap,
   Star,
   Check,
+  ArrowRight,
 } from 'lucide-vue-next';
+import PastEventsReel from '../components/events/PastEventsReel.vue';
+import { splitEvents } from '../data/events.js';
 import { useScrollReveal, useCounters } from '../composables/useAnimations.js';
 
 useScrollReveal();
 useCounters();
+
+// The same archive the Events page shows, resolved the same way, so an event
+// added or expiring updates both pages at once.
+const { past: pastEventList } = splitEvents();
 
 // Features data — editorial numbered cards (see .fcard-num in style.css)
 const features = [
@@ -487,10 +517,22 @@ onUnmounted(() => {
   color: var(--text2);
 }
 
-/* Homepage tone rhythm: Hero A · About B · Offerings A · Academic B ·
-   Footer black. Only --color-bg-black and --color-bg-forest, alternating. */
-.cta-section {
+/* Homepage tone rhythm: Hero A · About B · Offerings A · Memories B ·
+   Academic A · Footer black. Only --color-bg-black and --color-bg-forest,
+   still strictly alternating: inserting the archive between Offerings and
+   Academic moved the Academic band one step along rather than putting two
+   forest bands next to each other. */
+/* The reel runs full-bleed inside the band, so the section pads the heading
+   and lets the strip reach the page edges. A little more room underneath than
+   a normal section: the strip is in motion, and it needs air before the next
+   heading starts. */
+.home-memories {
   background: var(--color-bg-forest);
+  padding-bottom: calc(var(--section-pad) + 1.5rem);
+}
+
+.cta-section {
+  background: var(--color-bg-black);
 }
 
 /* ===== CTA / ACADEMIC ===== */

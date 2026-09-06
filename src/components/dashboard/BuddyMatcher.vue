@@ -51,7 +51,10 @@
       </div>
     </div>
 
-    <button class="btn btn-gold buddy-find-btn" @click="findBuddy">Find My Buddy ✨</button>
+    <button class="btn btn-gold buddy-find-btn" @click="findBuddy">
+      Find my buddy
+      <ArrowRight :size="13" :stroke-width="1.8" aria-hidden="true" />
+    </button>
 
     <!-- Match result card -->
     <div class="buddy-result" :class="{ show: showResult }">
@@ -82,7 +85,7 @@
         <button class="btn btn-ghost" @click="findBuddy">
           <Shuffle :size="15" :stroke-width="1.9" /> Shuffle
         </button>
-        <span class="buddy-sent-msg" :class="{ show: connectSent }">✓ Request sent!</span>
+        <span class="buddy-sent-msg" :class="{ show: connectSent }">Request sent</span>
       </div>
     </div>
   </div>
@@ -90,7 +93,7 @@
 
 <script setup>
 import { ref, reactive } from 'vue';
-import { MessageCircle, Shuffle } from 'lucide-vue-next';
+import { MessageCircle, Shuffle, ArrowRight } from 'lucide-vue-next';
 
 const props = defineProps({
   pool: { type: Array, default: null },

@@ -564,8 +564,10 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKeydown));
   color: var(--color-gold-light);
 }
 
+/* The icon's own response sits on top of the row's displacement, so it stays
+   smaller than it looks written down: any more and the two read as a lurch. */
 .vnav__link:hover .vnav__icon {
-  transform: translate3d(3px, -1px, 0) scale(1.06);
+  transform: scale(1.03);
 }
 
 .vnav__link.is-active {

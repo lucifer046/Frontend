@@ -15,8 +15,8 @@ import {
   Home,
   BookOpen,
   CalendarDays,
+  Library,
   MapPin,
-  MapPinned,
   Trophy,
   Info,
   Handshake,
@@ -36,6 +36,11 @@ export const brand = {
   subtitle: 'IIT MADRAS BS DEGREE',
 };
 
+/**
+ * Reading order, not alphabetical: home, then the two reference desks a
+ * student opens most, then what the House is running, then the social and
+ * competitive pages, then who we are and how to reach us.
+ */
 export const navigationItems = [
   { id: 'home', label: 'Home', route: '/', icon: Home, homeSectionId: 'home-hero' },
   {
@@ -45,13 +50,13 @@ export const navigationItems = [
     icon: BookOpen,
     homeSectionId: 'home-academics',
   },
+  { id: 'documents', label: 'Documents', route: '/documents', icon: Library },
   { id: 'events', label: 'Events', route: '/events', icon: CalendarDays },
   { id: 'meetups', label: 'Meetups', route: '/meetups', icon: MapPin },
-  { id: 'exam-cities', label: 'Exam Cities', route: '/exam-cities', icon: MapPinned },
   { id: 'leaderboard', label: 'Leaderboard', route: '/leaderboard', icon: Trophy },
-  { id: 'about', label: 'About', route: '/about', icon: Info, homeSectionId: 'home-about' },
   { id: 'community', label: 'Community', route: '/community', icon: Handshake },
   { id: 'teams', label: 'Teams', route: '/teams', icon: UsersRound },
+  { id: 'about', label: 'About', route: '/about', icon: Info, homeSectionId: 'home-about' },
   { id: 'contact', label: 'Contact', route: '/contact', icon: Mail },
 ];
 
@@ -77,8 +82,12 @@ export const actionItems = [
   },
 ];
 
-/** The members area ships its own header (MembersNavbar), so the rail stands down. */
-const RAIL_HIDDEN_ROUTES = ['/lounge', '/dashboard'];
+/**
+ * The member portal is its own world: /login is its entrance and /lounge and
+ * /dashboard are rooms inside it. All three ship their own header, so the
+ * public rail — and the public footer App.vue pairs with it — stand down.
+ */
+const RAIL_HIDDEN_ROUTES = ['/login', '/lounge', '/dashboard'];
 
 export function isRailHiddenFor(path) {
   return RAIL_HIDDEN_ROUTES.includes(path);

@@ -1,253 +1,224 @@
 <template>
   <div>
-    <PageHero
-      bg-image="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1920&q=80&auto=format&fit=crop"
-      breadcrumb-title="Events"
-      title="Events &"
-      accent-title="Activities"
-      subtitle="Workshops, competitions, meetups and so much more awaits you"
-    />
-
-    <!-- Featured Event -->
-    <section class="section rs" style="background: var(--bg2)">
-      <div class="container">
-        <div class="sec-hdr">
-          <div class="section-tag">Next Big Event</div>
-          <h2 class="section-title-xl">Upcoming <span class="tg">Highlight</span></h2>
+    <!-- ═══ HERO ═══════════════════════════════════════════════════════════
+         The site's own page-hero shell, with one addition: an eyebrow above
+         the display line. Written here rather than through PageHero so the
+         other nine pages that share that component are untouched. -->
+    <section class="page-hero">
+      <div class="page-hero-bg">
+        <img
+          src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1920&q=80&auto=format&fit=crop"
+          alt="A House audience at a Sundarbans event"
+        />
+        <div class="page-hero-overlay"></div>
+      </div>
+      <div class="container page-hero-content">
+        <div class="breadcrumb-nav">
+          <router-link to="/">Home</router-link><span>/</span><span>Events</span>
         </div>
-        <div
-          class="card-base rs grid-2"
-          style="align-items: center; border: 1px solid rgba(79, 142, 247, 0.3)"
-        >
-          <div>
+        <div class="page-hero-eyebrow">What's Happening</div>
+        <h1>
+          Events &amp;
+          <span class="tg">Activities</span>
+        </h1>
+        <p>
+          From conversations and workshops to meetups, competitions and cultural moments, there is
+          always something happening around the House.
+        </p>
+      </div>
+    </section>
+
+    <!-- ═══ NEXT ON THE CALENDAR ═══════════════════════════════════════════ -->
+    <section class="section rs tone-b">
+      <div class="container">
+        <div class="ev-sec-head">
+          <div class="section-tag">Next on the Calendar</div>
+          <h2 class="section-title-xl">Upcoming <span class="tg">Highlight</span></h2>
+          <p class="ev-sec-sub">
+            The next thing on the House calendar, in full, before the rest of the listing.
+          </p>
+        </div>
+
+        <article v-if="featuredEvent" class="ev-feature">
+          <div class="ev-feature-media">
             <img
-              src="https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=700&q=80&auto=format&fit=crop"
-              alt="AI Conference"
-              style="width: 100%; border-radius: 12px; aspect-ratio: 16/9; object-fit: cover"
+              :src="featuredEvent.img || fallbackImage"
+              :alt="`Poster for ${featuredEvent.title}`"
+              loading="lazy"
+              decoding="async"
+              @error="onImageError"
             />
           </div>
+
+          <div class="ev-feature-body">
+            <div class="section-tag">{{ featuredEvent.category || 'Featured' }}</div>
+            <h3 class="ev-feature-title">{{ featuredEvent.title }}</h3>
+            <p v-if="featuredEvent.desc" class="ev-feature-desc">{{ featuredEvent.desc }}</p>
+
+            <div class="ev-facts">
+              <div class="ev-fact">
+                <span class="ev-fact-label">
+                  <Calendar :size="13" :stroke-width="1.9" aria-hidden="true" /> Date
+                </span>
+                <span class="ev-fact-value">{{ featuredEvent.date }}</span>
+              </div>
+              <div v-if="featuredEvent.time" class="ev-fact">
+                <span class="ev-fact-label">
+                  <Clock :size="13" :stroke-width="1.9" aria-hidden="true" /> Time
+                </span>
+                <span class="ev-fact-value">{{ featuredEvent.time }}</span>
+              </div>
+              <div v-if="featuredEvent.location" class="ev-fact">
+                <span class="ev-fact-label">
+                  <MapPin :size="13" :stroke-width="1.9" aria-hidden="true" /> Where
+                </span>
+                <span class="ev-fact-value">{{ featuredEvent.location }}</span>
+              </div>
+            </div>
+
+            <div>
+              <router-link :to="featuredEvent.link || '/contact'" class="btn btn--primary">
+                Register Now
+                <ArrowRight :size="16" :stroke-width="2" aria-hidden="true" />
+              </router-link>
+            </div>
+          </div>
+        </article>
+
+        <!-- Nothing announced yet. The band still carries type and an offer. -->
+        <div v-else class="ev-empty">
           <div>
-            <div class="section-tag">Featured</div>
-            <h3
-              style="
-                font-family: var(--font-display);
-                font-size: 1.8rem;
-                font-weight: 800;
-                margin: 0.75rem 0;
-              "
-            >
-              Guest Lecture: AI &amp; Machine Learning
-            </h3>
-            <p class="desc">
-              Exclusive talk by IIT Madras faculty — deep dive into the future of AI, research
-              opportunities and career paths in machine learning.
+            <h3 class="ev-empty-title">Nothing on the calendar just yet.</h3>
+            <p class="ev-empty-copy">
+              The next session is always in the making. Look through the archive below to see what
+              the House has run so far, or bring us an idea of your own and we will help put it on.
             </p>
-            <div style="margin: 1.5rem 0">
-              <div id="mainEventCountdown" class="countdown-widget"></div>
-            </div>
-            <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1.25rem">
-              <span
-                style="
-                  display: inline-flex;
-                  align-items: center;
-                  gap: 0.3rem;
-                  font-size: 0.8rem;
-                  color: var(--text2);
-                "
-                ><Calendar :size="13" :stroke-width="1.9" /> This Friday, 6:00 PM – 8:00 PM</span
-              >
-              <span
-                style="
-                  display: inline-flex;
-                  align-items: center;
-                  gap: 0.3rem;
-                  font-size: 0.8rem;
-                  color: var(--text2);
-                "
-                ><MapPin :size="13" :stroke-width="1.9" /> Online (Zoom)</span
-              >
-              <span
-                style="
-                  display: inline-flex;
-                  align-items: center;
-                  gap: 0.3rem;
-                  font-size: 0.8rem;
-                  color: var(--text2);
-                "
-                ><Ticket :size="13" :stroke-width="1.9" /> Free for all members</span
-              >
-            </div>
-            <a href="#" class="btn-hero-primary" style="display: inline-flex">Register Now →</a>
+          </div>
+          <div class="ev-empty-acts">
+            <button type="button" class="btn btn--outline" @click="scrollToArchive">
+              Browse the archive
+            </button>
+            <router-link to="/contact" class="btn btn--primary">
+              Propose an event
+              <ArrowRight :size="16" :stroke-width="2" aria-hidden="true" />
+            </router-link>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Upcoming Events -->
-    <section class="section rs">
+    <!-- ═══ WHAT'S ON ══════════════════════════════════════════════════════ -->
+    <section class="section rs tone-a">
       <div class="container">
-        <div
-          style="
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-            gap: 1rem;
-          "
-        >
+        <div class="ev-head">
           <div>
             <div class="section-tag">What's On</div>
-            <h2 class="section-title-xl" style="margin: 0">
-              Upcoming <span class="tg">Events</span>
-            </h2>
+            <h2 class="section-title-xl">Upcoming <span class="tg">Events</span></h2>
           </div>
-          <div class="filter-tabs">
-            <div
-              class="ftab"
+
+          <div class="ev-filters" role="group" aria-label="Filter events by category">
+            <button
               v-for="tab in tabs"
               :key="tab"
-              :class="{ active: activeTab === tab }"
+              type="button"
+              class="sel"
+              :aria-pressed="activeTab === tab"
               @click="activeTab = tab"
             >
               {{ tab }}
-            </div>
+            </button>
           </div>
         </div>
-        <!-- No upcoming events state -->
-        <div
-          v-if="filteredEvents.length === 0"
-          style="text-align: center; padding: 3rem 0; color: var(--text2)"
-        >
-          <div
-            style="
-              color: var(--accent);
-              margin-bottom: 0.75rem;
-              display: flex;
-              justify-content: center;
-            "
-          >
-            <PartyPopper :size="28" :stroke-width="1.6" />
-          </div>
-          <p style="font-size: 1.1rem">No upcoming events right now — check back soon!</p>
+
+        <div v-if="filteredEvents.length === 0" class="ev-none">
+          <CalendarClock :size="26" :stroke-width="1.6" aria-hidden="true" />
+          <h3 class="ev-none-title">No upcoming events right now</h3>
+          <p>
+            Check back soon. New workshops, meetups, competitions and talks are announced here
+            first.
+          </p>
         </div>
-        <div v-else class="grid-3">
-          <div
-            class="card-base rc"
+
+        <div v-else class="ev-grid">
+          <article
             v-for="(ev, i) in filteredEvents"
             :key="ev.title"
-            :style="`--card-delay:${(i + 1) * 0.1}s`"
-          >
-            <div style="height: 160px; border-radius: 10px; overflow: hidden; margin-bottom: 1rem">
-              <img
-                :src="ev.img"
-                :alt="ev.title"
-                style="width: 100%; height: 100%; object-fit: cover"
-              />
-            </div>
-            <div class="section-tag" :style="ev.tagStyle || ''">
-              {{ ev.category }}
-            </div>
-            <h3 style="font-family: var(--font-display); font-weight: 700; margin: 0.5rem 0 0.4rem">
-              {{ ev.title }}
-            </h3>
-            <p class="desc" style="margin-bottom: 0.75rem">{{ ev.desc }}</p>
-            <div
-              style="
-                display: flex;
-                gap: 1rem;
-                margin-bottom: 1rem;
-                font-size: 0.8rem;
-                color: var(--text2);
-              "
-            >
-              <span style="display: inline-flex; align-items: center; gap: 0.3rem"
-                ><Calendar :size="13" :stroke-width="1.9" /> {{ ev.date }}</span
-              ><span style="display: inline-flex; align-items: center; gap: 0.3rem"
-                ><Clock :size="13" :stroke-width="1.9" /> {{ ev.time }}</span
-              ><span style="display: inline-flex; align-items: center; gap: 0.3rem"
-                ><MapPin :size="13" :stroke-width="1.9" /> {{ ev.location }}</span
-              >
-            </div>
-            <a href="#" class="submit-btn" style="font-size: 0.85rem; padding: 0.55rem 1.25rem"
-              >Register Now</a
-            >
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Past Events -->
-    <section class="section rs" style="background: var(--bg2)">
-      <div class="container">
-        <div class="sec-hdr">
-          <div class="section-tag">Memories</div>
-          <h2 class="section-title-xl">Past <span class="tg">Events</span></h2>
-        </div>
-        <div class="grid-3">
-          <div
-            class="card-base rc"
-            v-for="(p, i) in allPastEvents"
-            :key="p.title + i"
+            class="ev-card rc"
             :style="`--card-delay:${(i % 6) * 0.08}s`"
           >
-            <div style="height: 160px; border-radius: 10px; overflow: hidden; margin-bottom: 1rem">
+            <div class="ev-card-media">
               <img
-                :src="p.img"
-                :alt="p.title"
-                style="width: 100%; height: 100%; object-fit: cover"
+                :src="ev.img || fallbackImage"
+                :alt="`Poster for ${ev.title}`"
+                loading="lazy"
+                decoding="async"
+                @error="onImageError"
               />
             </div>
-
-            <div class="section-tag" style="opacity: 0.7">{{ p.category }}</div>
-
-            <h3 style="font-family: var(--font-display); font-weight: 700; margin: 0.5rem 0 0.4rem">
-              {{ p.title }}
-            </h3>
-
-            <p class="desc" style="margin-bottom: 0.75rem">{{ p.desc }}</p>
-
-            <div
-              style="
-                display: flex;
-                gap: 1rem;
-                margin-bottom: 1rem;
-                font-size: 0.8rem;
-                color: var(--text2);
-                flex-wrap: wrap;
-              "
-            >
-              <span style="display: inline-flex; align-items: center; gap: 0.3rem"
-                ><Calendar :size="13" :stroke-width="1.9" /> {{ p.date }}</span
-              >
-              <span v-if="p.location" style="display: inline-flex; align-items: center; gap: 0.3rem"
-                ><MapPin :size="13" :stroke-width="1.9" /> {{ p.location }}</span
-              >
+            <div class="ev-card-body">
+              <div v-if="ev.category" class="ev-card-cat">{{ ev.category }}</div>
+              <h3 class="ev-card-title">{{ ev.title }}</h3>
+              <p v-if="ev.desc" class="ev-card-desc">{{ ev.desc }}</p>
+              <div class="ev-card-meta">
+                <span>
+                  <Calendar :size="13" :stroke-width="1.9" aria-hidden="true" /> {{ ev.date }}
+                </span>
+                <span v-if="ev.time">
+                  <Clock :size="13" :stroke-width="1.9" aria-hidden="true" /> {{ ev.time }}
+                </span>
+                <span v-if="ev.location">
+                  <MapPin :size="13" :stroke-width="1.9" aria-hidden="true" /> {{ ev.location }}
+                </span>
+              </div>
+              <div>
+                <router-link :to="ev.link || '/contact'" class="btn btn--outline btn--sm">
+                  Register
+                  <ArrowRight :size="15" :stroke-width="2" aria-hidden="true" />
+                </router-link>
+              </div>
             </div>
-          </div>
+          </article>
         </div>
       </div>
     </section>
 
-    <!-- Host CTA -->
-    <section
-      class="cta-section rs"
-      style="
-        padding: 5rem 0;
-        background: linear-gradient(135deg, rgba(213, 166, 58, 0.06), rgba(5, 6, 5, 0.95));
-      "
-    >
+    <!-- ═══ MEMORIES : THE FILM REEL ═══════════════════════════════════════ -->
+    <section id="past-events" class="section rs tone-b ev-archive">
+      <div class="ev-archive-watermark" aria-hidden="true">Memories</div>
       <div class="container">
-        <div class="cta-wrap">
-          <div class="section-tag light">Got an idea?</div>
-          <h2 class="cta-heading">Host Your Own <span class="cta-acc">Event</span></h2>
-          <p class="cta-sub">
-            Have an idea for a workshop, talk, or meetup? We support student-led initiatives. Submit
-            your proposal and we'll make it happen.
+        <div class="ev-sec-head">
+          <div class="section-tag">Memories</div>
+          <h2 class="section-title-xl">Past <span class="tg">Events</span></h2>
+          <p class="ev-sec-sub">
+            Moments from the events, conversations and experiences that have shaped the House.
           </p>
-          <div class="cta-acts">
-            <router-link to="/contact" class="cta-btn-p">Submit Proposal →</router-link>
-            <router-link to="/contact" class="cta-btn-o">Talk to Team</router-link>
+        </div>
+        <div class="ev-archive-rule"></div>
+      </div>
+      <PastEventsReel :events="pastEventList" />
+    </section>
+
+    <!-- ═══ HAVE AN IDEA? ══════════════════════════════════════════════════ -->
+    <section class="section rs tone-a ev-host">
+      <div class="container">
+        <div class="ev-host-inner">
+          <div>
+            <div class="section-tag">Have an Idea?</div>
+            <h2 class="ev-host-heading">Host Your <span class="tg">Own Event</span></h2>
+            <p class="ev-host-copy">
+              Have an idea for a workshop, talk or meetup? Share it with the House and help create
+              the next experience.
+            </p>
+            <div class="ev-host-acts">
+              <router-link to="/contact" class="btn btn--primary">
+                Submit a Proposal
+                <ArrowRight :size="16" :stroke-width="2" aria-hidden="true" />
+              </router-link>
+              <router-link to="/contact" class="btn btn--outline">Talk to the Team</router-link>
+            </div>
+          </div>
+          <div class="ev-host-rules" aria-hidden="true">
+            <span></span><span></span><span></span>
           </div>
         </div>
       </div>
@@ -256,266 +227,50 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue';
-import { Calendar, Clock, MapPin, Ticket, PartyPopper } from 'lucide-vue-next';
-import PageHero from '../components/PageHero.vue';
-
+import { computed, ref } from 'vue';
+import { ArrowRight, Calendar, CalendarClock, Clock, MapPin } from 'lucide-vue-next';
+import PastEventsReel from '../components/events/PastEventsReel.vue';
+import { FALLBACK_EVENT_IMAGE, FILTER_TABS, splitEvents } from '../data/events.js';
 import { useScrollReveal } from '../composables/useAnimations.js';
+import '../assets/events.css';
+
 useScrollReveal();
 
-const tabs = ['All', 'Workshops', 'Meetups', 'Competitions', 'Talks'];
+const tabs = FILTER_TABS;
 const activeTab = ref('All');
+const fallbackImage = FALLBACK_EVENT_IMAGE;
 
-// ─── EVENT DATA ──────────────────────────────────────────────────────────────
-// Each event can carry an optional `dateISO` (YYYY-MM-DD) that is used for
-// automatic migration: once today's date passes the event date, it is moved
-// from Upcoming Events into Past Events automatically at runtime.
-// `date` is the human-readable label shown in the UI.
-// `type` must match one of the filter tabs above.
-const allEvents = [
-  // ── ADD UPCOMING EVENTS HERE ─────────────────────────────────────────────
-  // Example:
-  // {
-  //   title: 'My Workshop',
-  //   category: 'Workshop',
-  //   type: 'Workshops',
-  //   desc: 'Description.',
-  //   date: 'June 2026',
-  //   dateISO: '2026-06-15',   ← machine-readable date for auto-migration
-  //   time: '6:00 PM',
-  //   location: 'Online (Zoom)',
-  //   img: 'https://...',
-  //   tagStyle: '',
-  // },
-];
+// Resolved once per mount: anything whose date has passed is already in the
+// archive by the time the page paints.
+const { upcoming, past } = splitEvents();
+const pastEventList = past;
 
-// ─── AUTO-MIGRATION LOGIC ────────────────────────────────────────────────────
-// Events whose dateISO has passed are automatically moved to past events.
-const today = new Date();
-today.setHours(0, 0, 0, 0);
-
-const upcomingEvents = computed(() => {
-  const live = allEvents.filter((e) => {
-    if (!e.dateISO) return true; // no machine date → keep upcoming
-    return new Date(e.dateISO) >= today; // future or today → upcoming
-  });
-  return activeTab.value === 'All' ? live : live.filter((e) => e.type === activeTab.value);
-});
-
-// Expired entries from allEvents that should auto-appear in past events
-const autoDemotedEvents = computed(() =>
-  allEvents
-    .filter((e) => e.dateISO && new Date(e.dateISO) < today)
-    .map((e) => ({
-      title: e.title,
-      category: e.category,
-      desc: e.desc,
-      date: e.date,
-      location: e.location,
-      img: e.img,
-    }))
+const filteredEvents = computed(() =>
+  activeTab.value === 'All' ? upcoming : upcoming.filter((e) => e.type === activeTab.value)
 );
 
-// Alias kept for backwards-compat with template filter tabs section
-const filteredEvents = upcomingEvents;
-
-const pastEvents = [
-  {
-    title: 'Career in Research',
-    category: 'Guest Talk',
-    desc: 'PhD scholars discuss research life, opportunities and how to get started',
-    date: 'May 2026',
-    location: 'Virtual',
-    img: 'https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=500&q=80&auto=format&fit=crop',
-  },
-  {
-    title: 'Bengaluru Student meetup',
-    category: 'Offline Meetup',
-    desc: 'The first ever sumdarbans student meetup in Bengaluru, started with light conversations and turned into heartfelt conversations.',
-    date: 'May 2026',
-    location: 'Talk over tables cafe',
-    img: 'https://res.cloudinary.com/l59gy0g2/image/upload/f_auto,q_auto:good,w_1000,c_limit/v1785911324/sundarbans/public/assets/pastevent/bengaluru_meetup_608_1.png',
-  },
-  {
-    title: 'Delhi Meetup 2026',
-    category: 'Offline Meetup',
-    desc: 'Network with Sundarbans members in Delhi — food, fun and friendships',
-    date: 'April 2026',
-    location: 'Delhi',
-    img: 'https://images.unsplash.com/photo-1587474260584-136574528ed5?w=500&q=80&auto=format&fit=crop',
-  },
-  {
-    title: 'Chennai Meetup 2026',
-    category: 'Offline Meetup',
-    desc: 'Connect with fellow students in Chennai — sessions, games and more',
-    date: 'March 2026',
-    location: 'Chennai',
-    img: 'https://images.unsplash.com/photo-1529253355930-ddbe423a2ac7?w=500&q=80&auto=format&fit=crop',
-  },
-  {
-    title: 'Shakti Series — Episode 1',
-    category: 'Empowerment',
-    desc: 'Inaugural session of the empowerment series celebrating strength, resilience and community spirit',
-    date: 'October 2025',
-    location: 'Virtual',
-    img: 'https://images.unsplash.com/photo-1523580494863-6f3031224c94?w=500&q=80&auto=format&fit=crop',
-  },
-  {
-    title: 'Navrang 2.0 — Celebrate Navratri',
-    category: 'Cultural',
-    desc: 'Nine nights of vibrant cultural celebration featuring dance, music and festive traditions',
-    date: 'September 2025',
-    location: 'Virtual',
-    img: 'https://images.unsplash.com/photo-1567591370762-b3db2e82eb3e?w=500&q=80&auto=format&fit=crop',
-  },
-  {
-    title: 'Pre-Independence Day Session',
-    category: 'Guest Talk',
-    desc: 'Inspiring talk by Capt. Albert Louis on patriotism, sacrifice and the journey of our nation',
-    date: 'August 2025',
-    location: 'Virtual',
-    img: 'https://images.unsplash.com/photo-1532375810709-75b1da00537c?w=500&q=80&auto=format&fit=crop',
-  },
-  {
-    title: 'Paradox Champions League — Football Faceoff',
-    category: 'Sports',
-    desc: "High-energy football tournament at Paradox'25 — strategy, skill and spirit on the field",
-    date: 'May 2025',
-    location: 'Offline',
-    img: 'https://res.cloudinary.com/l59gy0g2/image/upload/f_auto,q_auto:good,w_1000,c_limit/v1785911324/sundarbans/public/assets/pastevent/2025-05-15_12-44-00_UTC.jpg',
-  },
-  {
-    title: 'Ghost in the Firewall',
-    category: 'Technical',
-    desc: "Capture-the-flag style cybersecurity challenge at Paradox'25 — decode, defend and uncover the rogue AI",
-    date: 'May 2025',
-    location: 'Offline',
-    img: 'https://res.cloudinary.com/l59gy0g2/image/upload/f_auto,q_auto:good,w_1000,c_limit/v1785911323/sundarbans/public/assets/pastevent/2025-05-14_08-34-35_UTC.jpg',
-  },
-  {
-    title: 'Hack Eclipse — 24-hour Hackathon',
-    category: 'Hackathon',
-    desc: 'Round-the-clock coding marathon where teams built innovative solutions across environment, healthcare, fintech and more',
-    date: 'May 2025',
-    location: 'Virtual',
-    img: 'https://res.cloudinary.com/l59gy0g2/image/upload/f_auto,q_auto:good,w_1000,c_limit/v1785911322/sundarbans/public/assets/pastevent/2025-05-09_06-25-51_UTC.jpg',
-  },
-  {
-    title: 'Paradox Badminton League 2.0',
-    category: 'Sports',
-    desc: 'Inter-house badminton tournament with intense rallies and fierce competition across divisions',
-    date: 'May 2025',
-    location: 'Virtual',
-    img: 'https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?w=500&q=80&auto=format&fit=crop',
-  },
-  {
-    title: 'IPL Auction Showdown',
-    category: 'E-Sports',
-    desc: 'Strategic mock IPL auction where participants built dream teams with limited budgets',
-    date: 'May 2025',
-    location: 'Virtual',
-    img: 'https://images.unsplash.com/photo-1540747913346-19212a4f3b1e?w=500&q=80&auto=format&fit=crop',
-  },
-  {
-    title: 'FrameQuest — Photography Contest',
-    category: 'Cultural',
-    desc: 'Three-round photography contest with a ₹6000 prize pool — portraits that tell a lasting story',
-    date: 'February 2025',
-    location: 'Virtual',
-    img: 'https://res.cloudinary.com/l59gy0g2/image/upload/f_auto,q_auto:good,w_1000,c_limit/v1785911320/sundarbans/public/assets/pastevent/2025-02-10_10-25-33_UTC.jpg',
-  },
-  {
-    title: 'Into the Shadows — Special Forces Talk',
-    category: 'Guest Talk',
-    desc: 'Gripping session with Maj. Sushant Singh on courage, resilience and life as a Special Forces operative',
-    date: 'February 2025',
-    location: 'Virtual',
-    img: 'https://res.cloudinary.com/l59gy0g2/image/upload/f_auto,q_auto:good,w_1000,c_limit/v1785911321/sundarbans/public/assets/pastevent/2025-02-13_02-15-54_UTC.jpg',
-  },
-  {
-    title: 'Python Odyssey',
-    category: 'Workshop',
-    desc: '7-episode hands-on Python journey covering fundamentals, OOP and Flask web development',
-    date: 'February 2025',
-    location: 'Virtual',
-    img: 'https://res.cloudinary.com/l59gy0g2/image/upload/f_auto,q_auto:good,w_1000,c_limit/v1785911319/sundarbans/public/assets/pastevent/2025-02-06_00-30-44_UTC.jpg',
-  },
-  {
-    title: 'Mahabharata — Science Meets History',
-    category: 'Guest Talk',
-    desc: 'Nilesh Oak takes the audience through scientific dating of the Mahabharata and the mysteries of ancient India',
-    date: 'January 2025',
-    location: 'Virtual',
-    img: 'https://res.cloudinary.com/l59gy0g2/image/upload/f_auto,q_auto:good,w_1000,c_limit/v1785911318/sundarbans/public/assets/pastevent/2025-01-27_08-57-27_UTC.jpg',
-  },
-  {
-    title: 'Frames of Freedom — Republic Day Photography',
-    category: 'Cultural',
-    desc: "Photography contest celebrating patriotism and India's culture — themes of Tiranga, Unsung Heroes and India in Motion",
-    date: 'January 2025',
-    location: 'Virtual',
-    img: 'https://res.cloudinary.com/l59gy0g2/image/upload/f_auto,q_auto:good,w_1000,c_limit/v1785911317/sundarbans/public/assets/pastevent/2025-01-25_01-20-01_UTC.jpg',
-  },
-  {
-    title: 'Navodaya — Voices of Power with Smriti Irani',
-    category: 'Guest Talk',
-    desc: 'Grand finale of Voices of Power featuring Smriti Irani on leadership, empowerment and women shaping the future',
-    date: 'December 2024',
-    location: 'Virtual',
-    img: 'https://res.cloudinary.com/l59gy0g2/image/upload/f_auto,q_auto:good,w_1000,c_limit/v1785911316/sundarbans/public/assets/pastevent/2024-12-05_11-31-48_UTC.jpg',
-  },
-  {
-    title: 'Dinkar Ki Pratiksha — Open Mic',
-    category: 'Cultural',
-    desc: 'Collaborative open mic celebrating the 116th birth anniversary of poet Ramdhari Singh Dinkar — poetry across all languages',
-    date: 'September 2024',
-    location: 'Virtual',
-    img: 'https://res.cloudinary.com/l59gy0g2/image/upload/f_auto,q_auto:good,w_1000,c_limit/v1785911315/sundarbans/public/assets/pastevent/2024-09-23_06-54-49_UTC.jpg',
-  },
-  {
-    title: 'Sundarbans BS Talent Show',
-    category: 'Cultural',
-    desc: 'Platform for IITM BS students to showcase their extraordinary talents to the wider community',
-    date: 'July 2024',
-    location: 'Virtual',
-    img: 'https://res.cloudinary.com/l59gy0g2/image/upload/f_auto,q_auto:good,w_1000,c_limit/v1785911314/sundarbans/public/assets/pastevent/2024-07-16_11-41-17_UTC.jpg',
-  },
-  {
-    title: 'How to Improve Concentration — Swami Mukundanand',
-    category: 'Guest Talk',
-    desc: 'Enlightening session by IIT-IIM alumnus and spiritual leader Swami Mukundanand Ji on focus and Vedic wisdom',
-    date: 'March 2023',
-    location: 'Virtual',
-    img: 'https://res.cloudinary.com/l59gy0g2/image/upload/f_auto,q_auto:good,w_1000,c_limit/v1785911313/sundarbans/public/assets/pastevent/2023-03-22_09-54-19_UTC.jpg',
-  },
-];
-
-// Combined past events: manually-curated list + any auto-demoted upcoming events
-const allPastEvents = computed(() => [...autoDemotedEvents.value, ...pastEvents]);
-
-// Countdown
-let cdTimer = null;
-function updateCd() {
-  const el = document.getElementById('mainEventCountdown');
-  if (!el) return;
-  const now = new Date();
-  const fri = new Date();
-  fri.setDate(now.getDate() + ((5 - now.getDay() + 7) % 7) || 7);
-  fri.setHours(18, 0, 0, 0);
-  const diff = fri - now;
-  if (diff <= 0) {
-    el.innerHTML = '<span class="cd-over">Event Started!</span>';
-    return;
-  }
-  const d = Math.floor(diff / 86400000),
-    h = Math.floor((diff % 86400000) / 3600000);
-  const m = Math.floor((diff % 3600000) / 60000),
-    s = Math.floor((diff % 60000) / 1000);
-  el.innerHTML = `<div class="cd-unit"><span class="cd-num">${String(d).padStart(2, '0')}</span><span class="cd-label">days</span></div><div class="cd-sep">:</div><div class="cd-unit"><span class="cd-num">${String(h).padStart(2, '0')}</span><span class="cd-label">hrs</span></div><div class="cd-sep">:</div><div class="cd-unit"><span class="cd-num">${String(m).padStart(2, '0')}</span><span class="cd-label">min</span></div><div class="cd-sep">:</div><div class="cd-unit"><span class="cd-num">${String(s).padStart(2, '0')}</span><span class="cd-label">sec</span></div>`;
-}
-onMounted(() => {
-  updateCd();
-  cdTimer = setInterval(updateCd, 1000);
+/**
+ * The highlight slot. An event may claim it with `featured: true`; otherwise
+ * it goes to whichever announced event happens first, and to the first entry
+ * in the list if none of them carry a machine date.
+ */
+const featuredEvent = computed(() => {
+  if (upcoming.length === 0) return null;
+  const claimed = upcoming.find((e) => e.featured);
+  if (claimed) return claimed;
+  const dated = upcoming.filter((e) => e.dateISO);
+  if (dated.length === 0) return upcoming[0];
+  return [...dated].sort((a, b) => new Date(a.dateISO) - new Date(b.dateISO))[0];
 });
-onUnmounted(() => clearInterval(cdTimer));
+
+/** The router is hash-based, so an in-page `#id` link would be read as a
+ *  route. Scroll instead. */
+function scrollToArchive() {
+  const el = document.getElementById('past-events');
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function onImageError(event) {
+  if (event.target.src !== FALLBACK_EVENT_IMAGE) event.target.src = FALLBACK_EVENT_IMAGE;
+}
 </script>

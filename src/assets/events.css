@@ -1,0 +1,442 @@
+/* ===== EVENTS : the public page =====
+   Loaded only by EventsView.vue. Everything here is scoped to the
+   `ev-` namespace, so nothing in this file can reach another page. The reel
+   component brings its own stylesheet (src/assets/reel.css).
+
+   The page borrows the site's own vocabulary: two page tones, one gold
+   family, the shared `.btn` / `.sel` control tiers, Cinzel for display and
+   Chillax for everything else. What is new is the archive: a film strip that
+   slashes across the page carrying the House's past events as poster frames.
+   ------------------------------------------------------------------------ */
+
+/* ── Hero eyebrow ───────────────────────────────────────────────────
+   The one addition to PageHero, sitting above the display line. Same
+   letter-spaced label language as `.section-tag`, without the rule, because
+   the breadcrumb already draws a horizontal above it. */
+.page-hero-eyebrow {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--color-gold);
+  margin-bottom: 0.85rem;
+}
+
+/* ===== FEATURED / UPCOMING HIGHLIGHT =====
+   Not a card. A full-bleed still with the information panel resting on its
+   lower-left, the way a title card carries its own credit block. */
+.ev-feature {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  align-items: stretch;
+  gap: clamp(1.5rem, 3vw, 3rem);
+  border-top: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-subtle);
+  padding-block: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.ev-feature-media {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--rad2);
+  border: 1px solid var(--border-card);
+  aspect-ratio: 16 / 10;
+  background: var(--color-card);
+}
+
+.ev-feature-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--duration-section) var(--ease-editorial);
+}
+
+.ev-feature:hover .ev-feature-media img {
+  transform: scale(1.03);
+}
+
+.ev-feature-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+}
+
+.ev-feature-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 2.6vw, 2.4rem);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  color: var(--text);
+  margin: 0.4rem 0 1rem;
+}
+
+.ev-feature-desc {
+  font-size: 1rem;
+  line-height: 1.8;
+  color: var(--text2);
+  max-width: 34rem;
+  margin-bottom: 1.75rem;
+}
+
+/* A fact row, not chips: label above value, separated by hairlines. */
+.ev-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 clamp(1.25rem, 3vw, 2.5rem);
+  margin-bottom: 2rem;
+}
+
+.ev-fact {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding-block: 0.9rem;
+}
+
+.ev-fact-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-gold-muted);
+}
+
+.ev-fact-value {
+  font-size: 0.95rem;
+  color: var(--text);
+}
+
+/* ── Empty highlight ────────────────────────────────────────────────
+   What the section shows when nothing is announced. It fills the band with
+   type and an offer rather than leaving a hole. */
+.ev-empty {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: clamp(1.5rem, 4vw, 3rem);
+  border-top: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-subtle);
+  padding-block: clamp(2.5rem, 5vw, 4rem);
+}
+
+.ev-empty-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 2.4vw, 2rem);
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--text);
+  margin-bottom: 0.9rem;
+}
+
+.ev-empty-copy {
+  font-size: 0.98rem;
+  line-height: 1.8;
+  color: var(--text2);
+  max-width: 38rem;
+}
+
+.ev-empty-acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+/* ===== UPCOMING EVENTS ===== */
+.ev-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-bottom: clamp(2rem, 4vw, 3rem);
+}
+
+.ev-head .section-title-xl {
+  margin-bottom: 0;
+}
+
+.ev-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.ev-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(19rem, 1fr));
+  gap: clamp(1.25rem, 2vw, 1.75rem);
+}
+
+.ev-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--color-card);
+  border: 1px solid var(--border-card);
+  border-radius: var(--rad2);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition:
+    border-color var(--duration-card) var(--ease-editorial),
+    box-shadow var(--duration-card) var(--ease-editorial),
+    transform var(--duration-card) var(--ease-editorial);
+}
+
+.ev-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--border-card-hover);
+  box-shadow: var(--shadow-lg);
+}
+
+.ev-card-media {
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.ev-card-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--duration-card) var(--ease-editorial);
+}
+
+.ev-card:hover .ev-card-media img {
+  transform: scale(1.04);
+}
+
+.ev-card-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 1.5rem;
+}
+
+.ev-card-cat {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-gold);
+  margin-bottom: 0.7rem;
+}
+
+.ev-card-title {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--text);
+  margin-bottom: 0.6rem;
+}
+
+.ev-card-desc {
+  font-size: 0.92rem;
+  line-height: 1.75;
+  color: var(--text2);
+  margin-bottom: 1.25rem;
+}
+
+.ev-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.1rem;
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-subtle);
+  margin-bottom: 1.25rem;
+}
+
+.ev-card-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.82rem;
+  color: var(--text2);
+}
+
+/* ── No upcoming events ─────────────────────────────────────────── */
+.ev-none {
+  border: 1px dashed var(--border-subtle);
+  border-radius: var(--rad2);
+  padding: clamp(2.5rem, 5vw, 3.5rem);
+  text-align: center;
+  color: var(--text2);
+}
+
+.ev-none-title {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  color: var(--text);
+  margin: 0.75rem 0 0.5rem;
+}
+
+.ev-none p {
+  font-size: 0.95rem;
+  line-height: 1.8;
+  max-width: 34rem;
+  margin: 0 auto;
+}
+
+/* ===== PAST EVENTS: THE FILM REEL BAND =====
+   The section around the reel, not the reel itself. This is an installation
+   rather than a card: an open dark canvas with one watermark behind it and
+   the strip running across the middle. The reel's own geometry, loop and
+   interactions live in src/assets/reel.css, which the component imports, so
+   the homepage gets exactly the same thing without this file. */
+.ev-archive {
+  position: relative;
+  overflow: hidden;
+}
+
+.ev-archive-watermark {
+  position: absolute;
+  top: 46%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-display);
+  font-size: clamp(6rem, 20vw, 18rem);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  line-height: 1;
+  white-space: nowrap;
+  color: rgba(213, 166, 58, 0.035);
+  pointer-events: none;
+  user-select: none;
+}
+
+/* One header block for every band on the page: same container, same left
+   axis, same width, same gap under it. Sections differ in what follows the
+   heading, never in where the heading starts. */
+.ev-sec-head {
+  position: relative;
+  z-index: 2;
+  max-width: 44rem;
+  margin-bottom: clamp(2rem, 4vw, 3rem);
+}
+
+.ev-sec-head .section-title-xl {
+  margin-bottom: 1rem;
+}
+
+.ev-sec-head .section-title-xl:last-child {
+  margin-bottom: 0;
+}
+
+.ev-sec-sub {
+  font-size: 1rem;
+  line-height: 1.8;
+  color: var(--text2);
+  margin: 0;
+}
+
+/* One architectural rule under the heading, the only structural line in the
+   section besides the film itself. */
+.ev-archive-rule {
+  position: relative;
+  z-index: 2;
+  margin-bottom: clamp(2rem, 4vw, 3rem);
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    var(--color-gold-muted),
+    rgba(170, 125, 35, 0.25) 40%,
+    transparent
+  );
+}
+
+/* ===== HOST YOUR OWN EVENT ===== */
+.ev-host {
+  position: relative;
+  overflow: hidden;
+}
+
+.ev-host-inner {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  align-items: center;
+  gap: clamp(2rem, 5vw, 5rem);
+}
+
+.ev-host-heading {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 4.5vw, 3.5rem);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1.15;
+  color: var(--text);
+  margin: 0.5rem 0 1.5rem;
+}
+
+.ev-host-copy {
+  font-size: 1rem;
+  line-height: 1.85;
+  color: var(--text2);
+  max-width: 34rem;
+  margin-bottom: 2.25rem;
+}
+
+.ev-host-acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+/* The architectural detail: three hairlines stepping away from the copy,
+   the same quiet gold rule used elsewhere on the site. */
+.ev-host-rules {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.ev-host-rules span {
+  display: block;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(170, 125, 35, 0.45));
+}
+
+.ev-host-rules span:nth-child(2) {
+  margin-right: 18%;
+}
+
+.ev-host-rules span:nth-child(3) {
+  margin-right: 36%;
+}
+
+/* ===== RESPONSIVE =====
+   Reel breakpoints live in reel.css beside the reel. These are the page's. */
+@media (max-width: 900px) {
+  .ev-feature,
+  .ev-empty,
+  .ev-host-inner {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .ev-host-rules {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .ev-head {
+    align-items: flex-start;
+  }
+}
+
+/* ===== REDUCED MOTION =====
+   The reel's own reduced-motion fallback is in reel.css. These are the two
+   image zooms that belong to this page. */
+@media (prefers-reduced-motion: reduce) {
+  .ev-feature:hover .ev-feature-media img,
+  .ev-card:hover .ev-card-media img {
+    transform: none;
+  }
+}

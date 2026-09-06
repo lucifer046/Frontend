@@ -275,14 +275,6 @@ const pillars = [
   height: 20px;
   margin-top: 0.1rem;
   color: var(--cx);
-  transition:
-    color var(--duration-card) var(--ease-editorial),
-    transform var(--duration-card) var(--ease-editorial);
-}
-
-.pillar-tracks li:hover .pillar-track-icon {
-  color: var(--cx-bright, var(--cx));
-  transform: translateX(3px);
 }
 
 .pillar-track-text {

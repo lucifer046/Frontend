@@ -1,0 +1,209 @@
+/* ===== DARK THEME LOCK =====
+   Loaded last, after every other stylesheet, so what it declares is the final
+   word on colour. The site has exactly one theme and no light mode; this file
+   is the contract that says so to the browser, to the OS, and to any tool that
+   rewrites pages on the reader's behalf.
+
+   It deliberately contains no new design decisions. Every value is a token
+   from style.css, restated in the places a colour can be lost: the document
+   root, form controls, autofilled fields, selection, and the surfaces a
+   generic darkening pass would otherwise repaint.
+
+   ── On extensions ──────────────────────────────────────────────────
+   Nothing here detects, blocks or fights an extension. Two things are done
+   instead, both of them the cooperative, documented route:
+
+   1. `color-scheme: dark` tells the engine the page is already dark, which is
+      what stops Chrome's own auto-dark from running and what makes native
+      widgets render dark rather than light.
+   2. index.html carries <meta name="darkreader-lock">, which is Dark Reader's
+      own published opt-out for sites that ship a dark theme. It asks the
+      extension to stand down; it does not disable anything.
+
+   The rest is simply being explicit. A darkening pass has to guess only where
+   a page leaves a colour unstated, so the defence is to leave none unstated:
+   every surface names its background AND its text, never one alone.
+   ------------------------------------------------------------------------ */
+
+/* ── 1. The colour scheme itself ─────────────────────────────────────
+   Declared on :root and mirrored onto html/body. Form controls, scrollbars,
+   spellcheck underlines and the space beyond the scroll boundary all read
+   this, which is why several of the fixes below need no CSS of their own. */
+:root {
+  color-scheme: dark;
+}
+
+html {
+  color-scheme: dark;
+  background-color: var(--color-bg-black);
+  color: var(--color-cream);
+}
+
+/* Stated again on body, because the page's background is painted from body
+   when html has none, and a rewriting pass that finds only one of the pair
+   is the case that produces dark text on a dark ground. */
+body {
+  background-color: var(--color-bg-black);
+  color: var(--color-cream);
+}
+
+/* ── 2. Both halves of every pair ────────────────────────────────────
+   The site's tone classes and card surfaces set a background. Each one
+   restates its text colour beside it so the two can never be separated. */
+.tone-a,
+.section.tone-a {
+  background-color: var(--color-bg-black);
+  color: var(--color-cream);
+}
+
+.tone-b,
+.section.tone-b {
+  background-color: var(--color-bg-forest);
+  color: var(--color-cream);
+}
+
+/* Every surface in the site that paints its own opaque background and then
+   relied on inheriting its text colour from an ancestor. That inheritance is
+   the exact path by which a rewriting pass produces dark text on a dark card:
+   it only has to change one ancestor's colour for all of these to follow.
+   Restating the inherited default here costs nothing at runtime, changes
+   nothing visually, and removes the path.
+
+   Only text-bearing surfaces are listed. Rules, dots, scrims, photo frames and
+   video wells also paint backgrounds, but a text colour on them would be
+   meaningless. Children with their own colour still win; this sets the floor. */
+.about-section,
+.features-section,
+.footer,
+.home-memories,
+.cta-section,
+.page-hero,
+.dl-head,
+.search-box,
+.card-base,
+.fcard,
+.dl-card,
+.tm-card,
+.lb-card,
+.db-card,
+.vc-panel,
+.uhc-office,
+.fm-empty,
+.mvr,
+.reel-detail,
+.reel-strip {
+  color: var(--color-cream);
+}
+
+/* ── 3. Form controls ────────────────────────────────────────────────
+   The one place browsers still paint their own colours. `color-scheme` above
+   handles most of it; these state the rest so a control never arrives white. */
+input,
+textarea,
+select,
+button {
+  color-scheme: dark;
+}
+
+.form-input,
+.form-textarea,
+.form-select {
+  background-color: var(--color-card);
+  color: var(--color-cream);
+  border-color: var(--border-card);
+  caret-color: var(--color-gold);
+}
+
+.form-select option {
+  background-color: var(--color-bg-forest);
+  color: var(--color-cream);
+}
+
+::placeholder {
+  color: var(--color-cream-faint);
+  opacity: 1; /* Firefox dims placeholders by default. */
+}
+
+/* Checkboxes, radios, range and progress paint from this one property. */
+input[type='checkbox'],
+input[type='radio'],
+input[type='range'],
+progress {
+  accent-color: var(--color-gold);
+}
+
+/* Chrome paints autofilled fields pale yellow or white and ignores
+   `background-color` to do it. The inset shadow is the documented way to
+   repaint the field, and the long transition keeps it from flashing white on
+   the frame before the shadow lands. */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+  -webkit-text-fill-color: var(--color-cream);
+  caret-color: var(--color-gold);
+  box-shadow: 0 0 0 1000px var(--color-card) inset;
+  transition: background-color 100000s ease-in-out 0s;
+}
+
+/* ── 4. Selection ────────────────────────────────────────────────────
+   Left unstated, the browser picks a system blue that belongs to no part of
+   this palette and can leave cream text unreadable while dragged over. */
+::selection {
+  background-color: rgba(213, 166, 58, 0.28);
+  color: var(--color-cream);
+}
+
+/* ── 5. Media ────────────────────────────────────────────────────────
+   The House's own artwork is already dark and already correct: posters,
+   crest, hero stills, document thumbnails. Nothing in this codebase inverts
+   or dims them, and this says so, so a generic pass has nothing to undo.
+
+   `forced-color-adjust: none` is scoped to media on purpose. In Windows High
+   Contrast the point is to keep a photograph a photograph; text and controls
+   are deliberately left to the OS palette, which is what that mode is for. */
+img,
+video,
+picture,
+canvas {
+  forced-color-adjust: none;
+}
+
+/* Icons are line art that inherits `currentColor`, so they follow whatever
+   text colour survives rather than needing a colour of their own. Stating the
+   inheritance is what keeps that true. */
+svg {
+  fill: none;
+  stroke: currentColor;
+}
+
+/* The two places the site fills rather than strokes: the footer's brand marks
+   and any decorative glyph that sets its own fill. */
+svg[fill]:not([fill='none']),
+svg.is-filled {
+  fill: currentColor;
+  stroke: none;
+}
+
+/* ── 6. Windows High Contrast ────────────────────────────────────────
+   Not a dark-mode extension, but the same class of problem: the OS replaces
+   the palette. Rather than fight it, keep the structure legible. Borders are
+   the site's main separator and are the first thing to vanish, so they are
+   restated in system colours. */
+@media (forced-colors: active) {
+  .card-base,
+  .dl-card,
+  .ev-card,
+  .form-input,
+  .form-textarea,
+  .form-select,
+  .btn,
+  .sel {
+    border: 1px solid CanvasText;
+  }
+
+  .btn--primary {
+    forced-color-adjust: none;
+  }
+}

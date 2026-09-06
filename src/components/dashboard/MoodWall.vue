@@ -1,23 +1,18 @@
 <template>
-  <div class="widget w-7" id="widget-mood">
-    <div
-      class="widget-glow"
-      style="
-        width: 260px;
-        height: 260px;
-        background: radial-gradient(circle, rgba(176, 122, 224, 0.2), transparent);
-        top: -80px;
-        right: -60px;
-      "
-    ></div>
-
-    <div class="widget-label">Anonymous Vote</div>
-    <div class="widget-title">House Mood Wall</div>
+  <!-- HOUSE MOOD. Five states, marked with vector icons and a warm tonal
+       ramp so the chart never introduces a colour the portal does not own. -->
+  <div class="widget" id="widget-mood">
+    <div class="widget-label">Anonymous vote</div>
+    <div class="widget-title">Mood Wall</div>
+    <p class="widget-note">How the House is doing today, one vote per member.</p>
 
     <div class="mood-summary">
       <div>
         <span class="mood-summary-label">Leading mood</span>
-        <strong>{{ leadingMood.emoji }} {{ leadingMood.label }}</strong>
+        <strong>
+          <component :is="widgetIcon(leadingMood.icon)" :size="15" :stroke-width="1.8" />
+          {{ leadingMood.label }}
+        </strong>
       </div>
       <div>
         <span class="mood-summary-label">Participation</span>
@@ -36,15 +31,17 @@
         :disabled="votedToday"
         @click="voteMood(m.key)"
       >
-        <span class="mood-emoji">{{ m.emoji }}</span
-        >{{ m.label }}
+        <component :is="widgetIcon(m.icon)" :size="16" :stroke-width="1.7" aria-hidden="true" />
+        {{ m.label }}
       </button>
     </div>
 
     <!-- Live bar chart -->
     <div class="mood-bars">
       <div class="mood-bar-row" v-for="m in moods" :key="m.key">
-        <span class="mood-bar-emoji">{{ m.emoji }}</span>
+        <span class="mood-bar-icon" :title="m.label">
+          <component :is="widgetIcon(m.icon)" :size="15" :stroke-width="1.7" aria-hidden="true" />
+        </span>
         <div class="mood-bar-track">
           <div class="mood-bar-fill" :style="{ background: m.color, width: barWidth(m.key) }"></div>
         </div>
@@ -54,14 +51,15 @@
 
     <div class="mood-total">{{ totalVotes }} votes today</div>
     <div class="mood-voted-msg" :class="{ show: votedToday }">
-      ✓ Voted! Come back tomorrow for a fresh vote.
+      Vote counted. Come back tomorrow for a fresh one.
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, nextTick } from 'vue';
+import { ref, computed } from 'vue';
 import { save, load } from '../../composables/useLocalStorage.js';
+import { widgetIcon } from './widgetIcons.js';
 
 const props = defineProps({
   config: { type: Object, default: null },
@@ -72,11 +70,11 @@ const TODAY = new Date().toDateString();
 const moods = props.config
   ? props.config.options
   : [
-      { key: 'happy', emoji: '😄', label: 'Thriving', color: '#4caf50' },
-      { key: 'chill', emoji: '😌', label: 'Chill', color: '#7ab0e0' },
-      { key: 'grind', emoji: '😤', label: 'Grind', color: '#c9a84c' },
-      { key: 'meh', emoji: '😔', label: 'Meh', color: '#b07ae0' },
-      { key: 'chaos', emoji: '🤯', label: 'Chaos', color: '#e07070' },
+      { key: 'happy', icon: 'sunrise', label: 'Thriving', color: '#e9c873' },
+      { key: 'chill', icon: 'coffee', label: 'Chill', color: '#7f8a7e' },
+      { key: 'grind', icon: 'zap', label: 'Grind', color: '#d5a63a' },
+      { key: 'meh', icon: 'cloud', label: 'Meh', color: '#6f6a5c' },
+      { key: 'chaos', icon: 'tornado', label: 'Chaos', color: '#b98149' },
     ];
 
 const SEED_TALLY = props.config

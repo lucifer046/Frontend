@@ -69,7 +69,7 @@
         {{ hintShown ? 'Hide Hint' : 'Hint' }}
       </button>
       <button class="btn btn-outline" ref="solveBtnRef" :disabled="mySolved" @click="markSolved">
-        {{ mySolved ? '✓ Solved!' : '✓ I Solved It' }}
+        {{ mySolved ? 'Solved' : 'I solved it' }}
       </button>
     </div>
 

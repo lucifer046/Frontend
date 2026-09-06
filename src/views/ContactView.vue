@@ -10,8 +10,10 @@
     />
 
     <!-- ══ UHC CONTACT DESK ══════════════════════════════════════════
-         Three offices, as a short list of rows rather than three profile
-         cards — this is a directory entry, not a introduction. -->
+         Three offices in a 1 + 2 composition rather than three full width
+         rows: the Secretary takes a taller panel on the leading side and the
+         other two offices stack beside it. The panel is the mailto target,
+         so the whole surface is the action. -->
     <section class="ct-section tone-b rs" aria-labelledby="uhc-desk-heading">
       <div class="container container--measure">
         <header class="ct-hdr">
@@ -20,77 +22,52 @@
             UHC <span class="tg">contact desk</span>
           </h2>
           <p class="ct-sub">
-            Questions about the House as a whole — events, partnerships, the site — go to the office
-            that owns them.
+            Questions about the House, partnerships, events or the website? Reach the leadership
+            team directly.
           </p>
         </header>
 
-        <ul class="ct-desk">
-          <li v-for="office in leadership" :key="office.id">
-            <a
-              class="ct-row"
-              :class="{ 'ct-row--lead': office.lead }"
-              :href="`mailto:${office.email}`"
+        <div class="uhc">
+          <!-- Set inside the container, not as a child of the section: the
+               site's reveal rule forces every direct child of a revealed
+               section to full opacity, which would light this up. -->
+          <span class="uhc__watermark" aria-hidden="true">UHC</span>
+
+          <ul class="uhc__grid">
+            <li
+              v-for="office in leadership"
+              :key="office.id"
+              class="uhc__cell"
+              :class="{ 'uhc__cell--lead': office.lead }"
             >
-              <span class="ct-row-mark" aria-hidden="true">
-                <Mail :size="18" :stroke-width="1.7" />
-              </span>
+              <a
+                class="uhc-office"
+                :class="{ 'uhc-office--lead': office.lead }"
+                :href="`mailto:${office.email}`"
+              >
+                <span class="section-tag uhc-office__role">{{ office.role }}</span>
+                <span class="uhc-office__name">{{ office.name }}</span>
+                <span class="uhc-office__mail">{{ office.email }}</span>
 
-              <span class="ct-row-main">
-                <span class="ct-row-post">{{ office.role }}</span>
-                <span class="ct-row-name">{{ office.name }}</span>
-                <span class="ct-row-mail">{{ office.email }}</span>
-              </span>
-
-              <span class="ct-row-cta">
-                Email
-                <ArrowRight :size="15" :stroke-width="2" aria-hidden="true" />
-              </span>
-            </a>
-          </li>
-        </ul>
-      </div>
-    </section>
-
-    <!-- ══ REGIONAL CONTACTS ═════════════════════════════════════════
-         The coordinators, by region. Ordered by region name, so a reader
-         scans down the left edge to find their own city. -->
-    <section class="ct-section tone-a rs" aria-labelledby="regional-heading">
-      <div class="container container--measure">
-        <header class="ct-hdr">
-          <p class="section-tag">Regional contacts</p>
-          <h2 id="regional-heading" class="section-title-xl">
-            Your <span class="tg">coordinator</span>
-          </h2>
-          <p class="ct-sub">
-            Anything local — meetups, your chapter, getting involved where you are — reaches your
-            region faster than it reaches the House.
-          </p>
-        </header>
-
-        <ul class="ct-directory">
-          <li v-for="rc in coordinators" :key="rc.id">
-            <a class="ct-row ct-row--compact" :href="`mailto:${rc.email}`">
-              <span class="ct-row-region">{{ rc.region }}</span>
-
-              <span class="ct-row-main">
-                <span class="ct-row-name">{{ rc.name }}</span>
-                <span class="ct-row-post ct-row-post--after">{{ rc.role }}</span>
-                <span class="ct-row-mail">{{ rc.email }}</span>
-              </span>
-
-              <span class="ct-row-cta">
-                Email
-                <ArrowRight :size="15" :stroke-width="2" aria-hidden="true" />
-              </span>
-            </a>
-          </li>
-        </ul>
+                <span class="uhc-office__cta">
+                  <Mail :size="15" :stroke-width="1.8" aria-hidden="true" />
+                  Email
+                  <ArrowRight
+                    class="uhc-office__arrow"
+                    :size="15"
+                    :stroke-width="2"
+                    aria-hidden="true"
+                  />
+                </span>
+              </a>
+            </li>
+          </ul>
+        </div>
       </div>
     </section>
 
     <!-- ══ COMMUNITY CHANNELS ════════════════════════════════════════ -->
-    <section class="ct-section ct-section--social tone-b rs" aria-labelledby="social-heading">
+    <section class="ct-section ct-section--social tone-a rs" aria-labelledby="social-heading">
       <div class="container container--measure">
         <header class="ct-hdr">
           <p class="section-tag">Elsewhere</p>
@@ -120,46 +97,23 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
 import { Mail, ArrowRight } from 'lucide-vue-next';
 import PageHero from '../components/PageHero.vue';
 import { useScrollReveal } from '../composables/useAnimations.js';
-import { upperHouse, lowerHouse, sortByRegion, SOCIAL_ICONS } from '../data/council.js';
+import { upperHouse, HOUSE_CHANNELS } from '../data/council.js';
 
 useScrollReveal();
 
 /**
- * Both lists come from the council roster the Teams page renders, so an
- * address is corrected in one file and both pages follow. The desk keeps the
- * roster's authored order — Secretary first — because that is the order a
- * reader should try the offices in.
+ * Leadership list comes from the council roster the Teams page renders.
+ * The desk keeps the roster's authored order — Secretary first — because
+ * that is the order a reader should try the offices in.
  */
 const leadership = upperHouse;
 
-/** Ordered by region, never by name; Mumbai's two coordinators both appear. */
-const coordinators = computed(() => sortByRegion(lowerHouse));
-
-/* The same three channels and marks the footer carries. */
-const socials = [
-  {
-    label: 'LinkedIn',
-    handle: 'sundarbans-iitm',
-    href: 'https://www.linkedin.com/company/sundarbans-iitm/',
-    path: SOCIAL_ICONS.LinkedIn,
-  },
-  {
-    label: 'Instagram',
-    handle: '@sundarbansiitm',
-    href: 'https://www.instagram.com/sundarbansiitm/',
-    path: SOCIAL_ICONS.Instagram,
-  },
-  {
-    label: 'YouTube',
-    handle: '@sundarbansiitm',
-    href: 'https://www.youtube.com/@sundarbansiitm',
-    path: 'M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z',
-  },
-];
+/* The House's own channels, shared with the footer so the two can never
+   drift apart. */
+const socials = HOUSE_CHANNELS;
 </script>
 
 <style scoped>
@@ -192,151 +146,144 @@ const socials = [
   max-width: 52ch;
 }
 
-.ct-desk,
-.ct-directory,
+.uhc__grid,
 .ct-social {
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-/* ═══ CONTACT ROW ═══════════════════════════════════════════════════
-   One rule for both lists. A row, not a card: a hairline between entries,
-   the whole row is the mailto target, and the only decoration is the mark
-   on the left and the action on the right. */
-.ct-row {
+/* ═══ UHC CONTACT DESK ══════════════════════════════════════════════
+   A 1 + 2 composition, not three stretched rows. The Secretary's panel is
+   the tall one on the leading side and carries the heavier gold edge; the
+   other two offices stack beside it and stay quieter. Surface, radius and
+   hover all follow the public card language, so the desk belongs to this
+   site and borrows nothing from the members area. */
+.uhc {
+  position: relative;
+}
+
+/* An oversized, barely there UHC behind the panels. Kept as type rather
+   than an image so it can never paint a light rectangle. */
+.uhc__watermark {
+  position: absolute;
+  top: 50%;
+  right: -0.04em;
+  transform: translateY(-50%);
+  z-index: 0;
+  font-family: var(--font-display);
+  font-size: clamp(7rem, 22vw, 15rem);
+  font-weight: 700;
+  line-height: 0.8;
+  letter-spacing: 0.02em;
+  color: var(--color-cream);
+  opacity: 0.022;
+  pointer-events: none;
+  user-select: none;
+}
+
+.uhc__grid {
+  position: relative;
+  z-index: 1;
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  align-items: center;
-  gap: clamp(0.9rem, 2vw, 1.5rem);
-  padding: clamp(1rem, 2vw, 1.35rem) clamp(0.75rem, 1.5vw, 1.15rem);
-  border: 1px solid transparent;
-  border-bottom-color: var(--border-subtle);
-  border-radius: var(--rad);
+  grid-template-columns: 1.12fr 1fr;
+  gap: clamp(0.85rem, 1.8vw, 1.25rem);
+}
+
+/* The Secretary occupies the leading column across both rows. */
+.uhc__cell--lead {
+  grid-row: span 2;
+}
+
+.uhc-office {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: clamp(1.35rem, 2.4vw, 1.85rem);
+  background: var(--color-card);
+  border: 1px solid var(--border-card);
+  border-top: 1px solid var(--border-card);
+  border-radius: var(--rad2);
+  box-shadow: var(--shadow-sm);
   text-decoration: none;
   transition:
-    background-color var(--duration-card) var(--ease-editorial),
     border-color var(--duration-card) var(--ease-editorial),
+    box-shadow var(--duration-card) var(--ease-editorial),
     transform var(--duration-card) var(--ease-editorial);
 }
 
-.ct-desk li:last-child .ct-row,
-.ct-directory li:last-child .ct-row {
-  border-bottom-color: transparent;
+.uhc-office:hover {
+  border-color: var(--border-card-hover);
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-4px);
 }
 
-.ct-row:hover,
-.ct-row:focus-visible {
-  background: var(--color-card);
-  border-color: var(--border-card);
-  transform: translateX(3px);
-}
-
-.ct-row:focus-visible {
+.uhc-office:focus-visible {
   outline: 2px solid var(--color-gold);
-  outline-offset: 2px;
+  outline-offset: 3px;
 }
 
-/* The Secretary's row is the one to try first: a gold edge on the leading
-   side, and nothing else — the three rows stay the same shape. */
-.ct-row--lead {
-  border-left-color: var(--color-gold-muted);
-  border-left-width: 2px;
+/* The one piece of hierarchy: a heavier gold edge on the office to try
+   first, and a little more room inside it. */
+.uhc-office--lead {
+  border-top: 2px solid var(--color-gold-muted);
+  padding: clamp(1.6rem, 3vw, 2.25rem);
 }
 
-.ct-row-mark {
-  display: inline-flex;
-  flex: none;
-  color: var(--color-gold-muted);
-  transition: color var(--duration-card) var(--ease-editorial);
+/* The site's own gold eyebrow, tightened for use inside a panel. */
+.uhc-office__role {
+  margin-bottom: 0.85rem;
 }
 
-.ct-row:hover .ct-row-mark {
-  color: var(--color-gold);
-}
-
-.ct-row-main {
-  display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
-  min-width: 0;
-}
-
-.ct-row-post {
-  font-size: 0.66rem;
-  font-weight: 600;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--color-gold-muted);
-}
-
-.ct-row--lead .ct-row-post {
-  color: var(--color-gold);
-}
-
-/* On a coordinator row the office is the same for everyone, so it reads
-   under the name as a quiet qualifier rather than over it as a heading. */
-.ct-row-post--after {
-  order: 2;
-  color: var(--color-cream-faint);
-  letter-spacing: 0.14em;
-}
-
-.ct-row-name {
+.uhc-office__name {
   font-family: var(--font-display);
-  font-size: 1.15rem;
+  font-size: 1.2rem;
   font-weight: 700;
   line-height: 1.25;
   color: var(--color-cream);
 }
 
-.ct-row--lead .ct-row-name {
-  font-size: 1.3rem;
+.uhc-office--lead .uhc-office__name {
+  font-size: clamp(1.4rem, 2.4vw, 1.75rem);
 }
 
-.ct-row-mail {
-  order: 3;
-  margin-top: 0.15rem;
-  font-size: 0.82rem;
+.uhc-office__mail {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.6;
   color: var(--color-cream-muted);
   overflow-wrap: anywhere;
 }
 
-/* The region is the scanning column of the directory — fixed width so the
-   names line up down the page. */
-.ct-row-region {
-  flex: none;
-  width: 7.5rem;
-  font-size: 0.72rem;
+/* Pushed to the foot of the panel, which is what gives the taller lead
+   panel its proportion rather than leaving dead space in it. */
+.uhc-office__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-top: auto;
+  padding-top: 1.5rem;
+  font-size: 0.85rem;
   font-weight: 600;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
+  color: var(--color-cream-muted);
+  transition: color var(--duration-card) var(--ease-editorial);
+}
+
+.uhc-office--lead .uhc-office__cta {
+  font-size: 0.92rem;
   color: var(--color-gold-muted);
 }
 
-.ct-row-cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  flex: none;
-  font-size: 0.8rem;
-  font-weight: 500;
-  color: var(--color-cream-muted);
-  transition:
-    color var(--duration-link) var(--ease-editorial),
-    transform var(--duration-link) var(--ease-editorial);
-}
-
-.ct-row:hover .ct-row-cta {
+.uhc-office:hover .uhc-office__cta {
   color: var(--color-gold);
 }
 
-.ct-row:hover .ct-row-cta svg {
-  transform: translateX(3px);
+.uhc-office__arrow {
+  transition: transform var(--duration-link) var(--ease-editorial);
 }
 
-.ct-row-cta svg {
-  transition: transform var(--duration-link) var(--ease-editorial);
+.uhc-office:hover .uhc-office__arrow {
+  transform: translateX(4px);
 }
 
 /* ═══ SOCIAL ════════════════════════════════════════════════════════
@@ -399,36 +346,32 @@ const socials = [
 }
 
 /* ═══ NARROW ════════════════════════════════════════════════════════
-   The row folds rather than shrinks: the action drops under the details,
-   and the region becomes a label above the name instead of a column. */
-@media (max-width: 640px) {
-  .ct-row {
-    grid-template-columns: auto minmax(0, 1fr);
-    row-gap: 0.75rem;
+   Tablet keeps two columns with the Secretary across the top; below that
+   the three offices simply stack. */
+@media (max-width: 900px) {
+  .uhc__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .ct-row-cta {
-    grid-column: 2;
-  }
-
-  .ct-row-region {
-    width: auto;
+  .uhc__cell--lead {
+    grid-row: auto;
     grid-column: 1 / -1;
   }
+}
 
-  .ct-row--compact {
+@media (max-width: 640px) {
+  .uhc__grid {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .ct-row--compact .ct-row-cta {
-    grid-column: 1;
+  .uhc__watermark {
+    display: none;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .ct-row:hover,
-  .ct-row:focus-visible,
-  .ct-row:hover .ct-row-cta svg,
+  .uhc-office:hover,
+  .uhc-office:hover .uhc-office__arrow,
   .ct-social a:hover {
     transform: none;
   }

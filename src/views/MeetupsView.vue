@@ -65,25 +65,6 @@
       </div>
     </section>
 
-    <!-- ══ ARCHIVE ═══════════════════════════════════════════════════
-         Every chapter's record in one run, newest first, five at a time. -->
-    <section class="mv-section tone-b rs" aria-labelledby="archive-heading">
-      <div class="container container--measure">
-        <header class="mv-hdr mv-hdr--left">
-          <p class="section-tag">Archive</p>
-          <h2 id="archive-heading" class="section-title-xl">
-            Past <span class="tg">Meetups</span>
-          </h2>
-          <p class="mv-sub">
-            Every chapter's meetups in one run, most recent first. Open a city above for that
-            chapter on its own.
-          </p>
-        </header>
-
-        <MeetupArchive :meetups="allMeetups" />
-      </div>
-    </section>
-
     <!-- ══ CTA ═══════════════════════════════════════════════════════ -->
     <section class="mv-section mv-section--cta tone-a rs" aria-labelledby="cta-heading">
       <div class="container">
@@ -114,7 +95,6 @@ import { computed } from 'vue';
 import { ArrowRight } from 'lucide-vue-next';
 import PageHero from '../components/PageHero.vue';
 import FeaturedMeetup from '../components/meetups/FeaturedMeetup.vue';
-import MeetupArchive from '../components/meetups/MeetupArchive.vue';
 import { useScrollReveal } from '../composables/useAnimations.js';
 import { sortedRegions } from '../data/regions.js';
 import { regionConfigs } from './meetups/regionConfigs.js';
@@ -130,24 +110,6 @@ const SLUG_TO_KEY = { 'delhi-ncr': 'delhi' };
 function configFor(slug) {
   return regionConfigs[SLUG_TO_KEY[slug] ?? slug] ?? null;
 }
-
-/**
- * The all-India archive. Each record is tagged with the chapter it belongs to
- * so a card in the merged list still says where it happened, and given a key
- * that is unique across regions — the per-region `id` is only an index.
- * MeetupArchive does the ordering.
- */
-const allMeetups = computed(() =>
-  regions.value.flatMap((region) => {
-    const config = configFor(region.slug);
-    if (!config) return [];
-    return config.pastMeetups.map((meetup) => ({
-      ...meetup,
-      key: `${region.slug}-${meetup.id}`,
-      location: meetup.location ?? region.name,
-    }));
-  })
-);
 
 /**
  * The soonest scheduled meetup anywhere. Chapters currently publish none, so

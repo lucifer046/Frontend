@@ -1,0 +1,540 @@
+/* ============================================================
+   SUNDARBANS HOUSE — MEMBER PORTAL
+   "The Private House"
+
+   The public site is the institution speaking outward: formal,
+   editorial, cinematic. This layer is the same house seen from
+   the inside — quieter, warmer, more personal, and built around
+   the member rather than around the announcement.
+
+   Everything here is scoped under `.portal`, so nothing in this
+   file can reach a public page. The brand tokens come from
+   style.css; what follows is the portal dialect of them.
+   ============================================================ */
+
+/* The token block is applied to the portal root and to the mobile bar, which
+   is teleported to <body> and would otherwise resolve none of these names.
+   Only the custom properties are shared; the visual rules below stay on
+   `.portal` alone. */
+.portal,
+.ptab {
+  /* ── Ground ────────────────────────────────────────────────
+     One step warmer and one step lighter than the public black.
+     The difference is deliberately small: the portal should feel
+     like a room inside the same building, not a different site. */
+  --p-ground: #050605;
+  --p-ground-forest: #060907;
+  --p-ground-deep: #000000;
+  --p-surface: #070b09;
+  --p-surface-raised: #0b100d;
+
+  /* ── Line ─────────────────────────────────────────────────
+     Three weights and nothing else. Cards are separated from the
+     page by their hairline, never by their fill. */
+  --p-line: rgba(170, 125, 35, 0.16);
+  --p-line-card: rgba(170, 125, 35, 0.3);
+  --p-line-strong: rgba(213, 166, 58, 0.55);
+  --p-line-neutral: rgba(241, 232, 208, 0.08);
+
+  /* ── Metal & ink ─────────────────────────────────────────── */
+  --p-gold: #d5a63a;
+  --p-gold-light: #e9c873;
+  --p-gold-deep: #a97c22;
+  --p-gold-wash: rgba(213, 166, 58, 0.08);
+  --p-ink: #f1e8d0;
+  /* One step between full ink and the muted tone. Secondary information that
+     still has to be read at a glance (a coordinator's name, a section label)
+     sits here rather than at 0.62, where the warm ivory starts to lose its
+     edge against the near-black ground. */
+  --p-ink-soft: rgba(241, 232, 208, 0.82);
+  --p-ink-muted: rgba(241, 232, 208, 0.62);
+  --p-ink-faint: rgba(241, 232, 208, 0.38);
+
+  /* Status accents — used as marks, never as surfaces. */
+  --p-live: #6fbf8b;
+  --p-silver: #c3c7c9;
+  --p-bronze: #b98149;
+
+  /* ── Rhythm ───────────────────────────────────────────────
+     Fluid from a 360px phone to a 2560px monitor, so no layout
+     ever needs a fixed corrective margin. */
+  /* 1024 -> full width   1366 -> 1247   1440 -> 1301   1920 -> 1646
+     2560 -> 2000 (cap)
+     Below about 1100px the shell is wider than the viewport, so a phone and a
+     tablet simply get the gutters. Above it the column opens with roughly
+     three quarters of every extra pixel, which is what stops a 27 inch
+     monitor from rendering a narrow strip between two black margins. */
+  --p-shell: clamp(20rem, 16.5rem + 72vw, 125rem);
+  --p-gutter: clamp(1.25rem, 4vw, 4rem);
+  --p-band: clamp(4.5rem, 2.5rem + 5vw, 9rem);
+  --p-radius: 6px;
+  --p-radius-lg: 10px;
+
+  --p-ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --p-ease-reveal: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.portal {
+  position: relative;
+  min-height: 100vh;
+  isolation: isolate;
+  background: var(--p-ground);
+  color: var(--p-ink);
+  font-family: var(--font-body);
+}
+/* Sideways overflow is contained by the sections that can cause it (the
+   watermarked bands each clip their own), never by the portal root: clipping
+   one axis here would make `.portal` its own scroll container, and the page
+   would stop scrolling the document that `window.scrollY`, the back-to-top
+   control and the router's scroll behaviour all read. */
+
+/* ── The canvas ──────────────────────────────────────────────
+   Architecture, not decoration: a hairline grid, a single warm
+   pool of light behind the top of the page, and nothing that
+   moves. It should be felt rather than noticed — at these
+   opacities you see it only once you look for it. */
+.portal::before,
+.portal::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+.portal::before {
+  background-image:
+    linear-gradient(to right, rgba(213, 166, 58, 0.055) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(213, 166, 58, 0.055) 1px, transparent 1px);
+  background-size: clamp(64px, 7vw, 108px) clamp(64px, 7vw, 108px);
+  /* Fades out down the page so the grid frames the top of the
+     composition instead of tiling the whole scroll. */
+  -webkit-mask-image: radial-gradient(ellipse 120% 70% at 50% 0%, #000 5%, transparent 72%);
+  mask-image: radial-gradient(ellipse 120% 70% at 50% 0%, #000 5%, transparent 72%);
+}
+.portal::after {
+  background:
+    radial-gradient(ellipse 70% 45% at 50% -10%, rgba(213, 166, 58, 0.07), transparent 70%),
+    radial-gradient(ellipse 60% 50% at 100% 100%, rgba(23, 46, 33, 0.4), transparent 72%);
+}
+
+/* Everything the member actually reads sits above the canvas. */
+.portal > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Shell ─────────────────────────────────────────────────── */
+.p-shell {
+  width: 100%;
+  max-width: var(--p-shell);
+  margin-inline: auto;
+  padding-inline: var(--p-gutter);
+}
+.p-band {
+  padding-block: var(--p-band);
+  scroll-margin-top: 5.5rem;
+}
+.p-rule {
+  height: 1px;
+  border: 0;
+  margin: 0;
+  background: linear-gradient(to right, transparent, var(--p-line), transparent);
+}
+
+/* ── Section headers ─────────────────────────────────────────
+   An eyebrow, a display line and one sentence. The same three
+   parts on every section, so the member always knows where a
+   new subject begins without a card being drawn around it. */
+.p-head {
+  max-width: 46rem;
+  margin-bottom: clamp(2rem, 4vw, 3rem);
+}
+.p-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--p-gold);
+}
+.p-eyebrow::before {
+  content: '';
+  width: 1.75rem;
+  height: 1px;
+  background: currentColor;
+  flex: none;
+}
+.p-title {
+  margin-top: 0.75rem;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(2rem, 1.4rem + 2.4vw, 3.25rem);
+  line-height: 1.06;
+  letter-spacing: -0.01em;
+  color: var(--p-ink);
+}
+.p-title em {
+  font-style: italic;
+  color: var(--p-gold-light);
+}
+.p-lede {
+  margin-top: 0.9rem;
+  font-size: clamp(0.9375rem, 0.9rem + 0.15vw, 1.0625rem);
+  line-height: 1.65;
+  color: var(--p-ink-muted);
+  max-width: 44ch;
+}
+.p-aside {
+  display: block;
+  margin-top: 0.5rem;
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--p-ink-faint);
+}
+
+/* ── Surfaces ────────────────────────────────────────────────
+   Flat, opaque, hairlined. No blur, no gradient fill, no glow —
+   a card is a surface in one room, not a pane of glass floating
+   over another. */
+.p-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: clamp(1.25rem, 2.2vw, 1.75rem);
+  background: var(--p-surface);
+  border: 1px solid var(--p-line-card);
+  border-radius: var(--p-radius);
+  transition:
+    border-color var(--duration-card, 620ms) var(--p-ease),
+    transform var(--duration-card, 620ms) var(--p-ease),
+    background-color var(--duration-card, 620ms) var(--p-ease);
+}
+.p-card:hover {
+  border-color: var(--p-line-strong);
+  transform: translateY(-3px);
+}
+.p-card--quiet {
+  background: transparent;
+  border-color: var(--p-line);
+}
+
+/* ── Buttons ─────────────────────────────────────────────────
+   Two of them. Filled gold means "this is the thing to do";
+   outline means "this is also available". The arrow nudges, the
+   surface lifts, nothing bounces or glows. */
+.p-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.4rem;
+  min-height: 2.75rem;
+  border: 1px solid transparent;
+  border-radius: var(--p-radius);
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color var(--duration-button, 520ms) var(--p-ease),
+    border-color var(--duration-button, 520ms) var(--p-ease),
+    color var(--duration-button, 520ms) var(--p-ease),
+    transform var(--duration-button, 520ms) var(--p-ease);
+}
+.p-btn svg {
+  flex: none;
+  transition: transform var(--duration-link, 340ms) var(--p-ease);
+}
+.p-btn:hover svg.p-arrow {
+  transform: translateX(3px);
+}
+.p-btn--primary {
+  background: var(--p-gold);
+  border-color: var(--p-gold);
+  color: #0a0805;
+}
+.p-btn--primary:hover {
+  background: var(--p-gold-light);
+  border-color: var(--p-gold-light);
+  transform: translateY(-2px);
+}
+.p-btn--ghost {
+  background: transparent;
+  border-color: var(--p-line-card);
+  color: var(--p-ink-muted);
+}
+.p-btn--ghost:hover {
+  background: var(--p-surface-raised);
+  border-color: var(--p-line-strong);
+  color: var(--p-ink);
+  transform: translateY(-2px);
+}
+.p-btn--small {
+  padding: 0.5rem 0.95rem;
+  min-height: 2.25rem;
+  font-size: 0.6875rem;
+}
+.p-btn[disabled],
+.p-btn.is-disabled {
+  opacity: 0.42;
+  pointer-events: none;
+}
+.p-btn:focus-visible,
+.portal a:focus-visible,
+.portal button:focus-visible {
+  outline: 2px solid var(--p-gold);
+  outline-offset: 3px;
+}
+
+/* ── Marks ───────────────────────────────────────────────────
+   A live session gets a small dot and a word, not a banner. */
+.p-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.625rem;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--p-live);
+}
+.p-live__dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  flex: none;
+  animation: p-pulse 2.8s var(--p-ease) infinite;
+}
+@keyframes p-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+.p-meta {
+  font-size: 0.6875rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--p-ink-faint);
+}
+
+/* ── Entrance ────────────────────────────────────────────────
+   One reveal for the whole portal: fourteen pixels and an
+   opacity. Anything more would read as a website performing. */
+.p-reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 700ms var(--p-ease-reveal),
+    transform 700ms var(--p-ease-reveal);
+}
+.p-reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* ── Tonal bands ─────────────────────────────────────────────────
+   The portal is two darks, not one. Sections alternate between piano
+   black and the gunmetal forest, which is what separates one subject
+   from the next: a tone change reads as a new room, where a horizontal
+   rule reads as a form field. Both are dark; there is no light band,
+   no light card and no light mode anywhere in this file. */
+.p-tone-a {
+  background: var(--p-ground);
+}
+.p-tone-b {
+  background: var(--p-ground-forest);
+}
+/* The join between two tones. A hairline that fades at both ends, with
+   the section's own number set into it, so the boundary is drawn rather
+   than defaulted. */
+.p-seam {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding-block: 0;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    var(--p-line) 12%,
+    var(--p-line) 88%,
+    transparent
+  );
+}
+
+/* ── Watermarks ──────────────────────────────────────────────────
+   An oversized word set into the ground of a section. It carries the
+   eye across the boundary between two bands and gives the page its
+   scale. Barely legible by design: at this opacity it is architecture,
+   not a headline. */
+.p-mark {
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+  user-select: none;
+  font-family: var(--font-display);
+  font-weight: 400;
+  line-height: 0.78;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: rgba(241, 232, 208, 0.022);
+  font-size: clamp(6rem, 20vw, 22rem);
+}
+.p-mark--right {
+  right: -0.08em;
+}
+.p-mark--left {
+  left: -0.05em;
+}
+/* The crest, drawn as geometry rather than printed as a logo: three
+   concentric hairlines that sit behind a composition and give it a
+   centre. */
+.p-orbit {
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 1px solid rgba(213, 166, 58, 0.09);
+}
+.p-orbit::before,
+.p-orbit::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(213, 166, 58, 0.07);
+}
+.p-orbit::before {
+  inset: 9%;
+}
+.p-orbit::after {
+  inset: 22%;
+  border-style: dashed;
+  border-color: rgba(213, 166, 58, 0.05);
+}
+
+/* ── Display type ────────────────────────────────────────────────
+   The portal's loudest voice. Multi-line by design: the line break is
+   part of the composition, and the second line usually carries the
+   gold. */
+.p-display {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(2.75rem, 1.2rem + 6.4vw, 8rem);
+  line-height: 0.92;
+  letter-spacing: -0.025em;
+  text-transform: uppercase;
+  color: var(--p-ink);
+}
+.p-display em {
+  display: block;
+  font-style: italic;
+  text-transform: none;
+  color: var(--p-gold-light);
+}
+.p-display--sm {
+  font-size: clamp(2.25rem, 1.4rem + 3.4vw, 4.5rem);
+}
+/* Numerals that label a section without shouting. */
+.p-index {
+  font-family: var(--font-display);
+  font-size: 0.8125rem;
+  letter-spacing: 0.3em;
+  color: var(--p-gold-deep);
+}
+
+/* ── Photographs ─────────────────────────────────────────────────
+   House photographs are shown large and cropped, never as a row of
+   thumbnails. Both frames sit under a forest wash so a bright photo
+   cannot break the dark environment. */
+.p-photo {
+  position: relative;
+  overflow: hidden;
+  background: var(--p-ground-deep);
+}
+.p-photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(0.72) contrast(1.04) brightness(0.74);
+  transition:
+    transform var(--duration-card, 620ms) var(--p-ease),
+    filter var(--duration-card, 620ms) var(--p-ease);
+}
+.p-photo::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(5, 6, 5, 0.28), rgba(5, 6, 5, 0.72));
+}
+.p-photo:hover img {
+  transform: scale(1.035);
+  filter: saturate(0.85) contrast(1.04) brightness(0.86);
+}
+.p-photo--frame {
+  border: 1px solid var(--p-line);
+  border-radius: 2px;
+}
+.p-photo--round {
+  border-radius: 50%;
+  aspect-ratio: 1;
+}
+.p-photo__caption {
+  position: absolute;
+  z-index: 1;
+  left: 1rem;
+  bottom: 0.9rem;
+  font-size: 0.625rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--p-ink-faint);
+}
+
+/* The mobile bar is fixed over the page, so the last band of every portal
+   view has to clear it — stated once, here, rather than per view. */
+@media (max-width: 900px) {
+  .portal--tabbed {
+    padding-bottom: calc(3.5rem + env(safe-area-inset-bottom, 0px));
+  }
+  /* The shared back-to-top control lives outside `.portal`, so App.vue flags
+     it on these routes; here it just has to clear the mobile bar. */
+  #backToTop.is-portal {
+    bottom: calc(4.25rem + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .portal *,
+  .portal *::before,
+  .portal *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .p-reveal {
+    opacity: 1;
+    transform: none;
+  }
+  .p-card:hover,
+  .p-btn:hover {
+    transform: none;
+  }
+}

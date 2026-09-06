@@ -65,11 +65,17 @@ export function useHoverIntent(closeDelay = 140) {
 /**
  * The displacement field. Pointer position along the list is converted to a
  * fractional index, and each item is nudged toward the content area by a
- * gaussian falloff around it: the item under the cursor moves most, its
- * neighbours less, the rest effectively not at all. That is the "wave" —
- * coordinated transforms, not a simulation.
+ * gaussian falloff around it: the item under the cursor moves, its neighbours
+ * barely, the rest not at all.
+ *
+ * These two numbers are the whole feel of the rail. `maxOffset` is how far the
+ * hovered row travels; `sigma` is how much of that its neighbours inherit.
+ * Both are deliberately small. At sigma 0.9 the next row along took more than
+ * half the travel and the one after it was still visibly moving, which read as
+ * a wave running through the list; at 0.5 it takes about an eighth and the
+ * rest nothing, so the response reads as the hovered row alone lifting.
  */
-export function useWaveField(count, { maxOffset = 8, sigma = 0.9 } = {}) {
+export function useWaveField(count, { maxOffset = 4, sigma = 0.5 } = {}) {
   const zeros = () => new Array(count).fill(0);
   const offsets = ref(zeros());
   const listEl = shallowRef(null);

@@ -1,29 +1,19 @@
 <template>
-  <div class="widget w-5" id="widget-pomo">
-    <div
-      class="widget-glow"
-      style="
-        width: 200px;
-        height: 200px;
-        background: radial-gradient(circle, rgba(76, 175, 80, 0.2), transparent);
-        bottom: -60px;
-        right: -40px;
-      "
-    ></div>
+  <!-- FOCUS ROOM. The clock is the point: mode and room state are stated
+       once, in a line of small caps, and never compete with the time. -->
+  <div class="widget" id="widget-pomo">
+    <div class="widget-label">Focus</div>
+    <div class="widget-title">Focus Room</div>
+    <p class="widget-note">Set the timer. Stay with it. Let the House study alongside you.</p>
 
-    <div class="widget-label">Focus Timer</div>
-    <div class="widget-title">Study Room</div>
-
-    <div class="pomo-status-strip">
-      <div>
-        <span>Mode</span>
-        <strong>{{ currentPhaseLabel }}</strong>
-      </div>
-      <div>
-        <span>Room</span>
-        <strong>{{ inRoom ? 'Joined' : 'Open' }}</strong>
-      </div>
-    </div>
+    <p class="pomo-mode-row">
+      <span
+        >Mode · <strong>{{ currentPhaseLabel }}</strong></span
+      >
+      <span
+        >Room · <strong>{{ inRoom ? 'Joined' : 'Open' }}</strong></span
+      >
+    </p>
 
     <!-- Phase selector tabs -->
     <div class="pomo-phase-tabs">
@@ -42,14 +32,7 @@
 
     <!-- SVG ring timer -->
     <div class="pomo-ring-wrap">
-      <svg
-        class="pomo-ring-svg"
-        width="160"
-        height="160"
-        viewBox="0 0 160 160"
-        aria-label="Timer progress ring"
-        role="img"
-      >
+      <svg class="pomo-ring-svg" viewBox="0 0 160 160" aria-label="Timer progress ring" role="img">
         <circle class="pomo-ring-bg" cx="80" cy="80" r="70" />
         <circle
           :class="ringClass"
@@ -80,21 +63,20 @@
     <div class="pomo-controls">
       <button class="btn btn-gold" @click="togglePomo">{{ startBtnText }}</button>
       <button class="btn btn-ghost" @click="resetPomo">Reset</button>
-      <button class="btn" :class="inRoom ? 'btn-green' : 'btn-ghost'" @click="toggleRoom">
-        {{ inRoom ? 'Leave Room' : 'Join Room' }}
+      <button class="btn btn-ghost" @click="toggleRoom">
+        {{ inRoom ? 'Leave room' : 'Join room' }}
       </button>
     </div>
 
     <!-- Session-complete banner -->
     <div class="pomo-done-banner" :class="{ show: showBanner }">
-      <PartyPopper :size="15" :stroke-width="1.8" style="vertical-align: -3px" /> Session complete!
+      <PartyPopper :size="14" :stroke-width="1.8" style="vertical-align: -2px" /> Session complete.
       Take a break.
     </div>
 
     <!-- Live studiers -->
     <div class="pomo-studiers-label">
-      Studying Now (<span>{{ displayPeople.length }}</span
-      >)
+      Studying now · <span>{{ displayPeople.length }}</span>
     </div>
     <div class="pomo-studiers">
       <div

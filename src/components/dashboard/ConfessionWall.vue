@@ -1,18 +1,10 @@
 <template>
-  <div class="widget w-6" id="widget-confession">
-    <div
-      class="widget-glow"
-      style="
-        width: 200px;
-        height: 200px;
-        background: radial-gradient(circle, rgba(122, 176, 224, 0.14), transparent);
-        bottom: -60px;
-        right: -40px;
-      "
-    ></div>
-
+  <!-- THE WALL. Anonymous by construction: nothing here is ever attached to
+       a member, and the reactions are vector icons rather than pictographs. -->
+  <div class="widget" id="widget-confession">
     <div class="widget-label">Anonymous</div>
-    <div class="widget-title">Confession Wall</div>
+    <div class="widget-title">The Wall</div>
+    <p class="widget-note">Say the thing. Nobody will know it was you.</p>
 
     <div class="confession-summary">
       <span>{{ confs.length }} posts</span>
@@ -24,7 +16,7 @@
       <textarea
         class="confession-textarea"
         v-model="inputText"
-        placeholder="Share something on your mind... nobody will know it's you."
+        placeholder="Share something on your mind."
         maxlength="280"
         @input="updateCharCount"
       ></textarea>
@@ -34,13 +26,13 @@
     </div>
 
     <div class="confession-submit-row">
-      <span class="confession-anon">100% anonymous · never linked to your name</span>
+      <span class="confession-anon">Anonymous, never linked to your name</span>
       <button class="btn btn-outline" @click="postConfession">Post</button>
     </div>
 
     <!-- Post feed -->
     <div class="confession-list" ref="confListRef">
-      <div v-if="confs.length === 0" class="conf-empty">No confessions yet. Be the first! 🤫</div>
+      <div v-if="confs.length === 0" class="conf-empty">Nothing on the wall yet. Go first.</div>
       <div v-for="c in reversedConfs" :key="c.id" class="confession-item">
         <div class="confession-text">{{ c.text }}</div>
         <div class="confession-meta">
@@ -52,7 +44,13 @@
             :class="{ reacted: myRx[c.id] === rx.key }"
             @click="rxConf(c.id, rx.key)"
           >
-            {{ rx.emoji }} <span>{{ c.r[rx.key] || 0 }}</span>
+            <component
+              :is="widgetIcon(rx.icon)"
+              :size="13"
+              :stroke-width="1.8"
+              aria-hidden="true"
+            />
+            <span>{{ c.r[rx.key] || 0 }}</span>
           </button>
         </div>
       </div>
@@ -63,6 +61,7 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { save, load } from '../../composables/useLocalStorage.js';
+import { widgetIcon } from './widgetIcons.js';
 
 const props = defineProps({
   config: { type: Object, default: null },
@@ -109,9 +108,9 @@ const SEED = props.config
 const reactions = props.config
   ? props.config.reactions
   : [
-      { key: 'heart', emoji: '❤️' },
-      { key: 'laugh', emoji: '😂' },
-      { key: 'wow', emoji: '😮' },
+      { key: 'heart', icon: 'heart' },
+      { key: 'laugh', icon: 'laugh' },
+      { key: 'wow', icon: 'sparkles' },
     ];
 
 const confs = ref(load('sb_confs', SEED));

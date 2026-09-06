@@ -48,9 +48,9 @@ Sundarbans-House_Vue-main/
     │
     ├── components/                   # Shared/reusable components
     │   ├── AppFooter.vue
-    │   ├── MembersNavbar.vue
     │   ├── PageHero.vue
-    │   └── RegionMeetups.vue
+    │   ├── RegionMeetups.vue
+    │   └── portal/                   # Member portal chrome (nav, footer)
     │
     ├── data/                         # Static data files
     │   ├── members.json              # Member records

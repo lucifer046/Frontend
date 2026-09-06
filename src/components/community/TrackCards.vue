@@ -63,14 +63,6 @@ defineProps({
   height: 24px;
   color: var(--cx, var(--accent));
   margin-bottom: 0.55rem;
-  transition:
-    color var(--duration-card) var(--ease-editorial),
-    transform var(--duration-card) var(--ease-editorial);
-}
-
-.track-card:hover .track-icon {
-  color: var(--cx-bright, var(--cx, var(--color-gold-light)));
-  transform: translateY(-3px);
 }
 
 .track-title {

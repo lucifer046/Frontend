@@ -8,7 +8,10 @@ const routes = [
   { path: '/about', component: () => import('../views/AboutView.vue') },
   { path: '/events', component: () => import('../views/EventsView.vue') },
   { path: '/study', component: () => import('../views/StudyView.vue') },
-  { path: '/exam-cities', component: () => import('../views/ExamCitiesView.vue') },
+  // One record, optional param: /documents is the library and /documents/<id>
+  // is the reader. Same component, so switching modes keeps the visitor's
+  // search and category, and Back is ordinary history.
+  { path: '/documents/:id?', component: () => import('../views/DocumentsView.vue') },
   { path: '/teams', component: () => import('../views/TeamsView.vue') },
   { path: '/contact', component: () => import('../views/ContactView.vue') },
   { path: '/login', component: () => import('../views/LoginView.vue') },
@@ -17,7 +20,13 @@ const routes = [
     component: () => import('../views/MembersLoungeView.vue'),
     meta: { requiresAuth: true },
   },
-  { path: '/dashboard', component: () => import('../views/DashboardView.vue') },
+  {
+    // Part of the member portal, so it is guarded like the lounge rather than
+    // relying on the view's own token check to bounce anonymous visitors.
+    path: '/dashboard',
+    component: () => import('../views/DashboardView.vue'),
+    meta: { requiresAuth: true },
+  },
 
   // Community + sub-pages
   { path: '/community', component: () => import('../views/CommunityView.vue') },
